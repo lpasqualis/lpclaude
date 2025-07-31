@@ -16,8 +16,8 @@ Based on the current conversation context, create a comprehensive implementation
    - Identified risks and challenges
 
 3. **Create or update (if it is already present) the implementation plan** using the template below
-4. **Name the file** appropriately: `docs/implans/ACTIVE_<DESCRIPTIVE-NAME>_IMPLAN.md`
-   1. The file name will change to `COMPLETE_<YYYYY-MM-DD>-<DESCRIPTIVE-NAME>_IMPLAN.md` when the plan is finalized
+4. **Name the file** appropriately: `docs/implans/ACTIVE_<DESCRIPTIVE-NAME>_implan.md`
+   1. The file name will change to `completed_<YYYYY-MM-DD>-<descriptive-name>_implan.md` when the plan is finalized
    2. If the file already exists, change the name to comply with the naming convention above
 5. **Fill in all sections** with relevant information from the conversation
 
