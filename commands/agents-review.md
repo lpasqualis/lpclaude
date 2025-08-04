@@ -1,6 +1,7 @@
 ---
-description: Audit a group of subagents to ensure they are well defined and compatible with each other
-argument-hint: "[sub agents to examine] (optional)"
+description: Audit subagents for compatibility, overlap, and optimization opportunities
+argument-hint: "[agent names or paths] (optional, defaults to all project or personal agents)"
+model: sonnet
 ---
 
 Analyze the provided list of sub-agent definition files. Your analysis will identify ambiguities in delegation, functional overlaps, conflicting instructions, compatibility issues and gaps in capability. Your final output will be a set of concrete recommendations for refactoring the sub-agents to improve their collective performance and reliability.
@@ -9,10 +10,9 @@ Analyze the provided list of sub-agent definition files. Your analysis will iden
 
 ## Step 1 - Understand Sub-Agents
 
-- Read and understand @~.claude/resources/commands_and_agents.md for a complete understandig of agents
-- Read and understand any latest updates about agents: https://docs.anthropic.com/en/docs/claude-code/sub-agents (this documentation is the most recent)
+- Read and understand any latest updates about agents: https://docs.anthropic.com/en/docs/claude-code/sub-agents (this documentation is the most recent and authoritative source)
 
-## Step 2 - Review Provided Agents
+## Step 2 - Determine Scope
 
 This is the list of subagents that need to be analyzed:
 ---
@@ -21,13 +21,17 @@ $ARGUMENTS
 
 If the list above is empty, assume the user wants you to analyze all of the agents available in the current project or all of the personal user agents (ask the user which one: project or personal).
 
-#### Step 3 - Review the agents
+## Step 3 - Review the Agents
 
 For each of the agents, you are to read, analyze and understand the file's content and think of them as tools that Claude can delegate to.
 Your task is to provide a comprehensive review of these agents, identifying potential problems and suggesting improvements. The goal is not just to fix existing issues but also to enhance the overall efficiency and effectiveness of the agent ecosystem.
 
 **Analytical Process**
-1.  **Analyze:** Read and understand the contents of each file provided. 
+1.  **Individual Agent Analysis:** Read and understand the contents of each file provided. Evaluate:
+    * **Description clarity:** Is the one-sentence description concise and unambiguous?
+    * **Model appropriateness:** Is the chosen model (haiku/sonnet/opus) appropriate for the task complexity?
+    * **Tool permissions:** Does it follow the Principle of Least Privilege?
+    * **System prompt quality:** Is it clear, focused, and well-structured?
 
 2.  **Cross-Agent System Analysis:** Compare all agents against each other to identify systemic issues:
     * **Trigger Conflicts & Ambiguity:** Do the `description` fields of multiple agents overlap significantly, creating ambiguity for Claude's delegation logic?
@@ -46,11 +50,12 @@ A high-level overview of the sub-agent ecosystem's health, key issues, and prima
 ### Sub-Agent Analysis Table
 A detailed breakdown in a table:
 
-| Agent Name | Description Quality | System Prompt Clarity | Potential Trigger Conflicts (with which agents) | Redundancy/Overlap (with which agents) |
-| :--- | :--- | :--- | :--- | :--- |
-| `[agent-name]` | [Good/Needs Improvement/Vague] | [Clear/Ambiguous/Conflicting] | `[conflicting-agent-name]` | `[overlapping-agent-name]` |
+| Agent Name | Description Quality | System Prompt Clarity | Model Choice | Tool Permissions | Potential Trigger Conflicts | Redundancy/Overlap |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `[agent-name]` | [Good/Needs Improvement/Vague] | [Clear/Ambiguous/Conflicting] | [Appropriate/Overspec/Underspec] | [Minimal/Excessive/Appropriate] | `[conflicting-agent-names]` | `[overlapping-agent-names]` |
 
 ### Actionable Recommendations
 A numbered list of specific, justified changes. Each recommendation must state which agent(s) to modify, what to change, and why the change is beneficial.
 
-Ask the user if you should proceed with the changes suggested.
+### Implementation Guidance
+If changes are recommended, suggest using the `agent-optimizer` agent to implement the optimizations, as it specializes in enforcing best practices for agent definitions. Provide specific instructions for which agents need optimization and what aspects to focus on.
