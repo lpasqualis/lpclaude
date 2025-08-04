@@ -1,6 +1,6 @@
 ---
 name: memory-keeper
-description: MUST BE USED when you need to store NEW information, facts, decisions, or project-specific information in the CLAUDE.md file for long-term memory.
+description: Use to store NEW durable information, AI directives, facts, decisions, or project-specific information in the CLAUDE.md file for long-term memory.
 color: orange
 model: sonnet
 ---

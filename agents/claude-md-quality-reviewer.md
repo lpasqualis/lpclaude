@@ -1,6 +1,6 @@
 ---
 name: claude-md-quality-reviewer
-description: MUST BE USED to review and improve the quality, organization, and consistency of existing CLAUDE.md files for contradictions, redundancies, and formatting issues.
+description: Use to review and improve the quality, organization, and consistency of existing CLAUDE.md files for contradictions, redundancies, and formatting issues.
 color: purple
 model: sonnet
 ---

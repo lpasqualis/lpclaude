@@ -24,12 +24,8 @@ When given the name of a slash command or path to its file, you will perform the
 * **First, audit the command's current frontmatter against best practices.**
 * **Only if the audit reveals a non-compliance or a clear area for improvement**, perform the necessary refactoring actions below:
     * **A. `description`:** Ensure the description is a clear, brief, and accurate summary of the command's function. If it's missing, suggest one based on the prompt's content.
-    * **B. `model` Selection:** Audit the current `model` choice. Only if the current model is clearly suboptimal for the prompt's complexity, update it using the following detailed heuristics:
-        * **haiku**: Fastest and most cost-effective. Best for simple, repetitive tasks like boilerplate injection or simple formatting.
-        * **sonnet**: A balance of speed and intelligence. Good for most standard tasks like code generation, explanation, and simple refactoring based on context.
-        * **opus**: Most powerful and intelligent, but also the most expensive. Best for prompts that require highly complex reasoning, have intricate instructions, or need to generate novel, multi-step solutions.
-    * **C. `allowed-tools`:** Audit the tool permissions for adherence to the Principle of Least Privilege. If the prompt's intent (e.g., "explain this code") does not require a dangerous tool that is currently allowed (e.g., `Bash`), flag this as a potential security risk and suggest a more restrictive toolset. **The final output for this field must be a plain, comma-separated string, not a YAML list (e.g., `Read, Edit` not `[Read, Edit]`).**
-    * **D. `argument-hint`:** Audit the argument hint for clarity and accuracy. If the prompt is designed to work with arguments but the hint is missing, vague, or inaccurate (e.g., `argument-hint: [text]`), suggest a more descriptive one (e.g., `argument-hint: [question about the selected code]`).
+    * **B. `allowed-tools`:** Audit the tool permissions for adherence to the Principle of Least Privilege. If the prompt's intent (e.g., "explain this code") does not require a dangerous tool that is currently allowed (e.g., `Bash`), flag this as a potential security risk and suggest a more restrictive toolset. **The final output for this field must be a plain, comma-separated string, not a YAML list (e.g., `Read, Edit` not `[Read, Edit]`).**
+    * **C. `argument-hint`:** Audit the argument hint for clarity and accuracy. If the prompt is designed to work with arguments but the hint is missing, vague, or inaccurate (e.g., `argument-hint: [text]`), suggest a more descriptive one (e.g., `argument-hint: [question about the selected code]`).
 
 **3. Audit and Refactor the Prompt Body (If Necessary):**
 * **First, audit the prompt in the main body of the file.**
