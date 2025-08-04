@@ -1,10 +1,33 @@
+**Version:** 1.0  
+**Date:** August 4, 2025  
+**Author:** Lorenzo Pasqualis  
+
 # Claude Agent Configuration Repository
 
 This repository contains custom agents and commands for Claude AI, designed to enhance productivity and maintain project-specific conventions.
 
 ## Agents
 
-### 1. Memory Keeper Agent
+### 1. Agent Formatter
+**File:** `agents/agent-formatter.md`  
+**Purpose:** Formats and improves the readability of Claude Code subagent definition files.  
+**Use Cases:**
+- Converting single-line YAML descriptions to literal block format
+- Improving readability of agent definition files
+- Cleaning up formatting in agent files
+- Proactively lints and formats agent definition files
+
+### 2. Agent Optimizer
+**File:** `agents/agent-optimizer.md`  
+**Purpose:** Audits and enforces best practices on subagent definition files, optimizing structure, model selection, color assignment, and proactive directives.  
+**Use Cases:**
+- Refactoring agent descriptions for clarity and compliance
+- Optimizing model selection based on task complexity (haiku/sonnet/opus)
+- Assigning semantic colors based on agent function
+- Adding proactive directives when appropriate
+- Operates idempotently - only makes changes when necessary
+
+### 3. Memory Keeper Agent
 **File:** `agents/memory-keeper.md`  
 **Purpose:** Records NEW information, facts, decisions, or project-specific information in the CLAUDE.md file for long-term memory.  
 **Use Cases:**
@@ -13,7 +36,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Documenting project-specific configurations
 - Creating or updating CLAUDE.md files
 
-### 2. Claude MD Quality Reviewer Agent
+### 4. Claude MD Quality Reviewer Agent
 **File:** `agents/claude-md-quality-reviewer.md`  
 **Purpose:** Reviews and improves the quality, organization, and consistency of EXISTING CLAUDE.md files.  
 **Use Cases:**
@@ -22,7 +45,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Resolving conflicting instructions
 - Improving overall file structure and formatting
 
-### 3. Hack Spotter Agent
+### 5. Hack Spotter Agent
 **File:** `agents/hack-spotter.md`  
 **Purpose:** Reviews code for technical debt, shortcuts, hardcoded values, and brittle implementations.  
 **Use Cases:**
@@ -32,7 +55,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Identifying configuration workarounds
 - Focuses on production code (not test code)
 
-### 4. Implan Auditor Agent
+### 6. Implan Auditor Agent
 **File:** `agents/implan-auditor.md`  
 **Purpose:** Audits implementation plans (implans) for completeness, correctness, and compliance with requirements.  
 **Use Cases:**
@@ -42,7 +65,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Adding testing phases when needed
 - Verifying compliance with project standards
 
-### 5. Documentation Auditor Agent
+### 7. Documentation Auditor Agent
 **File:** `agents/documentation-auditor.md`  
 **Purpose:** Comprehensively audits and updates documentation to ensure accuracy and relevance.  
 **Use Cases:**
@@ -133,6 +156,8 @@ This repository contains custom agents and commands for Claude AI, designed to e
 
 ```
 ├── agents/
+│   ├── agent-formatter.md
+│   ├── agent-optimizer.md
 │   ├── claude-md-quality-reviewer.md
 │   ├── documentation-auditor.md
 │   ├── hack-spotter.md
@@ -147,11 +172,26 @@ This repository contains custom agents and commands for Claude AI, designed to e
 │   ├── create-implan.md
 │   ├── learn.md
 │   └── workon-implan.md
+├── resources/
+│   └── commands_and_agents.md
 ├── .gitignore
 ├── CLAUDE.md
 └── README.md
 ```
 
+## Resources
+
+The `resources/` directory contains supporting files:
+- **`commands_and_agents.md`**: Comprehensive reference documentation for understanding agents and commands
+- **`python_code_style.py`**: Python coding style guidelines used throughout the project
+
+## Archive
+
+The `archive/` directory contains:
+- **`main_directives.md`**: Historical project directives and documentation
+
 ## Usage
 
 These agents and commands are designed to be used with Claude AI to enhance project management, code quality, and knowledge retention. Each agent and command has specific trigger conditions and use cases as outlined in their respective files.
+
+The `CLAUDE.md` file contains project-specific instructions and conventions that apply to all agents and commands in this repository.

@@ -9,7 +9,8 @@ Analyze the provided list of sub-agent definition files. Your analysis will iden
 
 ## Step 1 - Understand Sub-Agents
 
-Read and understand what subagents are and how they work: https://docs.anthropic.com/en/docs/claude-code/sub-agents
+- Read and understand @~.claude/resources/commands_and_agents.md for a complete understandig of agents
+- Read and understand any latest updates about agents: https://docs.anthropic.com/en/docs/claude-code/sub-agents (this documentation is the most recent)
 
 ## Step 2 - Review Provided Agents
 
