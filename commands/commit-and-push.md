@@ -1,7 +1,6 @@
 ---
 description: Intelligently group changed files into logical commits with semantic messages and push to origin
 argument-hint: "[commit message prefix] (optional, for single commit scenarios)"
-model: sonnet
 ---
 
 Analyze all changed files in the project and create logical commit groupings with semantic commit messages, then push to origin.

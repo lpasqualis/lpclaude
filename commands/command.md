@@ -1,6 +1,5 @@
 ---
 description: Interactive command creator - helps you create new Claude Code commands
-model: sonnet
 argument-hint: "[desired command name] (optional - if not provided, will suggest names based on purpose)"
 ---
 

@@ -1,6 +1,5 @@
 ---
 description: Resume work on an existing implementation plan
-model: sonnet
 argument-hint: "[implementation plan name] (optional - will find active plan if not specified)"
 ---
 

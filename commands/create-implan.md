@@ -1,6 +1,5 @@
 ---
 description: Create a comprehensive implementation plan from the current conversation context
-model: sonnet
 argument-hint: "[implementation plan name] (optional - if updating existing plan)"
 ---
 

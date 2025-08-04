@@ -1,6 +1,5 @@
 ---
 description: Analyze the current session to extract and preserve key learnings and insights for future sessions
-model: sonnet
 argument-hint: [specific area to focus on (optional)]
 ---
 

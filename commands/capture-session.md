@@ -1,6 +1,5 @@
 ---
 description: Create comprehensive session documentation for seamless handoff to future agents
-model: sonnet
 argument-hint: [brief session summary or focus area]
 ---
 

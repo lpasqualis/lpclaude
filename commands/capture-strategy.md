@@ -1,6 +1,5 @@
 ---
 description: Create comprehensive project documentation capturing current session context and implementation strategy
-model: sonnet
 argument-hint: [project name or specific focus area]
 ---
 
