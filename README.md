@@ -27,7 +27,17 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Adding proactive directives when appropriate
 - Operates idempotently - only makes changes when necessary
 
-### 3. Memory Keeper Agent
+### 3. Command Optimizer
+**File:** `agents/command-optimizer.md`  
+**Purpose:** Audits and enforces best practices on slash command definition files, optimizing frontmatter and prompt content only when necessary.  
+**Use Cases:**
+- Refactoring command descriptions for clarity and accuracy
+- Optimizing model selection based on command complexity
+- Auditing tool permissions for security compliance
+- Improving argument hints and placeholder usage
+- Operates idempotently - only makes changes when necessary
+
+### 4. Memory Keeper Agent
 **File:** `agents/memory-keeper.md`  
 **Purpose:** Records NEW information, facts, decisions, or project-specific information in the CLAUDE.md file for long-term memory.  
 **Use Cases:**
@@ -36,7 +46,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Documenting project-specific configurations
 - Creating or updating CLAUDE.md files
 
-### 4. Claude MD Quality Reviewer Agent
+### 5. Claude MD Quality Reviewer Agent
 **File:** `agents/claude-md-quality-reviewer.md`  
 **Purpose:** Reviews and improves the quality, organization, and consistency of EXISTING CLAUDE.md files.  
 **Use Cases:**
@@ -45,7 +55,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Resolving conflicting instructions
 - Improving overall file structure and formatting
 
-### 5. Hack Spotter Agent
+### 6. Hack Spotter Agent
 **File:** `agents/hack-spotter.md`  
 **Purpose:** Reviews code for technical debt, shortcuts, hardcoded values, and brittle implementations.  
 **Use Cases:**
@@ -55,7 +65,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Identifying configuration workarounds
 - Focuses on production code (not test code)
 
-### 6. Implan Auditor Agent
+### 7. Implan Auditor Agent
 **File:** `agents/implan-auditor.md`  
 **Purpose:** Audits implementation plans (implans) for completeness, correctness, and compliance with requirements.  
 **Use Cases:**
@@ -65,7 +75,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Adding testing phases when needed
 - Verifying compliance with project standards
 
-### 7. Documentation Auditor Agent
+### 8. Documentation Auditor Agent
 **File:** `agents/documentation-auditor.md`  
 **Purpose:** Comprehensively audits and updates documentation to ensure accuracy and relevance.  
 **Use Cases:**
@@ -177,6 +187,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 ├── resources/
 │   └── commands_and_agents.md
 ├── .gitignore
+├── CLAUDE.md
 └── README.md
 ```
 
@@ -189,8 +200,8 @@ The `resources/` directory contains supporting files:
 
 The `claude_directives/` directory contains:
 - **`CLAUDE_global_directives.md`**: A dynamic loader for global Claude directives that can be symlinked from `~/.claude/CLAUDE.md`
-- This file enables version control of personal Claude preferences
-- It dynamically loads all `CLAUDE_*.md` files in the same directory
+- This directory enables version control of personal Claude preferences
+- Additional CLAUDE_*.md files can be added for specific contexts
 
 ## Usage
 
