@@ -1,25 +1,31 @@
 ---
 description: Create a comprehensive implementation plan from the current conversation context
-argument-hint: "[existing implementation name] (if updating an existing one)"
-allowed-tools: Write
+model: sonnet
+argument-hint: "[implementation plan name] (optional - if updating existing plan)"
 ---
 
-Based on the current conversation context, create a comprehensive implementation plan for the discussed feature, fix, or project component. Save the plan in the project's `docs/implans/` directory. If the plan already exists, update it instead to fully comply with the instructions below (including file and location). Ensure the plan includes detailed steps, validation criteria, and expected outcomes.
+Create a comprehensive implementation plan from the current conversation context and save it in the project's `docs/implans/` directory. If a plan already exists, update it to fully comply with the template structure below.
 
-## Instructions
+## Process Overview
 
-1. Decide if the plan should be created or updated based on whether it already exists. The optional implementation plan name passed is "$ARGUMENTS"
-2. **Analyze the conversation** to identify:
-   - The feature/fix/component being discussed
-   - Key requirements and constraints
-   - Technical approach and architecture
-   - Identified risks and challenges
+1. **Analyze Context**: Extract key information from the current conversation
+2. **Determine Action**: Create new plan or update existing one (using optional argument: `$ARGUMENTS`)
+3. **Generate Plan**: Use the detailed template structure provided below
+4. **Save File**: Follow naming conventions and ensure proper organization
 
-3. **Create or update (if it is already present) the implementation plan** using the template below
-4. **Name the file** appropriately: `docs/implans/ACTIVE_<DESCRIPTIVE-NAME>_implan.md`
-   1. The file name will change to `completed_<YYYYY-MM-DD>-<descriptive-name>_implan.md` when the plan is finalized
-   2. If the file already exists, change the name to comply with the naming convention above
-5. **Fill in all sections** with relevant information from the conversation
+## Analysis Requirements
+
+From the conversation context, identify:
+- **Feature/fix/component** being discussed
+- **Key requirements** and constraints
+- **Technical approach** and architecture decisions
+- **Risks and challenges** that need addressing
+
+## File Naming Convention
+
+- **Active plans**: `docs/implans/ACTIVE_<DESCRIPTIVE-NAME>_implan.md`
+- **Completed plans**: `completed_<YYYY-MM-DD>-<descriptive-name>_implan.md`
+- Update existing files to comply with this naming convention
 
 ## Implementation Plan Template
 

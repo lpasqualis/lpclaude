@@ -1,9 +1,10 @@
 ---
 description: Interactive command creator - helps you create new Claude Code commands
-argument-hint: "[command name] (optional)"
+model: sonnet
+argument-hint: "[desired command name] (optional - if not provided, will suggest names based on purpose)"
 ---
 
-First of all, learn about Claude commands here: : https://docs.anthropic.com/en/docs/claude-code/slash-commands
+First of all, learn about Claude commands here: https://docs.anthropic.com/en/docs/claude-code/slash-commands
 Then, guide the user through creating a new Claude Code command interactively. Follow this process:
 
 ## 1. Determine Command Type
@@ -38,6 +39,7 @@ Create an initial command prompt that:
 - Includes any necessary context or constraints
 - Properly handles arguments if applicable
 - Follows the pattern of existing commands in the commands folder
+- Make sure the command is optimized using the @command-optimizer agent
 
 Show the draft to the user and ask for feedback.
 
@@ -54,7 +56,7 @@ Based on user feedback:
 Once approved:
 - Save the command to the appropriate directory
 - Confirm successful creation
-- Offer to test the command immediately
+- Make sure the command is optimized using the @command-optimizer agent
 
 ## Important Notes
 

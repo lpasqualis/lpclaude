@@ -1,5 +1,12 @@
+---
+description: Analyze the current session to extract and preserve key learnings and insights for future sessions
+model: sonnet
+argument-hint: [specific area to focus on (optional)]
+---
+
 Analyze our current conversation session to identify the most important learnings and discoveries that should be preserved for future sessions. Extract key insights that were difficult to discover and have a good chance of being needed again when the current context is lost.
-Do not capture status of the project, or something very specific and temporary. You need to extract the learnings and insights from the session, the principles behiond the work we did together, and translate these in general terms that can be applied to all situations in the future. This is about leartning to not make the same mistakes, not remembering specific things that will change quickly.
+
+Do not capture status of the project, or something very specific and temporary. You need to extract the learnings and insights from the session, the principles behind the work we did together, and translate these in general terms that can be applied to all situations in the future. This is about learning to not make the same mistakes, not remembering specific things that will change quickly.
 
 **Focus on capturing:**
 
