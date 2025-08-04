@@ -163,6 +163,8 @@ This repository contains custom agents and commands for Claude AI, designed to e
 │   ├── hack-spotter.md
 │   ├── implan-auditor.md
 │   └── memory-keeper.md
+├── claude_directives/
+│   └── CLAUDE_global_directives.md
 ├── commands/
 │   ├── agents_review.md
 │   ├── capture_session.md
@@ -175,7 +177,6 @@ This repository contains custom agents and commands for Claude AI, designed to e
 ├── resources/
 │   └── commands_and_agents.md
 ├── .gitignore
-├── CLAUDE.md
 └── README.md
 ```
 
@@ -183,15 +184,31 @@ This repository contains custom agents and commands for Claude AI, designed to e
 
 The `resources/` directory contains supporting files:
 - **`commands_and_agents.md`**: Comprehensive reference documentation for understanding agents and commands
-- **`python_code_style.py`**: Python coding style guidelines used throughout the project
 
-## Archive
+## Claude Directives
 
-The `archive/` directory contains:
-- **`main_directives.md`**: Historical project directives and documentation
+The `claude_directives/` directory contains:
+- **`CLAUDE_global_directives.md`**: A dynamic loader for global Claude directives that can be symlinked from `~/.claude/CLAUDE.md`
+- This file enables version control of personal Claude preferences
+- It dynamically loads all `CLAUDE_*.md` files in the same directory
 
 ## Usage
 
 These agents and commands are designed to be used with Claude AI to enhance project management, code quality, and knowledge retention. Each agent and command has specific trigger conditions and use cases as outlined in their respective files.
 
-The `CLAUDE.md` file contains project-specific instructions and conventions that apply to all agents and commands in this repository.
+### Installation
+
+To use this repository's agents and commands globally:
+
+```bash
+# Navigate to your .claude directory
+cd ~/.claude/
+
+# Create symlinks to repository components
+ln -s [repository-path]/agents/ agents
+ln -s [repository-path]/commands/ commands  
+ln -s [repository-path]/resources/ resources
+ln -s [repository-path]/claude_directives/CLAUDE_global_directives.md CLAUDE.md
+```
+
+Replace `[repository-path]` with the actual path to where you've cloned this repository.
