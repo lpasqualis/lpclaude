@@ -1,7 +1,6 @@
 ---
 name: agent-optimizer
 description: Use this agent to audit and enforce best practices on a subagent's definition file, optimizing its structure, model selection, color, and proactive directives only when necessary.
-tools: Read, Edit, Browse
 # This agent's task is complex, requiring semantic analysis, web Browse, and rule-based logic, so Sonnet is the appropriate model.
 model: sonnet 
 ---
