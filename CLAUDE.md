@@ -40,7 +40,7 @@ This creates symlinks from ~/.claude/ to the repository folders, allowing Claude
 ### Documentation Rules
 - IMPORTANT: ONLY document aspects of this project that are tracked in the repository. Use .gitignore / .gitkeep to determine what is part of the repo
   - Do not document the `archive/` directory or any ignored files
-  - Pay particularl attention to document only `directives/` that are included in the repo. Do not document any *.local.md files.
+  - Pay particular attention to document only `directives/` that are included in the repo. Do not document any *.local.md files.
 
 ### File Naming Conventions
 - Agents: `agent-name.md` (lowercase, hyphenated)

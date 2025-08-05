@@ -69,9 +69,10 @@ This script will:
 **Purpose:** Audits and enforces best practices on slash command definition files, optimizing frontmatter and prompt content only when necessary.  
 **Use Cases:**
 - Refactoring command descriptions for clarity and accuracy
-- Optimizing model selection based on command complexity
-- Auditing tool permissions for security compliance
+- Auditing tool permissions for security compliance (Principle of Least Privilege)
 - Improving argument hints and placeholder usage
+- Ensuring proper use of placeholders like `{{selected_text}}`
+- Checking latest documentation for updated best practices
 - Operates idempotently - only makes changes when necessary
 
 ### 4. Memory Keeper Agent
@@ -203,23 +204,25 @@ This script will:
 
 ```
 ├── agents/
-│   ├── subagent-formatter.md
-│   ├── subagent-optimizer.md
 │   ├── claude-md-quality-reviewer.md
+│   ├── command-optimizer.md
 │   ├── documentation-auditor.md
 │   ├── hack-spotter.md
 │   ├── implan-auditor.md
-│   └── memory-keeper.md
+│   ├── memory-keeper.md
+│   ├── subagent-formatter.md
+│   └── subagent-optimizer.md
 ├── directives/
+│   ├── .gitignore
 │   └── CLAUDE_global_directives.md
 ├── commands/
-│   ├── review-subagent-echosystem.md
 │   ├── capture-session.md
 │   ├── capture-strategy.md
-│   ├── create-command.md
 │   ├── commit-and-push.md
+│   ├── create-command.md
 │   ├── create-implan.md
 │   ├── learn.md
+│   ├── review-subagent-echosystem.md
 │   └── workon-implan.md
 ├── resources/
 │   └── commands_and_agents.md
@@ -232,12 +235,12 @@ This script will:
 ## Resources
 
 The `resources/` directory contains supporting files:
-- **`commands_and_agents.md`**: Comprehensive reference documentation for understanding agents and commands
+- **`commands_and_agents.md`**: Comprehensive technical deep dive into Claude Code subagents and agentic workflows, including architecture, creation, invocation mechanics, and best practices for parallel execution
 
 ## Claude Directives
 
 The `directives/` directory contains:
-- **`CLAUDE_global_directives.md`**: A dynamic loader for global Claude directives that can be symlinked from `~/.claude/CLAUDE.md`
-- **`development_projects_directives.md`**: Directives specific to development projects
+- **`CLAUDE_global_directives.md`**: A dynamic loader for global Claude directives that implements situational directive loading based on context and relevance. This file can be symlinked from `~/.claude/CLAUDE.md` to enable automatic loading of relevant directive files
 - This directory enables version control of personal Claude preferences
-- Additional directive files can be added for specific contexts
+- The dynamic loading system analyzes directive filenames and content to apply only relevant directives based on the current project type, language, or context
+- Additional directive files can be added for specific contexts (language-specific, project-type-specific, etc.)
