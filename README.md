@@ -12,36 +12,47 @@ These agents and commands are designed to be used with Claude AI to enhance proj
 
 ### Installation
 
-To use this repository's agents and commands globally:
-
-```bash
-# Navigate to your .claude directory
-cd ~/.claude/
-
-# Create symlinks to repository components
-ln -s [repository-path]/agents/ agents
-ln -s [repository-path]/commands/ commands  
-ln -s [repository-path]/resources/ resources
-ln -s [repository-path]/directives/ directives
-ln -s [repository-path]/directives/CLAUDE_global_directives.md CLAUDE.md
-```
-
-Replace `[repository-path]` with the actual path to where you've cloned this repository.
-
-#### Using the Setup Script
-
-Alternatively, you can use the provided setup script:
+To use this repository's agents and commands globally, run the setup script:
 
 ```bash
 # From the repository root
 ./setup.sh
 ```
 
-This script will:
+The setup script will:
+- **Automatically run `build.sh` first** to ensure CLAUDE_global_directives.md is up to date
 - Automatically detect the repository path
 - Create all necessary symlinks
 - Skip existing files/symlinks (non-destructive)
 - Report which symlinks were created or skipped
+
+#### Important: Building CLAUDE_global_directives.md
+
+The `CLAUDE_global_directives.md` file is **automatically generated** and should **NEVER be edited manually**. This file is built by the `build.sh` script, which:
+
+1. **Collects all directive files** from the `directives/` directory (excluding .gitignore and local files)
+2. **Aggregates their content** into a single comprehensive file
+3. **Adds metadata** including build timestamp
+4. **Creates the final CLAUDE_global_directives.md** file
+
+**When to run build.sh:**
+- Automatically runs when you execute `setup.sh`
+- **Must be run manually** whenever you:
+  - Add a new directive file to `directives/`
+  - Modify any existing directive file
+  - Delete a directive file
+
+**How to run build.sh:**
+```bash
+# From the repository root
+./build.sh
+```
+
+**Build process details:**
+- The script scans for all `.md` files in `directives/` (except `.local.md` files which are ignored)
+- Each directive file's content is included with a header indicating its source
+- The resulting `CLAUDE_global_directives.md` serves as the master directive file when symlinked to `~/.claude/CLAUDE.md`
+- Any manual edits to `CLAUDE_global_directives.md` will be lost on the next build
 
 ## Agents
 

@@ -20,6 +20,10 @@
 # 
 # To change the Claude home directory, modify the CLAUDE_HOME variable below.
 
+# First build the global directives file
+
+./build.sh
+
 # Claude Home Location
 CLAUDE_HOME="$HOME/.claude"
 

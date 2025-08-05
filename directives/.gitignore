@@ -1,4 +1,2 @@
-#############################################
-# Ignore everything local
-
 *.local.md
+CLAUDE_global_directives.md
