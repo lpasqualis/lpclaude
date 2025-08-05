@@ -95,9 +95,9 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Documenting project-specific configurations
 - Creating or updating CLAUDE.md files
 
-### 5. Claude MD Quality Reviewer Agent
-**File:** `agents/claude-md-quality-reviewer.md`  
-**Purpose:** Reviews and improves the quality, organization, and consistency of EXISTING CLAUDE.md files.  
+### 5. Claude MD Optimizer Agent
+**File:** `agents/claude-md-optimizer.md`  
+**Purpose:** Optimizes and improves the quality, organization, and effectiveness of EXISTING CLAUDE.md files.  
 **Use Cases:**
 - Checking for contradictions and redundancies in CLAUDE.md
 - Reorganizing content for better clarity
@@ -215,7 +215,7 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 
 ```
 ├── agents/
-│   ├── claude-md-quality-reviewer.md
+│   ├── claude-md-optimizer.md
 │   ├── command-optimizer.md
 │   ├── documentation-auditor.md
 │   ├── hack-spotter.md
