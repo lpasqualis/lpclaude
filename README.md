@@ -6,10 +6,47 @@
 
 This repository contains custom agents and commands for Claude AI, designed to enhance productivity and maintain project-specific conventions.
 
+## Usage
+
+These agents and commands are designed to be used with Claude AI to enhance project management, code quality, and knowledge retention. Each agent and command has specific trigger conditions and use cases as outlined in their respective files.
+
+### Installation
+
+To use this repository's agents and commands globally:
+
+```bash
+# Navigate to your .claude directory
+cd ~/.claude/
+
+# Create symlinks to repository components
+ln -s [repository-path]/agents/ agents
+ln -s [repository-path]/commands/ commands  
+ln -s [repository-path]/resources/ resources
+ln -s [repository-path]/directives/ directives
+ln -s [repository-path]/directives/CLAUDE_global_directives.md CLAUDE.md
+```
+
+Replace `[repository-path]` with the actual path to where you've cloned this repository.
+
+#### Using the Setup Script
+
+Alternatively, you can use the provided setup script:
+
+```bash
+# From the repository root
+./setup.sh
+```
+
+This script will:
+- Automatically detect the repository path
+- Create all necessary symlinks
+- Skip existing files/symlinks (non-destructive)
+- Report which symlinks were created or skipped
+
 ## Agents
 
-### 1. Agent Formatter
-**File:** `agents/agent-formatter.md`  
+### 1. Subagent Formatter
+**File:** `agents/subagent-formatter.md`  
 **Purpose:** Formats and improves the readability of Claude Code subagent definition files.  
 **Use Cases:**
 - Converting single-line YAML descriptions to literal block format
@@ -17,8 +54,8 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Cleaning up formatting in agent files
 - Proactively lints and formats agent definition files
 
-### 2. Agent Optimizer
-**File:** `agents/agent-optimizer.md`  
+### 2. Subagent Optimizer
+**File:** `agents/subagent-optimizer.md`  
 **Purpose:** Audits and enforces best practices on subagent definition files, optimizing structure, model selection, color assignment, and proactive directives.  
 **Use Cases:**
 - Refactoring agent descriptions for clarity and compliance
@@ -87,13 +124,13 @@ This repository contains custom agents and commands for Claude AI, designed to e
 
 ## Commands
 
-### 1. Agents Review Command
-**File:** `commands/agents_review.md`  
+### 1. Review Subagent Echosystem Command
+**File:** `commands/review-subagent-echosystem.md`  
 **Purpose:** Analyzes sub-agent definition files to identify ambiguities, overlaps, conflicts, and gaps in capabilities.  
 **Output:** Comprehensive report with executive summary, detailed analysis table, and actionable recommendations for improving the agent ecosystem.
 
 ### 2. Capture Session Command
-**File:** `commands/capture_session.md`  
+**File:** `commands/capture-session.md`  
 **Purpose:** Documents the complete status of work done in a session for seamless handoff to other agents.  
 **Output Location:** `docs/dev_notes/` folder  
 **Includes:**
@@ -103,7 +140,7 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Next steps and recommendations
 
 ### 3. Capture Strategy Command
-**File:** `commands/capture_strategy.md`  
+**File:** `commands/capture-strategy.md`  
 **Purpose:** Creates a comprehensive project context document for any agent to pick up work without loss of context.  
 **Output Location:** Main documents folder of the current project  
 **Includes:**
@@ -123,8 +160,8 @@ This repository contains custom agents and commands for Claude AI, designed to e
 - Creates clear, concise commit messages
 - Pushes to origin
 
-### 5. Command Creator Command
-**File:** `commands/command.md`  
+### 5. Create Command Command
+**File:** `commands/create-command.md`  
 **Purpose:** Interactive command creator that helps create new Claude Code commands.  
 **Features:**
 - Guides through command type selection (project vs personal)
@@ -166,20 +203,20 @@ This repository contains custom agents and commands for Claude AI, designed to e
 
 ```
 ├── agents/
-│   ├── agent-formatter.md
-│   ├── agent-optimizer.md
+│   ├── subagent-formatter.md
+│   ├── subagent-optimizer.md
 │   ├── claude-md-quality-reviewer.md
 │   ├── documentation-auditor.md
 │   ├── hack-spotter.md
 │   ├── implan-auditor.md
 │   └── memory-keeper.md
-├── claude_directives/
+├── directives/
 │   └── CLAUDE_global_directives.md
 ├── commands/
-│   ├── agents_review.md
-│   ├── capture_session.md
-│   ├── capture_strategy.md
-│   ├── command.md
+│   ├── review-subagent-echosystem.md
+│   ├── capture-session.md
+│   ├── capture-strategy.md
+│   ├── create-command.md
 │   ├── commit-and-push.md
 │   ├── create-implan.md
 │   ├── learn.md
@@ -188,7 +225,8 @@ This repository contains custom agents and commands for Claude AI, designed to e
 │   └── commands_and_agents.md
 ├── .gitignore
 ├── CLAUDE.md
-└── README.md
+├── README.md
+└── setup.sh
 ```
 
 ## Resources
@@ -198,28 +236,8 @@ The `resources/` directory contains supporting files:
 
 ## Claude Directives
 
-The `claude_directives/` directory contains:
+The `directives/` directory contains:
 - **`CLAUDE_global_directives.md`**: A dynamic loader for global Claude directives that can be symlinked from `~/.claude/CLAUDE.md`
+- **`development_projects_directives.md`**: Directives specific to development projects
 - This directory enables version control of personal Claude preferences
-- Additional CLAUDE_*.md files can be added for specific contexts
-
-## Usage
-
-These agents and commands are designed to be used with Claude AI to enhance project management, code quality, and knowledge retention. Each agent and command has specific trigger conditions and use cases as outlined in their respective files.
-
-### Installation
-
-To use this repository's agents and commands globally:
-
-```bash
-# Navigate to your .claude directory
-cd ~/.claude/
-
-# Create symlinks to repository components
-ln -s [repository-path]/agents/ agents
-ln -s [repository-path]/commands/ commands  
-ln -s [repository-path]/resources/ resources
-ln -s [repository-path]/claude_directives/CLAUDE_global_directives.md CLAUDE.md
-```
-
-Replace `[repository-path]` with the actual path to where you've cloned this repository.
+- Additional directive files can be added for specific contexts
