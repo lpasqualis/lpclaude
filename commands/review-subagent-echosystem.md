@@ -58,4 +58,4 @@ A detailed breakdown in a table:
 A numbered list of specific, justified changes. Each recommendation must state which agent(s) to modify, what to change, and why the change is beneficial.
 
 ### Implementation Guidance
-If changes are recommended, suggest using the `agent-optimizer` agent to implement the optimizations, as it specializes in enforcing best practices for agent definitions. Provide specific instructions for which agents need optimization and what aspects to focus on.
+If changes are recommended, suggest using the `subagent-optimizer` agent to implement the optimizations, as it specializes in enforcing best practices for agent definitions. Provide specific instructions for which agents need optimization and what aspects to focus on.
