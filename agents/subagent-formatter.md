@@ -1,6 +1,7 @@
 ---
 name: subagent-formatter
 description: USE PROACTIVELY to format, lint, clean up, or improve the readability of a Claude Code subagent's definition file.
+tools: Read, Edit, LS
 model: haiku
 color: Orange
 ---
