@@ -1,5 +1,5 @@
-**Version:** 1.0  
-**Date:** August 4, 2025  
+**Version:** 1.1  
+**Date:** August 7, 2025  
 **Author:** Lorenzo Pasqualis  
 
 # Claude Agent Configuration Repository
@@ -56,16 +56,7 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 
 ## Agents
 
-### 1. Subagent Formatter
-**File:** `agents/subagent-formatter.md`  
-**Purpose:** Formats and improves the readability of Claude Code subagent definition files.  
-**Use Cases:**
-- Converting single-line YAML descriptions to literal block format
-- Improving readability of agent definition files
-- Cleaning up formatting in agent files
-- Proactively lints and formats agent definition files
-
-### 2. Subagent Optimizer
+### 1. Subagent Optimizer
 **File:** `agents/subagent-optimizer.md`  
 **Purpose:** Audits and enforces best practices on subagent definition files, optimizing structure, model selection, color assignment, and proactive directives.  
 **Use Cases:**
@@ -85,6 +76,16 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Ensuring proper use of placeholders like `{{selected_text}}`
 - Checking latest documentation for updated best practices
 - Operates idempotently - only makes changes when necessary
+
+### 3. Implan Generator Agent
+**File:** `agents/implan-generator.md`  
+**Purpose:** A specialized implementation planning expert that creates comprehensive, actionable plans for software features and components.  
+**Use Cases:**
+- Breaking down complex development tasks into structured phases
+- Creating detailed implementation plans with checkboxes and progress tracking
+- Generating plans with agent instructions, phase breakdowns, testing requirements
+- Starting new features, refactoring components, or organizing development work
+- **Proactive**: Automatically triggered when implementation planning is needed
 
 ### 4. Memory Keeper Agent
 **File:** `agents/memory-keeper.md`  
@@ -134,15 +135,83 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Ensuring code examples and API documentation are current
 - Note: Excludes CLAUDE.md files (use specialized agents for those)
 
+## Command-Specific Subagents (cmd-*)
+
+The repository includes specialized subagents designed to work in parallel with specific commands. These agents follow the `cmd-*` naming convention and are optimized for focused, specialized processing.
+
+### 1. Session Analysis Agent
+**File:** `agents/cmd-capture-session-analyzer.md`  
+**Purpose:** Specialized agent for analyzing specific aspects of development sessions in parallel for capture-session and capture-strategy commands.  
+**Use Cases:**
+- Codebase structure analysis and architectural pattern identification
+- Recent changes analysis and git history review
+- Technical context analysis of specific files or code sections
+- Problem domain analysis and requirement understanding
+- **Model**: haiku (optimized for speed in parallel execution)
+
+### 2. Commit Analysis Agent  
+**File:** `agents/cmd-commit-and-push-analyzer.md`  
+**Purpose:** Analyze changed files and classify them into logical commit groups with semantic commit types for the commit-and-push command.  
+**Use Cases:**
+- File classification into semantic commit categories (feat, fix, docs, etc.)
+- Logical grouping of related files for coherent commits
+- Priority assessment and commit ordering recommendations
+- JSON-structured output for automated processing
+
+### 3. Commit Security Agent
+**File:** `agents/cmd-commit-and-push-security.md`  
+**Purpose:** Analyze file contents for sensitive data, large binaries, and security concerns during commit preparation.  
+**Use Cases:**
+- Sensitive data detection (API keys, passwords, private keys)
+- File size and type analysis for Git LFS recommendations
+- Security risk assessment and anti-pattern identification
+- Actionable security recommendations with risk levels
+
+### 4. Commit Validator Agent
+**File:** `agents/cmd-commit-and-push-validator.md`  
+**Purpose:** Validate commit messages, file changes, and repository state before pushing changes.  
+**Use Cases:**
+- Commit message format validation against semantic conventions
+- Change impact assessment and risk analysis
+- Repository state verification and conflict detection
+- Pre-push validation and quality gates
+
+### 5. Command Validator Agent
+**File:** `agents/cmd-create-command-validator.md`  
+**Purpose:** Validate command definitions during command creation process.  
+**Use Cases:**
+- YAML frontmatter validation for required fields
+- Command naming convention compliance
+- Tool permission auditing for security best practices
+- Command structure and format verification
+
+### 6. Learning Analyzer Agent
+**File:** `agents/cmd-learn-analyzer.md`  
+**Purpose:** Extract and analyze learnings from development sessions for the learn command.  
+**Use Cases:**
+- Technical discovery identification and categorization
+- Pattern recognition in development workflows
+- Knowledge extraction for future reference
+- Learning prioritization and organization
+
+### 7. Ecosystem Analyzer Agent
+**File:** `agents/cmd-review-subagent-ecosystem-analyzer.md`  
+**Purpose:** Specialized analyzer for reviewing subagent ecosystem health and optimization opportunities.  
+**Use Cases:**
+- Individual agent analysis for clarity and appropriateness
+- Cross-agent compatibility and overlap assessment
+- Parallel execution for large agent ecosystems (up to 10 agents)
+- Structured analysis output for ecosystem optimization
+
 ## Commands
 
-### 1. Review Subagent Echosystem Command
-**File:** `commands/review-subagent-echosystem.md`  
+### 1. Review Subagent Ecosystem Command
+**File:** `commands/subagents/review-ecosystem.md`  
 **Purpose:** Analyzes sub-agent definition files to identify ambiguities, overlaps, conflicts, and gaps in capabilities.  
 **Output:** Comprehensive report with executive summary, detailed analysis table, and actionable recommendations for improving the agent ecosystem.
 
 ### 2. Capture Session Command
-**File:** `commands/capture-session.md`  
+**File:** `commands/docs/capture-session.md`  
 **Purpose:** Documents the complete status of work done in a session for seamless handoff to other agents.  
 **Output Location:** `docs/dev_notes/` folder  
 **Includes:**
@@ -152,7 +221,7 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Next steps and recommendations
 
 ### 3. Capture Strategy Command
-**File:** `commands/capture-strategy.md`  
+**File:** `commands/docs/capture-strategy.md`  
 **Purpose:** Creates a comprehensive project context document for any agent to pick up work without loss of context.  
 **Output Location:** Main documents folder of the current project  
 **Includes:**
@@ -163,7 +232,7 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Technical notes
 
 ### 4. Commit and Push Command
-**File:** `commands/commit-and-push.md`  
+**File:** `commands/git/commit-and-push.md`  
 **Purpose:** Intelligently commits and pushes changes to git repository.  
 **Features:**
 - Reviews all changed files in the project
@@ -173,7 +242,7 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Pushes to origin
 
 ### 5. Create Command Command
-**File:** `commands/create-command.md`  
+**File:** `commands/commands/create.md`  
 **Purpose:** Interactive command creator that helps create new Claude Code commands.  
 **Features:**
 - Guides through command type selection (project vs personal)
@@ -182,7 +251,7 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Provides templates and best practices
 
 ### 6. Learn Command
-**File:** `commands/learn.md`  
+**File:** `commands/memory/learn.md`  
 **Purpose:** Extracts and preserves important learnings from the current session for future reference.  
 **Captures:**
 - Technical discoveries and solutions
@@ -192,7 +261,7 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Workflow optimizations
 
 ### 7. Create Implan Command
-**File:** `commands/create-implan.md`  
+**File:** `commands/implan/create.md`  
 **Purpose:** Creates a comprehensive implementation plan from the current conversation context.  
 **Features:**
 - Analyzes conversation for requirements and approach
@@ -202,7 +271,7 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Can update existing plans
 
 ### 8. Work on Implan Command
-**File:** `commands/workon-implan.md`  
+**File:** `commands/implan/execute.md`  
 **Purpose:** Resumes work on an existing implementation plan.  
 **Features:**
 - Finds and loads active implementation plans
@@ -216,25 +285,39 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 ```
 ├── agents/
 │   ├── claude-md-optimizer.md
+│   ├── cmd-capture-session-analyzer.md
+│   ├── cmd-commit-and-push-analyzer.md
+│   ├── cmd-commit-and-push-security.md
+│   ├── cmd-commit-and-push-validator.md
+│   ├── cmd-create-command-validator.md
+│   ├── cmd-learn-analyzer.md
+│   ├── cmd-review-subagent-ecosystem-analyzer.md
 │   ├── command-optimizer.md
 │   ├── documentation-auditor.md
 │   ├── hack-spotter.md
 │   ├── implan-auditor.md
+│   ├── implan-generator.md
 │   ├── memory-keeper.md
-│   ├── subagent-formatter.md
 │   └── subagent-optimizer.md
 ├── directives/
 │   ├── .gitignore
 │   └── CLAUDE_global_directives.md
 ├── commands/
-│   ├── capture-session.md
-│   ├── capture-strategy.md
-│   ├── commit-and-push.md
-│   ├── create-command.md
-│   ├── create-implan.md
-│   ├── learn.md
-│   ├── review-subagent-echosystem.md
-│   └── workon-implan.md
+│   ├── commands/
+│   │   ├── create.md
+│   │   └── normalize.md
+│   ├── docs/
+│   │   ├── capture-session.md
+│   │   └── capture-strategy.md
+│   ├── git/
+│   │   └── commit-and-push.md
+│   ├── implan/
+│   │   ├── create.md
+│   │   └── execute.md
+│   ├── memory/
+│   │   └── learn.md
+│   └── subagents/
+│       └── review-ecosystem.md
 ├── resources/
 │   └── commands_and_agents.md
 ├── .gitignore

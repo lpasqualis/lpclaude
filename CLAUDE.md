@@ -17,7 +17,7 @@ This project is a Claude Code framework of agents, commands and directives.
 
 # Test agents/commands after modification
 # For agents: Use Task tool with subagent_type
-# For commands: Type the slash command (e.g., /learn, /commit-and-push)
+# For commands: Type the slash command (e.g., /memory:learn, /git:commit-and-push)
 ```
 
 ## Workflow Instructions
@@ -72,10 +72,10 @@ This repository contains a collection of Claude Code subagents, commands, and di
 
 #### Commands (`commands/`)
 - **Purpose**: User-invoked operations that execute in main Claude session
-- **Invocation**: Slash commands typed by user (e.g., `/learn`)
+- **Invocation**: Slash commands typed by user (e.g., `/memory:learn`)
 - **Context**: Full access to current conversation and context
 - **Use When**: User needs to trigger specific workflows
-- **Examples**: `/commit-and-push`, `/learn`, `/review`
+- **Examples**: `/git:commit-and-push`, `/memory:learn`, `/subagents:review-ecosystem`
 
 #### Directives (`directives/`)
 - **Purpose**: Modify Claude's behavior and provide persistent instructions
@@ -95,7 +95,135 @@ agent/
 └── build.sh          # Compiles directives into CLAUDE_global_directives.md
 ```
 
+## Reference Documentation
+
+### Critical Resources for Framework Development
+
+The following resources contain comprehensive best practices and technical details for working with the Claude agent framework:
+
+#### 1. Slash Commands Best Practices
+**Location**: `resources/slash_commands_best_practices_research.md`
+
+**Contains**:
+- Single Responsibility Principle for commands
+- Predictability and checklist-driven execution patterns
+- Context management with CLAUDE.md integration
+- Workflows vs. Tools dichotomy and trade-offs
+- Command orchestration patterns (sequential and parallel)
+- Security and governance best practices
+- Common anti-patterns to avoid
+
+**Reference When**:
+- Creating new slash commands
+- Optimizing command performance and reliability
+- Designing command workflows
+- Implementing security measures
+
+#### 2. Subagent Architecture and Invocation
+**Location**: `resources/subagent_invocation_research.md`
+
+**Contains**:
+- The subagent paradigm and contextual isolation principles
+- Invocation mechanics (implicit vs. explicit)
+- Designing agents for proactive invocation
+- Multi-agent architectures and orchestration patterns
+- The subagent ecosystem and interaction patterns
+- Performance considerations and best practices
+
+**Reference When**:
+- Creating new subagents
+- Designing multi-agent workflows
+- Troubleshooting invocation issues
+- Optimizing agent performance
+- Teaching subagent concepts to team members
+
+#### 3. Technical Deep Dive
+**Location**: `resources/commands_and_agents.md`
+
+**Contains**:
+- Detailed subagent vs. slash command distinctions
+- Parallel execution mechanics and system constraints
+- Advanced orchestration strategies and patterns
+- Blueprint for creating high-quality subagents
+- Technical architecture decisions and rationales
+
+**Reference When**:
+- Understanding technical implementation details
+- Planning complex multi-component solutions
+- Resolving architectural questions
+- Conducting technical reviews
+
+### Using These Resources
+These documents should be consulted regularly during development to ensure consistency with established patterns and best practices. They contain research-backed approaches that have been validated through practical implementation.
+
+## Session Learnings (2025-08-07)
+
+### Tool Permission Architecture
+**Critical Pattern**: Tool permissions must be granted in complete logical groups to prevent runtime failures:
+- **Read-only workflows**: `Read, LS, Glob, Grep`
+- **File modification workflows**: `Read, Write, Edit, MultiEdit, LS, Glob, Grep`
+- **Complex workflows**: All tools including Task
+
+**Anti-Pattern**: Never grant partial tool capabilities (e.g., `Write` without `Edit`, or `Edit` without `Write`). This creates permission gaps that cause commands to fail silently or prompt users for additional permissions.
+
+### Circular Dependency Prevention
+**Critical Pattern**: Commands must never reference their own optimization agents to prevent infinite loops.
+- **Problem**: Using `@command-optimizer` pattern creates recursive invocation chains
+- **Solution**: Create dedicated `cmd-*` validation subagents with `proactive: false`
+- **Implementation**: These subagents perform focused validation without triggering optimization loops
+
+### Namespaced Command Structure
+**Pattern**: Commands with colons require specific directory organization:
+- **Format**: `/namespace:command`
+- **Directory Structure**: Create `commands/namespace/command.md`
+- **Implementation**: The colon translates to a directory path where the namespace becomes a subdirectory
+
+### Performance Optimization Patterns
+**Parallel Execution Architecture**: Create `cmd-[name]-[function]` subagents for parallel operations within commands:
+- **Context**: These subagents run without conversation context using lighter models (haiku)
+- **Capacity**: Enable up to 10 parallel executions
+- **Design**: Should be independent and focused on result aggregation
+
+**Idempotent Optimization Pattern**: Follow "analyze first, act only if necessary" approach:
+- **Process**: Check if changes are actually required before using Edit/Write tools
+- **Benefit**: Prevents unnecessary file changes and version control noise
+
+### Documentation Maintenance Patterns
+**Audit Pattern**: Regular documentation audits needed to catch undocumented components:
+- **Issue**: New cmd-* agents and commands often created without updating documentation
+- **Solution**: Structured documentation formats enable easier auditing and gap detection
+- **Impact**: Prevents knowledge gaps and reduces duplicate development efforts
+
 ## Development Guidelines
+
+### Command Naming and Organization Philosophy
+
+**Date Added**: 2025-08-07 - Emerged from command normalization session
+
+#### Core Principles
+- **Namespace by functional domain/scope**: Folders represent the area of work, not the action
+- **Clear action-oriented names**: Commands within namespaces start with action verbs  
+- **Domain-focused organization**: Group by what you're working with, not what you're doing
+- **Logical scope separation**: Each namespace represents a distinct domain of functionality
+
+#### Established Functional Domains
+- **Implementation Plans** (`implan:*`): Commands for managing implementation plans and project execution
+- **Documentation** (`docs:*`): Commands for capturing and managing various types of documentation  
+- **Git Operations** (`git:*`): Version control and repository management
+- **Memory Management** (`memory:*`): Commands for learning capture and long-term memory management
+- **Subagent Management** (`subagents:*`): Commands for managing and reviewing subagents
+- **Command Management** (`commands:*`): Commands for managing the Claude command system itself
+
+#### Naming Conventions
+- Use lowercase-hyphenated format for multi-word command names
+- Start command names with clear action verbs (create, execute, capture, review, etc.)
+- Namespace structure: `/domain:action-target` (e.g., `/implan:create`, `/subagents:review-ecosystem`)
+- Avoid action-based folder names (like "analyze") - focus on the domain/scope instead
+
+#### Anti-Patterns to Avoid
+- Don't use folders named after actions (analyze, create, etc.) - they should represent domains
+- Don't put development tools in generic "dev" folders - use specific domains like "commands"
+- Avoid generic or ambiguous command names that don't clearly indicate their purpose
 
 ### Required YAML Frontmatter Fields
 - **Agents & Commands**: Must include `name` and `description`
@@ -106,8 +234,23 @@ agent/
 | Component | Convention | Example |
 |-----------|-----------|---------|
 | Agents | lowercase-hyphenated.md | `memory-keeper.md` |
+| Command-Specific Agents | cmd-{command}-{purpose}.md | `cmd-commit-and-push-analyzer.md` |
 | Commands | lowercase-hyphenated.md | `commit-and-push.md` |
 | Directives | descriptive_names.md | `important_instruction_reminders.md` |
+
+### Command-Specific Agent Pattern (cmd-*)
+The repository uses specialized `cmd-*` agents for command-specific processing:
+- **Purpose**: Focused, specialized processing for specific commands
+- **Execution**: Designed for parallel execution to improve performance
+- **Model Selection**: Often use `haiku` for speed in parallel operations
+- **Integration**: Called by main commands to handle specific analysis tasks
+
+### Parallel Execution Patterns
+Some commands leverage parallel execution for improved performance:
+- **Batch Processing**: Process up to 10 agents simultaneously (system limit)
+- **Task Distribution**: Break complex analysis into parallel tasks
+- **Result Aggregation**: Combine parallel results into unified reports
+- **Example**: `review-subagent-ecosystem` uses parallel analysis for large agent sets
 
 ### Best Practices
 1. **Clear Descriptions**: Use action-oriented descriptions that enable automatic delegation
