@@ -1,8 +1,7 @@
 ---
 description: Audit subagents for compatibility, overlap, and optimization opportunities
-argument-hint: "[agent names or paths] (optional, defaults to all project or personal agents)"
-allowed-tools: Read, LS, Glob, Grep, Task, WebFetch
-model: sonnet
+argument-hint: "[agent-name1 agent-name2...] or [path/to/agent.md...] (optional - defaults to all agents)"
+allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task, WebFetch
 ---
 
 Analyze the provided list of sub-agent definition files. Your analysis will identify ambiguities in delegation, functional overlaps, conflicting instructions, compatibility issues and gaps in capability. Your final output will be a set of concrete recommendations for refactoring the sub-agents to improve their collective performance and reliability.
