@@ -1,7 +1,8 @@
 ---
+name: /create-command
 description: Interactive command creator - helps you create new Claude Code commands
 argument-hint: "[desired command name] (optional - if not provided, will suggest names based on purpose)"
-allowed-tools: Read, Write, LS, Glob, Grep, Task, WebFetch
+allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task, WebFetch, WebSearch
 ---
 
 First of all, learn about Claude commands here: https://docs.anthropic.com/en/docs/claude-code/slash-commands
@@ -163,17 +164,23 @@ Finally, based on your analysis and synthesis, generate [output] formatted as [f
 
 This ensures Claude gives full attention to each sub-task sequentially, dramatically improving accuracy.
 
-## 7. Draft the Command
+## 7. Draft and Validate the Command
 
-Create an initial command prompt that:
+Create an initial command draft that:
 - Clearly instructs the AI agent what to do (not what to tell the user)
 - Includes any necessary context or constraints
 - Properly handles arguments if applicable
 - Follows the pattern of existing commands in the commands folder
 - Incorporates parallelization strategy if applicable
-- Make sure the command is optimized using the @command-optimizer agent
 
-Show the draft to the user and ask for feedback.
+### Parallel Validation Process
+Once the draft is complete, use parallel validation for efficiency:
+
+1. **Run validation in parallel** using Task tool with `cmd-create-command-validator` subagent
+2. **Apply optimizations** based on validation feedback
+3. **Present validated draft** to user with improvement summary
+
+Show the validated, optimized draft to the user and ask for feedback.
 
 ## 8. Iterate and Refine
 
@@ -189,9 +196,8 @@ Based on user feedback:
 Once approved:
 - Save the command to the appropriate directory
 - If companion subagents were created, save them to the `agents/` directory
-- Confirm successful creation of all components
-- Make sure the command is optimized using the @command-optimizer agent
-- If subagents were created, optimize them using the @subagent-optimizer agent
+- **Run final parallel validation** using `cmd-create-command-validator` to ensure all components are optimized
+- Confirm successful creation of all components and their validation status
 
 ## Important Notes
 
@@ -208,13 +214,29 @@ Once approved:
 - **Session hygiene**: For long workflows, recommend using `/clear` between major phases
 - **Context awareness**: Remember that subagents start with fresh context (good for parallel tasks)
 
+### Validation Integration:
+- **Parallel Validation**: Use `cmd-create-command-validator` subagent for efficient quality assurance
+- **Continuous Improvement**: Apply validation feedback iteratively during creation process
+- **Quality Gates**: Don't proceed to next step without addressing validation issues
+- **Best Practice Enforcement**: Validate against current standards, not outdated patterns
+
 ### Security Best Practices:
 - **Never use `--dangerously-skip-permissions`**: Use frontmatter `allowed-tools` instead
 - **Principle of least privilege**: While being permissive within reason, don't add completely unrelated tools
 - **Sensitive operations**: Add confirmation prompts for destructive or high-risk operations
 - **No hardcoded secrets**: Never include API keys, passwords, or tokens in command definitions
 
-## Efficiency Guidelines for Complex Commands
+## Process Optimization and Efficiency
+
+### Parallel Creation Workflow
+When creating complex commands with multiple components, leverage parallel processing:
+
+1. **Component Analysis**: Use `cmd-create-command-validator` to analyze requirements in parallel
+2. **Multi-Component Creation**: Create main command and subagents concurrently when possible
+3. **Batch Validation**: Validate all components simultaneously using parallel subagent calls
+4. **Integrated Testing**: Coordinate validation across command and subagent interactions
+
+### Efficiency Guidelines for Complex Commands
 
 When creating commands that perform extensive operations:
 
@@ -223,3 +245,4 @@ When creating commands that perform extensive operations:
 3. **Smart Batching**: Group related operations that can share context, separate those that can run independently
 4. **Result Aggregation**: Design clear patterns for combining results from parallel operations
 5. **Performance Metrics**: Consider adding progress indicators for long-running parallel operations
+6. **Validation Integration**: Use parallel validation throughout the creation process, not just at the end
