@@ -43,6 +43,7 @@ This project is a Claude Code framework of agents, commands and directives.
    ---
    name: /command-name
    description: What this command does
+   # CRITICAL: Do NOT include 'model' field - it will cause command failure
    ---
    ```
 4. Test immediately by invoking the slash command
@@ -98,7 +99,8 @@ agent/
 
 ### Required YAML Frontmatter Fields
 - **Agents & Commands**: Must include `name` and `description`
-- **Optional Fields**: `proactive` (for agents), `model`, `color`
+- **Optional Fields for Agents**: `proactive`, `model`, `color`
+- **CRITICAL**: Commands CANNOT have a `model` field - this will cause the command to fail
 
 ### File Naming Conventions
 | Component | Convention | Example |

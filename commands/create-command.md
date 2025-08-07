@@ -32,14 +32,12 @@ Based on the requirements, determine the command type:
 - **Characteristics**: Well-defined, specific task with clear steps
 - **Examples**: `/api-scaffold`, `/doc-generate`, `/security-scan`
 - **When to use**: Task has objective success criteria and follows a defined procedure
-- **Model**: Usually `haiku` or `sonnet` for efficiency
 - **Complexity**: Low to medium - follows pre-defined instructions
 
 ### **Workflow Commands** (Multi-Agent Orchestrators)  
 - **Characteristics**: Complex, multi-faceted problem requiring coordination
 - **Examples**: `/feature-development`, `/legacy-modernize`, `/smart-fix`
 - **When to use**: Solution path is not known in advance, requires emergent problem-solving
-- **Model**: Usually `sonnet` or `opus` for complex reasoning
 - **Complexity**: High - coordinates multiple specialized agents
 
 Explain the classification to the user and confirm which type fits their needs.
@@ -49,9 +47,9 @@ Explain the classification to the user and confirm which type fits their needs.
 Work with the user to determine:
 - **Command name**: If provided in ARGUMENTS, suggest using it. Otherwise, propose names based on the purpose
 - **Arguments needed**: Will it accept arguments? What format?
-- **Model selection**: Based on command type (haiku for simple tools, sonnet for complex analysis, opus for critical reasoning)
+- **Tool permissions**: Based on command functionality requirements
 - **Required tools**: Use PERMISSIVE tool groupings (see Tool Permission Guidelines below)
-- **Frontmatter needed**: Determine if description, argument-hint, model, or allowed-tools metadata is needed
+- **Frontmatter needed**: Determine if description, argument-hint, or allowed-tools metadata is needed
 - **Parallelization needs**: Analyze if the command will perform complex, multi-step operations that could benefit from parallel execution
 
 ### Tool Permission Guidelines (BE PERMISSIVE!)
@@ -114,7 +112,6 @@ For commands requiring sophisticated parallel operations, create dedicated subag
    - Name: `cmd-[command-name]-worker.md` or `cmd-[command-name]-analyzer.md`
    - Purpose: Handle specific subtasks in isolation
    - Tools: Minimal set required for the subtask
-   - Model: Usually 'haiku' for simple tasks, 'sonnet' for complex
    - Proactive: Always set to `false` for command-specific subagents
 
 3. **Update command to orchestrate subagents**:
@@ -224,6 +221,5 @@ When creating commands that perform extensive operations:
 1. **Context Management**: Remember that subagents start with fresh context, reducing token usage for parallel tasks
 2. **Task Independence**: Ensure parallel tasks don't depend on each other or modify the same resources
 3. **Smart Batching**: Group related operations that can share context, separate those that can run independently
-4. **Model Selection**: Use lighter models (haiku) for simple parallel tasks, reserve heavier models for complex reasoning
-5. **Result Aggregation**: Design clear patterns for combining results from parallel operations
-6. **Performance Metrics**: Consider adding progress indicators for long-running parallel operations
+4. **Result Aggregation**: Design clear patterns for combining results from parallel operations
+5. **Performance Metrics**: Consider adding progress indicators for long-running parallel operations

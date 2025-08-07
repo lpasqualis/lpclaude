@@ -2,73 +2,146 @@
 name: /capture-session
 description: Create comprehensive session documentation for seamless handoff to future agents
 argument-hint: [brief session summary or focus area]
-allowed-tools: Read, Write, LS, Glob, Grep, Task
+allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task, WebFetch, WebSearch, TodoWrite, NotebookEdit
 ---
 
 Document the complete status of the work done in this session, incorporating any provided context: {{args}}
 
-This document should capture all relevant context so a new agent can continue seamlessly without re-learning or losing progress. The documentation must be clear, thorough, and stand alone.
+This command creates comprehensive session documentation that enables seamless handoff to future agents without losing progress or context.
 
-## Documentation Structure
+## Step 1: Context Analysis
 
-Create a comprehensive session summary that includes:
+First, systematically gather session context using parallel analysis:
 
-### 1. Problem Statement
-- Clearly state the problem or goal we're addressing
-- Include relevant background context and constraints
-- Reference any specifications or requirements
+### Identify Analysis Aspects
+Determine which aspects of the session require documentation:
+- **Project Structure**: Current codebase organization and architecture
+- **Recent Changes**: Git history, modified files, and work patterns
+- **Technical Context**: Implementation details, challenges, and solutions
+- **Problem Domain**: Business requirements, constraints, and goals
 
-### 2. Actions Taken
-- Summarize the steps completed so far in chronological order
-- Specify which files, systems, or tools were involved or modified
-- Include any commands run or configurations changed
-- Note any testing or validation performed
+### Parallel Execution Strategy
+When analyzing sessions with multiple complex aspects (more than 3 areas):
 
-### 3. Key Findings and Technical Insights
-- Capture what's been learned, including technical details
-- Document issues encountered and their solutions or workarounds
-- List how to reproduce issues, perform tests, or verify progress
-- Include any important observations or discoveries
+1. **Identify Work Items**: Determine all aspects requiring analysis:
+   - Project structure, recent changes, technical context, problem domain
+   - Individual components, modules, or feature areas
+   - Multiple files or directories requiring detailed examination
 
-### 4. Current State
-- Describe the exact current state of the work
-- Note what's working and what's not
-- Identify any temporary or incomplete solutions
+2. **Execute Parallel Analysis**: Launch multiple Task calls simultaneously with subagent_type: 'cmd-capture-session-analyzer'
+   ```
+   # IMPORTANT: Execute these in a single message with multiple tool uses for true parallelism
+   Task 1: "Analyze project structure and architecture patterns in /src and /lib directories"
+   Task 2: "Review git status and last 10 commits for development patterns" 
+   Task 3: "Examine technical implementations in core modules and API endpoints"
+   Task 4: "Document business requirements and constraints from README and docs"
+   Task 5: "Analyze test coverage and validation approaches"
+   Task 6: "Review configuration files and environment setup"
+   Task 7: "Examine error handling and logging patterns"
+   Task 8: "Document external dependencies and integrations"
+   Task 9: "Analyze performance considerations and optimizations"
+   Task 10: "Review security implementations and access controls"
+   ```
+   
+   **Batching Strategy**: If more than 10 items:
+   - First batch: Core analysis tasks (structure, changes, technical, domain)
+   - Second batch: Deep-dive tasks (specific modules, edge cases, optimizations)
+   - Third batch: Validation tasks (tests, security, performance)
 
-### 5. Next Steps and Recommendations
-- Clearly outline what remains to be done
-- Suggest specific next actions with priority order
-- Include any planned approaches, hypotheses, or alternatives to try
-- Note any dependencies or blockers
+3. **Result Aggregation Protocol**:
+   - Collect all parallel analysis results
+   - Cross-reference findings for consistency
+   - Merge complementary insights
+   - Resolve conflicting information by prioritizing most recent/specific data
+   - Build unified narrative from distributed analyses
 
-## Parallel Execution Strategy
+4. **Sequential Fallback**: For simpler sessions (3 or fewer aspects), analyze sequentially for efficiency
 
-When capturing comprehensive session context:
-1. Identify all relevant aspects to document (codebase, recent changes, conversation context)
-2. If dealing with complex multi-faceted sessions, use parallel execution:
-   - Use Task tool with subagent_type: 'cmd-capture-session-analyzer'
-   - Process different analysis aspects in parallel (up to 10 concurrent tasks)
-   - Analyze codebase structure, recent git changes, and conversation patterns simultaneously
-3. Aggregate results into unified session documentation
+## Step 2: Context Gathering
 
-## Context Gathering Process
+Systematically collect session information:
 
-Before creating documentation:
-1. **Analyze Project Structure**: Use `LS` and `Glob` to understand current project layout
-2. **Review Recent Changes**: Check git status and recent file modifications
-3. **Examine Key Files**: Use `Read` and `Grep` to understand current codebase state
-4. **Identify Documentation Location**: Determine appropriate save location (prefer existing docs structure)
+### Project Structure Analysis
+- Use `LS` and `Glob` to map current project layout
+- Identify key directories, configuration files, and architectural patterns
+- Note build systems, dependencies, and tooling setup
 
-## Output Instructions
+### Recent Activity Review
+- Check `git status` and recent commits using `Bash`
+- Examine recently modified files with `Read` and `Grep`
+- Identify work-in-progress or uncommitted changes
 
-Save this documentation with a descriptive filename that includes the date and session focus:
-- First choice: `docs/dev_notes/` directory if it exists
-- Second choice: `docs/` directory if it exists  
-- Third choice: Project root with `session_` prefix
+### Technical State Assessment
+- Review key implementation files and their current state
+- Document any temporary solutions or incomplete work
+- Note testing approaches and validation methods
 
-Ensure the content is:
-- Concise yet comprehensive
-- Unambiguous and specific
-- Easy for a fresh agent with zero prior context to understand and act upon
-- Well-formatted with clear headers and bullet points
-- Includes absolute file paths when referencing specific files
+### Problem Context Capture
+- Extract problem statements and requirements from conversation
+- Identify constraints, success criteria, and stakeholder needs
+- Document any domain-specific knowledge discovered
+
+## Step 3: Documentation Synthesis
+
+Compile findings into structured documentation with these sections:
+
+### 1. Problem Statement & Context
+- Primary objective and background information
+- Key constraints, requirements, and success criteria
+- Stakeholders and their specific needs
+
+### 2. Actions Completed
+- Chronological summary of steps taken
+- Files modified, commands executed, configurations changed
+- Testing performed and validation results
+
+### 3. Technical Insights & Discoveries
+- Key learnings and implementation approaches
+- Issues encountered and their solutions/workarounds
+- Procedures for reproducing work or verifying progress
+
+### 4. Current State Assessment
+- Exact status of all work components
+- What's working correctly vs. what needs attention
+- Any temporary implementations or known issues
+
+### 5. Forward Path & Recommendations
+- Prioritized list of remaining tasks
+- Specific next actions with clear success criteria
+- Alternative approaches and contingency plans
+- Dependencies and potential blockers
+
+## Step 4: Documentation Output
+
+### Location Determination
+Systematically determine the optimal save location:
+
+1. **Check Documentation Structure**: Use `LS` to identify existing documentation patterns:
+   - Primary: `docs/dev_notes/` directory (preferred for session docs)
+   - Secondary: `docs/` directory (general documentation)
+   - Tertiary: `notes/` or `documentation/` directories
+   - Fallback: Project root with `session_` prefix
+
+2. **Create Descriptive Filename**: Include date and session focus:
+   - Format: `YYYY-MM-DD_session_[focus-area].md`
+   - Example: `2025-08-07_session_api-optimization.md`
+
+### Content Requirements
+Ensure the documentation is:
+
+- **Self-Contained**: Complete context for agents with zero prior knowledge
+- **Actionable**: Specific file paths, commands, and procedures
+- **Structured**: Clear headers, bullet points, and logical flow
+- **Technical**: Include absolute file paths, command sequences, and configuration details
+- **Forward-Looking**: Clear next steps with success criteria
+
+### Quality Checklist
+Before saving, verify documentation includes:
+
+- [ ] Absolute file paths for all referenced files
+- [ ] Specific command sequences and procedures
+- [ ] Clear problem statement and objectives
+- [ ] Chronological action summary
+- [ ] Current state assessment with specifics
+- [ ] Prioritized next steps with success criteria
+- [ ] Any temporary solutions or known issues flagged
