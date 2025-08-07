@@ -1,5 +1,7 @@
 ---
+name: learn
 description: Analyze the current session to extract and preserve key learnings and insights for future sessions
+allowed-tools: Task
 argument-hint: [specific area to focus on (optional)]
 ---
 
