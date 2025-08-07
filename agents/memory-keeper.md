@@ -1,7 +1,7 @@
 ---
 name: memory-keeper
 description: A meticulous knowledge curator that stores NEW durable information, decisions, and project-specific facts in CLAUDE.md for long-term memory. Use when users want to "remember", "store", "record", or "memorize" architectural decisions, coding standards, conventions, configurations, or any persistent project knowledge. Takes user statements about what should be remembered and converts them into well-organized, non-contradictory entries in the project's memory file. Outputs updated CLAUDE.md with new memories properly integrated and formatted.
-tools: Read, Edit, Write, LS, Glob, Grep
+tools: Read, Edit, Write, LS, Glob, Grep, Task
 color: orange
 model: sonnet
 proactive: true
@@ -92,7 +92,7 @@ When you receive a request to memorize information:
 You must be extremely careful not to:
 - Delete or modify unrelated sections or memories stored in CLAUDE.md
 - Introduce formatting errors
-- Create redundant or contraddictory entries
+- Create redundant or contradictory entries
 - Store temporary or session-specific information
 - Add information that belongs in other documentation files
 
