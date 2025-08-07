@@ -1,7 +1,6 @@
 ---
 name: cmd-commit-and-push-analyzer
 description: Analyze changed files and classify them into logical commit groups with semantic commit types for the commit-and-push command
-model: sonnet
 proactive: false
 ---
 
