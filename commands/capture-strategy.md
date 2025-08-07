@@ -1,6 +1,7 @@
 ---
 description: Create comprehensive project documentation capturing current session context and implementation strategy
-argument-hint: [project name or specific focus area]
+argument-hint: [project name or documentation focus area]
+allowed-tools: Read, Write, LS, Glob, Grep, Task
 ---
 
 # Capture Strategy Documentation
@@ -50,6 +51,33 @@ Capture implementation details that future agents need to know:
 - Any special setup requirements or environment considerations
 - Links to relevant external resources or documentation
 
+## Parallel Analysis Strategy
+
+When creating comprehensive documentation, use parallel processing for efficiency:
+
+1. **Identify Analysis Areas**: Break documentation into independent aspects
+2. **Use Parallel Execution**: For complex projects with multiple components:
+   - Use Task tool with subagent_type: 'cmd-capture-session-analyzer'
+   - Analyze up to 10 aspects in parallel (problem analysis, technical architecture, implementation phases, etc.)
+   - Process specific focus areas: codebase analysis, strategic decisions, technical requirements
+3. **Aggregate Results**: Combine parallel analyses into unified strategy document
+
 ## Context Integration
 
 If working with selected text or previous outputs, incorporate relevant details from {{selected_text}} and {{last_output}} into the appropriate sections of the strategy document.
+
+### Execution Workflow
+
+1. **Assessment Phase**: 
+   - Identify project scope and complexity
+   - Determine if parallel analysis is beneficial (3+ distinct aspects)
+
+2. **Parallel Processing Phase** (if applicable):
+   - Delegate specific analysis tasks to session-analyzer subagent
+   - Focus areas: problem definition, technical analysis, strategy formulation, implementation planning
+   - Each task receives focused context for specialized analysis
+
+3. **Integration Phase**:
+   - Combine parallel analyses into comprehensive strategy document
+   - Ensure consistency and flow between sections
+   - Add meta-documentation for future sessions

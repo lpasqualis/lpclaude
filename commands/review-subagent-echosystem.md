@@ -1,7 +1,8 @@
 ---
 description: Audit subagents for compatibility, overlap, and optimization opportunities
 argument-hint: "[agent names or paths] (optional, defaults to all project or personal agents)"
-#model: sonnet
+allowed-tools: Read, LS, Glob, Grep, Task, WebFetch
+model: sonnet
 ---
 
 Analyze the provided list of sub-agent definition files. Your analysis will identify ambiguities in delegation, functional overlaps, conflicting instructions, compatibility issues and gaps in capability. Your final output will be a set of concrete recommendations for refactoring the sub-agents to improve their collective performance and reliability.
@@ -56,6 +57,16 @@ A detailed breakdown in a table:
 
 ### Actionable Recommendations
 A numbered list of specific, justified changes. Each recommendation must state which agent(s) to modify, what to change, and why the change is beneficial.
+
+## Parallel Execution Strategy
+When analyzing multiple agents (4 or more):
+1. **Identify all agents** to be analyzed from the scope determination
+2. **Use parallel execution** for individual agent analysis:
+   - Use Task tool with subagent_type: 'cmd-review-subagent-ecosystem-analyzer'
+   - Process up to 10 agents in parallel (system limit)
+   - If more than 10 agents, batch them into groups of 10
+3. **Aggregate results** from parallel tasks to perform cross-agent system analysis
+4. **Present unified findings** in the structured report format
 
 ### Implementation Guidance
 If changes are recommended, suggest using the `subagent-optimizer` agent to implement the optimizations, as it specializes in enforcing best practices for agent definitions. Provide specific instructions for which agents need optimization and what aspects to focus on.

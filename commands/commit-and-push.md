@@ -51,7 +51,7 @@ Analyze all changed files in the project and create logical commit groupings wit
 
 ## Parallel Execution Strategy
 When processing projects with 5+ changed files:
-1. Use Task tool with `commit-analyzer` subagent for file classification
+1. Use Task tool with `cmd-commit-and-push-analyzer` subagent for file classification
 2. Process file groups in parallel batches (max 10 per batch)
 3. Aggregate analysis results for commit planning
 4. Present unified commit strategy to user

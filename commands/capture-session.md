@@ -1,6 +1,8 @@
 ---
+name: /capture-session
 description: Create comprehensive session documentation for seamless handoff to future agents
 argument-hint: [brief session summary or focus area]
+allowed-tools: Read, Write, LS, Glob, Grep, Task
 ---
 
 Document the complete status of the work done in this session, incorporating any provided context: {{args}}
@@ -39,10 +41,34 @@ Create a comprehensive session summary that includes:
 - Include any planned approaches, hypotheses, or alternatives to try
 - Note any dependencies or blockers
 
+## Parallel Execution Strategy
+
+When capturing comprehensive session context:
+1. Identify all relevant aspects to document (codebase, recent changes, conversation context)
+2. If dealing with complex multi-faceted sessions, use parallel execution:
+   - Use Task tool with subagent_type: 'cmd-capture-session-analyzer'
+   - Process different analysis aspects in parallel (up to 10 concurrent tasks)
+   - Analyze codebase structure, recent git changes, and conversation patterns simultaneously
+3. Aggregate results into unified session documentation
+
+## Context Gathering Process
+
+Before creating documentation:
+1. **Analyze Project Structure**: Use `LS` and `Glob` to understand current project layout
+2. **Review Recent Changes**: Check git status and recent file modifications
+3. **Examine Key Files**: Use `Read` and `Grep` to understand current codebase state
+4. **Identify Documentation Location**: Determine appropriate save location (prefer existing docs structure)
+
 ## Output Instructions
 
-Save this documentation in the `docs/dev_notes` folder with a descriptive filename that includes the date and session focus. Ensure the content is:
+Save this documentation with a descriptive filename that includes the date and session focus:
+- First choice: `docs/dev_notes/` directory if it exists
+- Second choice: `docs/` directory if it exists  
+- Third choice: Project root with `session_` prefix
+
+Ensure the content is:
 - Concise yet comprehensive
 - Unambiguous and specific
 - Easy for a fresh agent with zero prior context to understand and act upon
 - Well-formatted with clear headers and bullet points
+- Includes absolute file paths when referencing specific files

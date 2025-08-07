@@ -1,7 +1,7 @@
 ---
 name: learn
 description: Analyze the current session to extract and preserve key learnings and insights for future sessions
-allowed-tools: Task
+allowed-tools: Read, Task
 argument-hint: [specific area to focus on (optional)]
 ---
 
@@ -36,9 +36,26 @@ Do not capture status of the project, or something very specific and temporary. 
    * Time-saving shortcuts or automation opportunities
    * Testing strategies that proved valuable
 
-**After identifying the learnings:**
+## Parallel Execution Strategy
 
-Use the memory-keeper agent to store these insights in CLAUDE.md. Ensure each learning is:
+When processing a substantial conversation with multiple topics or complex technical areas:
+
+1. **Identify analysis segments** - Break down the conversation into logical segments or focus areas
+2. **Use parallel analysis** for 3+ distinct areas:
+   - Use Task tool with subagent_type: 'cmd-learn-analyzer'
+   - Process up to 10 segments in parallel (system limit)
+   - Each analyzer focuses on specific conversation segments or categories
+   - Batch remaining segments if exceeding the limit
+3. **Aggregate insights** from all analyzers before storage
+4. **Consolidate findings** to eliminate redundancy and organize thematically
+
+## After Analysis is Complete
+
+Check existing CLAUDE.md to understand current structure and avoid duplicating information:
+- Read the current CLAUDE.md file to review existing learnings
+- Identify patterns or contradictions with new insights
+
+Use the memory-keeper agent to store consolidated insights in CLAUDE.md. Ensure each learning is:
 - Clear and actionable for future sessions
 - Provides sufficient context to be understood independently
 - Tagged with today's date for reference
