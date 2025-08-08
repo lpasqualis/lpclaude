@@ -1,0 +1,8 @@
+#!/bin/bash
+# Wrapper script for addjob.py that can be placed in PATH
+
+# Find the actual location of this script (follows symlinks)
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0" 2>/dev/null || echo "$0")")" && pwd)"
+
+# Execute the Python script with all arguments
+exec python3 "$SCRIPT_DIR/addjob.py" "$@"
