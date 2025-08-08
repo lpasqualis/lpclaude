@@ -1,12 +1,12 @@
 ---
 name: addjob
-description: Creates job files for deferred task execution using the addjob utility. Invoke when tasks need to be scheduled for later processing, when work should be deferred rather than executed immediately, or when creating "do this later" jobs. Use for complex operations that don't need immediate execution, batch processing queues, or when work needs to happen outside the current conversation context. This agent uses the addjob bash command to create structured job files in the project's jobs/ directory.
+description: Creates job files for deferred task execution using the addjob utility. Invoke when users say "add a job", "create a job", "defer this task", "do this later", "schedule this", "queue this work", or "save this for later". Use when tasks need to be scheduled for later processing, when work should be deferred rather than executed immediately, or when creating batch processing queues. Automatically triggered by keywords like "job", "defer", "later", "schedule", "queue", "batch", or "save for later". This agent uses the addjob bash command to create structured job files in the project's jobs/ directory.
 proactive: true
 model: haiku
 color: purple
 tools: Bash, Read, LS, Glob, Grep
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 10:40:31 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 11:10:35 -->
 
 # Addjob - Job Creation Agent
 
