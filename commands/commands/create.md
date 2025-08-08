@@ -4,7 +4,7 @@ description: Interactive command creator - helps you create new Claude Code comm
 argument-hint: "[desired command name] (optional - if not provided, will suggest names based on purpose)"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task, WebFetch, WebSearch
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-07 20:43:15 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:42:51 -->
 
 First of all, learn about Claude commands here: https://docs.anthropic.com/en/docs/claude-code/slash-commands
 Then, guide the user through creating a new Claude Code command interactively. Follow this process:
@@ -83,58 +83,69 @@ allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task, WebFetc
 
 ## 5. Analyze Parallelization Opportunities
 
-If the command involves complex operations, evaluate whether it could benefit from parallel execution:
+**IMPORTANT**: Most commands do NOT need parallel execution. Only consider parallelization for specific scenarios.
 
-### When to Consider Parallelization:
-- **Multiple independent analyses**: e.g., analyzing different directories, checking multiple files for patterns
-- **Batch operations**: e.g., refactoring multiple files, generating tests for multiple components
-- **Multi-aspect evaluation**: e.g., security audit + performance analysis + code quality review
-- **Research tasks**: e.g., checking documentation across multiple sources simultaneously
+### When Parallelization is APPROPRIATE:
+- **Independent data collection**: Reading/analyzing multiple files, directories, or data sources
+- **Parallel validation**: Checking multiple components against the same criteria
+- **Batch read-only analysis**: Security scans, code quality checks, documentation reviews
+- **Research aggregation**: Gathering information from multiple independent sources
 
-### How to Implement Parallelization:
+### When Parallelization is INAPPROPRIATE:
+- **Implementation/execution workflows**: Building, deploying, installing, or modifying systems
+- **Sequential operations**: Tasks with dependencies where one step must complete before the next
+- **Tasks requiring subagents**: Parallel workers cannot use the Task tool or invoke other subagents
+- **Context-dependent operations**: Tasks that need conversation history or user interaction
+- **File modification workflows**: Risk of conflicts when multiple workers modify the same resources
+- **Single-target operations**: Commands that work on one specific thing at a time
+
+### Critical Constraints for Parallel Workers:
+1. **No subagent access**: Parallel workers cannot use the Task tool or invoke other subagents
+2. **No conversation context**: Workers start fresh without access to conversation history
+3. **Isolated execution**: Each worker operates independently with no inter-worker communication
+4. **Result aggregation only**: Workers return results that the main command aggregates
+
+### How to Implement Parallelization (Only if Appropriate):
 
 #### Option A: Direct Parallel Task Instructions (Simple)
-For commands that need basic parallelization, include instructions like:
+For basic read-only parallel operations:
 ```markdown
-When processing multiple files/directories, use the Task tool to create parallel subagents:
-- Create up to 10 parallel tasks (system limit)
-- Each task should handle an independent portion of work
-- Ensure tasks don't modify the same files simultaneously
+When analyzing multiple independent [targets]:
+- Use Task tool to create parallel analysis tasks
+- Limit to 10 parallel tasks (system limit)
+- Each task analyzes one [target] independently
+- Aggregate results from all tasks
 ```
 
 #### Option B: Create Supporting Subagents (Complex)
-For commands requiring sophisticated parallel operations, create dedicated subagent(s):
+Only for sophisticated read-only parallel operations that meet ALL criteria:
+- ✅ Purely analytical (no modifications)
+- ✅ Independent subtasks (no dependencies)
+- ✅ No need for subagents or context
+- ✅ Combinable discrete results
 
-1. **Identify decomposable subtasks** that:
-   - Can run independently without full context
-   - Don't require access to conversation history
-   - Produce discrete, combinable results
-
-2. **Create companion subagent(s)** in the `agents/` directory:
-   - Name: `cmd-[command-name]-worker.md` or `cmd-[command-name]-analyzer.md`
-   - Purpose: Handle specific subtasks in isolation
-   - Tools: Minimal set required for the subtask
+1. **Create companion subagent(s)** in the `agents/` directory:
+   - Name: `cmd-[command-name]-analyzer.md` (use "analyzer" for read-only)
+   - Purpose: Handle specific analysis subtasks in isolation
+   - Tools: Minimal read-only set (typically: Read, LS, Glob, Grep)
    - Proactive: Always set to `false` for command-specific subagents
 
-3. **Update command to orchestrate subagents**:
+2. **Update command to orchestrate analysis**:
    ```markdown
-   For [complex operation], delegate to specialized subagents:
-   - Use Task tool with subagent_type: 'cmd-[command-name]-worker'
+   For analyzing multiple [targets]:
+   - Use Task tool with subagent_type: 'cmd-[command-name]-analyzer'
    - Run up to 10 instances in parallel for different [targets]
-   - Aggregate results and present unified output
+   - Aggregate analysis results and present unified findings
    ```
 
-### Example Parallelization Pattern:
-```markdown
-# For analyzing multiple components simultaneously:
-1. Identify all [targets] to analyze
-2. If more than 3 [targets], use parallel execution:
-   - Create tasks for each [target] using Task tool
-   - Specify subagent_type: 'analyzer' (if created) or use general-purpose
-   - Batch into groups of 10 if exceeding system limit
-3. Collect and synthesize results from all parallel tasks
-4. Present consolidated findings to user
-```
+### Decision Framework:
+Ask these questions before suggesting parallelization:
+1. Does the command perform read-only analysis of multiple independent items? (If No → No parallelization)
+2. Can the work be split into completely independent subtasks? (If No → No parallelization)  
+3. Do the subtasks need subagents, context, or sequential dependencies? (If Yes → No parallelization)
+4. Will parallel execution provide significant benefit over sequential processing? (If No → No parallelization)
+
+**Default recommendation**: Most commands should NOT use parallelization. Only suggest it for clear cases of independent, read-only analysis tasks.
 
 ## 6. Add Prompt Chaining for Complex Workflows
 
