@@ -1,11 +1,11 @@
 ---
 name: /jobs:do
-description: Process job queue files (.md files) sequentially from a specified folder
+description: Process job queue files (.md and .parallel.md files) from a specified folder with context-aware execution
 argument-hint: "[folder_path] [stop_condition]"
-allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task, TodoWrite, NotebookEdit
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:06:10 -->
 
-Process markdown job files from a queue folder sequentially. This command monitors a specified folder (default: `jobs/`) for `.md` files and executes their contents as instructions.
+Process markdown job files from a queue folder with context-aware execution. This command monitors a specified folder (default: `jobs/`) for `.md` and `.parallel.md` files. Regular `.md` files execute sequentially in the main agent with full context access. Files ending with `.parallel.md` can run in parallel via subagents when no sequential jobs precede them alphabetically.
 
 ## Execution Process
 
@@ -13,27 +13,77 @@ Parse the arguments:
 - First argument (optional): folder path (defaults to `jobs/`)
 - Second argument (optional): stop condition (e.g., "5 files", "30 minutes", "until empty")
 
+## Execution Strategy
+
+### Job Types:
+1. **Regular Jobs (`.md` files)**: 
+   - Execute sequentially in main agent context
+   - Full access to conversation history
+   - Can invoke subagents via Task tool
+   - Can interact with user if needed
+
+2. **Parallel Jobs (`.parallel.md` files)**:
+   - Execute in parallel via `cmd-jobs-do-worker` subagents
+   - Run in isolated contexts (no conversation history)
+   - Cannot invoke other subagents
+   - Must be self-contained tasks
+
+### Processing Order:
+- All jobs are processed in alphabetical order
+- `.parallel.md` files can ONLY run in parallel when no `.md` files come before them alphabetically
+- This ensures job dependencies are respected
+- Users can prefix parallel jobs (e.g., `00-task.parallel.md`) to prioritize them
+
 Initialize tracking:
 - Use TodoWrite to create a job processing status list with items for tracking progress
 - Start time for time-based stop conditions
 
 Begin the job processing loop:
 
-### 1. Find Next Job File
-Use Glob to find all `*.md` files (jobs) in the specified folder.
-Filter out files ending in `.working`, `.done`,  `.done_log`, `.error`, or `.error_log` or anything that is not `.md`
-Sort the results alphabetically and select the first one.
+### 1. Find Available Job Files
+Use Glob to find all `*.md` and `*.parallel.md` files in the specified folder.
+Filter out files ending in `.working`, `.done`, `.done_log`, `.error`, `.error_log`, or `.retry`
+Sort the results alphabetically for predictable processing order.
+
+**Processing Decision**:
+- Check the first available job in alphabetical order:
+  - If it's a `.md` file: Process it sequentially in main agent
+  - If it's a `.parallel.md` file: Batch it with up to 7 more consecutive `.parallel.md` files
+- CRITICAL: Never process `.parallel.md` files if any `.md` file comes before them alphabetically
+
+**Discovery Strategy**:
+- Create a `.jobqueue` lock file to prevent race conditions
+- Respect alphabetical ordering to maintain dependencies
+- Batch consecutive `.parallel.md` files only when appropriate
+- Implement adaptive polling: start with 2-second intervals, increase to 10 seconds if no jobs found
 
 If no `.md` files are found:
-- If there is an explicit stop condition and it is satisfied, report completion and stop
-- Otherwise, log '/jobs:do waiting 10 seconds for new .md jobs to be queued in {folder path}..." and wait 10 seconds using Bash `sleep 10`
-- Continue the loop to check again
+- Check for abandoned `.working` files older than 30 minutes and recover them
+- If explicit stop condition satisfied, report completion and stop
+- Use adaptive waiting: shorter intervals when jobs were recently processed
+- Log waiting status every 3rd cycle to reduce noise
 
-### 2. Lock the Job File
-When a job file is found:
-- Attempt to rename from `{name}.md` to `{name}.md.working` using Bash `mv`
-- If rename fails (file no longer exists or already locked), return to step 1
-- If rename succeeds, log "Processing job: {name}" and proceed to step 3
+### 2. Job Locking and Execution Strategy
+
+**For Regular Jobs (`.md` files)**:
+- Process sequentially in main agent context
+- Attempt atomic rename from `{name}.md` to `{name}.md.working`
+- If rename succeeds, log "Processing sequential job: {name}"
+- Execute with full context and subagent access
+
+**For Parallel Jobs (`.parallel.md` files)**:
+- Only process if no `.md` files precede them alphabetically
+- Batch up to 8 consecutive `.parallel.md` files
+- Use Task tool to distribute to `cmd-jobs-do-worker` subagents
+- Each worker:
+  - Attempts to lock by renaming to `.parallel.md.working`
+  - Pre-scans content for context requirements (subagent usage, user interaction)
+  - Returns "NEEDS_CONTEXT" if job requires main agent execution
+  - Otherwise processes the job in isolation
+- Main agent:
+  - Coordinates and aggregates worker results
+  - For jobs with "NEEDS_CONTEXT" status, processes them sequentially
+  - Continues with remaining parallel jobs
 
 ### 3. Execute Job Instructions
 Read the contents of the `.working` file.
@@ -46,30 +96,41 @@ Follow the instructions EXACTLY as written in the working file:
 - Do NOT stop to ask unimportant things to the user; make decisions and proceed unless the file itself specifies to ask the user
 - Note any new or updated stop condition that might be specified in the working file
 
-### 4. Mark Job Complete or Failed
-After processing the job file:
+### 4. Enhanced Error Handling and Recovery
+
+**Robust Error Recovery System**:
+- **Context Detection**: Workers detecting context needs return jobs for sequential processing
+- **Retry Logic**: Jobs that fail with recoverable errors are marked with `.retry` extension
+- **Abandoned Job Recovery**: Detect and recover `.working` files older than 30 minutes
+- **Graceful Degradation**: If parallel processing fails, fall back to sequential mode
+- **Resource Monitoring**: Monitor system resources and adjust parallel job count if needed
+
+**Job Completion Handling**:
 
 **If execution succeeded:**
 - Rename from `{name}.md.working` to `{name}.md.done` using Bash `mv`
-- Create a companion file `{name}.md.done_log` with:
-  - Timestamp of beginning and end
-  - Original job file name
-  - Details of what work was accomplished
-  - Details of anything that was learned during the completion of the job
-  - Any issues or other important information the user should know about
-- Log "Completed job: {name}"
-- Update TodoWrite to mark job as completed
-
+- Create comprehensive `{name}.md.done_log` with:
+  - Execution timestamps (start/end duration)
+  - Processing mode (sequential/parallel)
+  - Detailed accomplishments and outcomes
+  - Performance metrics (execution time, resources used)
+  - Key learnings and insights from job execution
+  - Any warnings or recommendations for future jobs
+- Log "✓ Completed job: {name} (duration: Xs)"
+- Update TodoWrite with completion status and metrics
 
 **If execution encountered errors:**
-- Rename from `{name}.md.working` to `{name}.md.error` using Bash `mv`
-- Create `{name}.md.error_log` file with:
-  - Timestamp of error
-  - Original job file name
-  - Error details and stack trace if available
-  - Any partial progress made
-- Log "Failed job: {name} - see error log for details"
-- Update TodoWrite to track the failed job
+- Implement retry logic for recoverable errors (network timeouts, temporary file locks)
+- For permanent failures: rename to `{name}.md.error`
+- For recoverable failures: rename to `{name}.md.retry` (max 3 retry attempts)
+- Create detailed `{name}.md.error_log` or `{name}.md.retry_log` with:
+  - Full error context and stack traces
+  - System state at time of failure
+  - Retry attempt history if applicable
+  - Suggested manual intervention steps
+  - Partial progress preservation for resumption
+- Log "✗ Failed job: {name} - {error_type} - see log for details"
+- Update TodoWrite with failure analysis and next steps
 
 ### 5. Check Stop Condition
 Evaluate the stop condition if provided:
@@ -86,22 +147,42 @@ Return to step 1 to find the next job file.
 ## Implementation Details
 
 - **File Processing Order**: Always process files in alphabetical order for predictability
-- **Concurrency Safety**: The `.working` extension prevents race conditions if multiple agents run
-- **Failed Renames**: If rename fails, another process likely grabbed the file - this is normal, just continue
-- **Execution Context**: Each job file is executed completely before moving to the next
-- **Status Visibility**: Use TodoWrite to maintain real-time status of job processing
+- **Concurrency Safety**: Enhanced locking with `.jobqueue` coordination file and atomic operations
+- **Parallel Safety**: Each worker operates independently with its own locking mechanism
+- **Failed Renames**: Intelligent retry logic distinguishes between race conditions and system errors
+- **Execution Context**: Support for both sequential and parallel execution contexts
+- **Status Visibility**: Real-time TodoWrite updates with detailed progress metrics
+- **Resource Management**: Adaptive job batching based on system resources and queue size
+- **Recovery Mechanisms**: Automatic detection and recovery of abandoned or stuck jobs
 
-## Error Handling
+## Advanced Error Handling
 
-- **Missing Folder**: If the jobs folder doesn't exist, create it using Bash `mkdir -p`
-- **Job Execution Errors**: Capture any errors, rename file to `.error`, create detailed error log
-- **Malformed Job Files**: If a job file can't be read or is empty, treat as error
-- **Interruption**: If user interrupts, ensure current `.working` file is renamed appropriately
+- **Missing Folder**: Auto-create jobs folder structure with proper permissions using Bash `mkdir -p`
+- **Job Execution Errors**: Comprehensive error classification and handling:
+  - **Transient Errors**: Network timeouts, temporary file locks - trigger retry mechanism
+  - **Permanent Errors**: Syntax errors, missing dependencies - mark as `.error`
+  - **Resource Errors**: Memory/disk issues - pause processing and alert user
+- **Malformed Job Files**: Validate job file format and provide detailed error diagnostics
+- **Interruption Handling**: Graceful shutdown with proper cleanup of all `.working` files
+- **Parallel Processing Errors**: If workers fail, collect partial results and continue with remaining jobs
+- **System Resource Monitoring**: Monitor CPU/memory usage and adjust parallel job count dynamically
+- **Recovery from Crashes**: On startup, scan for and recover any orphaned `.working` files
 
-## Status Reporting
+## Enhanced Status Reporting
 
-Maintain clear status reporting throughout execution:
-- Report when starting: "Starting job queue processing in {folder}"
-- Report each job: "Processing job X of Y: {filename}"
-- Report completion: "Job queue processing complete: X succeeded, Y failed"
-- If waiting: "No jobs found, waiting..." (every 3rd wait cycle)
+Maintain comprehensive status reporting throughout execution:
+- **Startup**: "🚀 Starting job queue processing in {folder} (mode: {sequential/parallel/auto})"
+- **Job Progress**: "📋 Processing batch {X}: {job_names} (parallel: {count}/8)" or "🔄 Processing job {X} of {Y}: {filename}"
+- **Performance Metrics**: Include processing rate, average job duration, resource utilization
+- **Completion Summary**: "✅ Job queue complete: {X} succeeded, {Y} failed, {Z} retried (total time: {duration})"
+- **Waiting Status**: "⏳ Queue empty, adaptive polling (interval: {X}s)..." (every 3rd cycle)
+- **Error Alerts**: "⚠️ {count} jobs need manual intervention - see error logs"
+- **Resource Warnings**: Alert when system resources are constrained
+
+## Performance Optimizations
+
+- **Adaptive Polling**: Dynamic wait intervals based on job processing patterns
+- **Smart Batching**: Intelligent grouping of jobs for optimal parallel processing
+- **Resource Awareness**: Monitor system resources and adjust concurrency accordingly
+- **Efficient File Operations**: Use atomic operations and minimize filesystem calls
+- **Memory Management**: Stream large job files and clean up resources promptly
