@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "last_check": "2025-08-08T10:06:20Z",
+    "last_check": "2025-08-08T09:06:31-07:00",
     "documentation_version": "Latest as of 2025-08-08",
     "created": "2025-08-08",
     "description": "Tracks components with embedded Claude Code knowledge and their update status"
@@ -356,6 +356,34 @@
         "workflow-orchestration"
       ],
       "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-jobs-do-worker.md",
+      "type": "analyzer",
+      "description": "Specialized worker for processing .parallel.md job files in parallel execution",
+      "knowledge_areas": [
+        "parallel-execution-constraints",
+        "context-detection-patterns",
+        "task-tool-restrictions",
+        "file-extension-validation",
+        "atomic-operations",
+        "error-classification"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/jobs/do.md",
+      "type": "command",
+      "description": "Process job queue files with context-aware execution and parallel processing",
+      "knowledge_areas": [
+        "parallel-execution-framework",
+        "system-constraints",
+        "todowrite-integration-patterns",
+        "subagent-architecture-limits",
+        "tool-orchestration",
+        "context-aware-processing"
+      ],
+      "last_updated": "2025-08-08"
     }
   ],
   "official_sources": [
@@ -415,6 +443,13 @@
       "components_added": 0,
       "components_updated": 0,
       "findings": "All 28 tracked components remain current with official documentation. Confirmed hack-spotter has no embedded knowledge. Minor enhancements available: @-mention typeahead support, improved argument-hint usage. No critical updates required. Report saved to knowledge-base-reports/update-report-2025-08-08-100620.md"
+    },
+    {
+      "date": "2025-08-08T09:06:31-07:00",
+      "action": "Self-sufficiency focused review with new component discovery",
+      "components_added": 2,
+      "components_updated": 0,
+      "findings": "Discovered 2 new components with embedded knowledge: cmd-jobs-do-worker.md and commands/jobs/do.md. Critical gap identified: /subagents:review-ecosystem lacks embedded knowledge for self-sufficiency, currently relies on external documentation references. All official documentation remains current. Comprehensive recommendations provided for embedding complete best practices knowledge. Report saved to knowledge-base-reports/update-report-2025-08-08-090631.md"
     }
   ],
   "pending_updates": []

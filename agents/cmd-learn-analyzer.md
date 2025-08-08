@@ -1,10 +1,12 @@
 ---
 name: cmd-learn-analyzer
-description: Specialized worker that analyzes specific conversation segments or topics to extract key learnings and insights for the learn command
+description: Specialized analysis worker for the /memory:learn command that extracts key learnings and insights from conversation segments or specific topics. Invoke this agent to analyze conversation content for technical discoveries, configuration details, gotchas, and workflow optimizations that should be preserved for future sessions. Use when processing learning extraction tasks that require focused analysis of specific conversation areas, identifying valuable patterns and principles for long-term retention. Returns structured JSON output for automated processing by the main learn command workflow.
 model: haiku
 tools: Read, LS, Glob, Grep
+color: Blue
 proactive: false
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 09:15:49 -->
 
 ## Purpose
 

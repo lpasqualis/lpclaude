@@ -10,9 +10,52 @@ Analyze the provided list of sub-agent definition files. Your analysis will iden
 
 # Instructions
 
-## Step 1 - Understand Sub-Agents
+## Step 1 - Apply Embedded Best Practices Knowledge
 
-- Use your embedded knowledge of Claude Code subagent best practices and current documentation
+### YAML Frontmatter Requirements
+**Commands:**
+- Required: `name`, `description`  
+- CRITICAL: Never include `model` field in commands - causes execution failures
+- Optional: `allowed-tools`, `argument-hint`
+
+**Subagents:**  
+- Required: `name`, `description`
+- Optional: `model` (haiku/sonnet/opus), `tools`, `proactive`
+
+### Model Selection Guidelines
+- **haiku:** Simple, repetitive tasks (formatting, boilerplate, basic analysis)
+- **sonnet:** Balanced tasks (code generation, standard analysis, moderate complexity)  
+- **opus:** Complex reasoning (architecture, security analysis, debugging, multi-step planning)
+
+### Tool Permission Best Practices
+- **Principle of Least Privilege:** Minimum necessary permissions only
+- **Logical Groupings:** Grant complete tool groups (Read+Write+Edit together, not partial)
+- **Never exceed parent:** Subagents can only equal or restrict main agent permissions
+- **Common patterns:**
+  - Read-only workflows: `Read, LS, Glob, Grep`
+  - File modification workflows: `Read, Write, Edit, MultiEdit, LS, Glob, Grep`
+  - Complex workflows: All tools including Task
+
+### Description Quality Criteria  
+- **Length:** 3-4 sentences minimum for non-trivial agents
+- **Action-oriented:** Start with "Use this agent to..." or similar action phrases
+- **Proactive triggers:** Include "PROACTIVELY", "MUST BE USED", "use immediately" for automatic invocation
+- **Specific keywords:** Include domain terms that users might naturally use in conversation
+
+### System Architecture Constraints
+- **Parallel limit:** 10 concurrent tasks maximum (hard system constraint)
+- **Context isolation:** Each subagent operates in separate context window
+- **No hierarchical delegation:** Subagents cannot invoke other subagents (Task tool restriction)
+- **Naming conventions:** 
+  - Agents: lowercase-hyphenated.md (e.g., `memory-keeper.md`)
+  - Command-specific agents: cmd-{command}-{purpose}.md (e.g., `cmd-commit-and-push-analyzer.md`)
+
+### Common Anti-Patterns to Avoid
+- **Circular dependencies:** Commands referencing their own optimization agents
+- **Partial tool permissions:** Granting Write without Edit, or Edit without Write
+- **Model field in commands:** Including model field causes command failures
+- **Overly generic descriptions:** Vague descriptions that could match multiple contexts
+- **Context pollution:** Subagents modifying main agent context unintentionally
 
 ## Step 2 - Determine Scope
 
