@@ -1,9 +1,10 @@
 ---
-name: /create-command
+name: /commands:create
 description: Interactive command creator - helps you create new Claude Code commands
 argument-hint: "[desired command name] (optional - if not provided, will suggest names based on purpose)"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task, WebFetch, WebSearch
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-07 20:43:15 -->
 
 First of all, learn about Claude commands here: https://docs.anthropic.com/en/docs/claude-code/slash-commands
 Then, guide the user through creating a new Claude Code command interactively. Follow this process:
@@ -174,11 +175,16 @@ Create an initial command draft that:
 - Incorporates parallelization strategy if applicable
 
 ### Parallel Validation Process
-Once the draft is complete, use parallel validation for efficiency:
+Once the draft is complete, use the Task tool for efficient validation:
 
-1. **Run validation in parallel** using Task tool with `cmd-create-command-validator` subagent
-2. **Apply optimizations** based on validation feedback
-3. **Present validated draft** to user with improvement summary
+```markdown
+Use Task tool with:
+- subagent_type: 'cmd-create-command-validator'  
+- Include the command draft and any companion subagents in the task
+- Request comprehensive validation covering YAML, prompt quality, and architectural patterns
+```
+
+Apply validation feedback to optimize the draft before presenting to user.
 
 Show the validated, optimized draft to the user and ask for feedback.
 
@@ -196,8 +202,8 @@ Based on user feedback:
 Once approved:
 - Save the command to the appropriate directory
 - If companion subagents were created, save them to the `agents/` directory
-- **Run final parallel validation** using `cmd-create-command-validator` to ensure all components are optimized
-- Confirm successful creation of all components and their validation status
+- **Run final validation** using Task tool with `cmd-create-command-validator` to ensure all components are optimized
+- Confirm successful creation and provide summary of all created components
 
 ## Important Notes
 
@@ -229,12 +235,12 @@ Once approved:
 ## Process Optimization and Efficiency
 
 ### Parallel Creation Workflow
-When creating complex commands with multiple components, leverage parallel processing:
+When creating complex commands with multiple components:
 
-1. **Component Analysis**: Use `cmd-create-command-validator` to analyze requirements in parallel
-2. **Multi-Component Creation**: Create main command and subagents concurrently when possible
-3. **Batch Validation**: Validate all components simultaneously using parallel subagent calls
-4. **Integrated Testing**: Coordinate validation across command and subagent interactions
+1. **Requirements Analysis**: Use Task tool with `cmd-create-command-validator` to analyze requirements
+2. **Component Creation**: Create main command first, then create companion subagents if needed
+3. **Validation**: Use Task tool to validate all components against best practices
+4. **Integration Testing**: Ensure command and subagent coordination works effectively
 
 ### Efficiency Guidelines for Complex Commands
 
@@ -245,4 +251,4 @@ When creating commands that perform extensive operations:
 3. **Smart Batching**: Group related operations that can share context, separate those that can run independently
 4. **Result Aggregation**: Design clear patterns for combining results from parallel operations
 5. **Performance Metrics**: Consider adding progress indicators for long-running parallel operations
-6. **Validation Integration**: Use parallel validation throughout the creation process, not just at the end
+6. **Validation Integration**: Use Task tool with validation subagents throughout creation, not just at the end

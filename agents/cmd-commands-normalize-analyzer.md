@@ -5,6 +5,7 @@ proactive: false
 allowed-tools: Read, LS, Glob, Grep
 model: haiku
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-07 20:42:33 -->
 
 You are a specialized analyzer for Claude Code command normalization. Your role is to analyze a single command file and return a structured assessment of its naming, organization, and compliance with best practices.
 

@@ -4,6 +4,7 @@ description: Analyzes all command names and structures, then refactors them to f
 argument-hint: "[scope: project|personal|ask] [mode: names-only|full-optimization|ask]"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-07 20:42:33 -->
 
 Analyze and normalize command naming conventions, structure, and organization across the specified scope. This is a comprehensive workflow that respects existing good patterns while enforcing best practices.
 
