@@ -1,0 +1,317 @@
+{
+  "metadata": {
+    "last_check": "2025-08-08T10:00:00Z",
+    "documentation_version": "Latest as of 2025-08-08",
+    "created": "2025-08-08",
+    "description": "Tracks components with embedded Claude Code knowledge and their update status"
+  },
+  "components_with_embedded_knowledge": [
+    {
+      "path": "agents/command-optimizer.md",
+      "type": "optimizer",
+      "description": "Optimizes slash command definitions",
+      "knowledge_areas": [
+        "slash-command-yaml-frontmatter",
+        "tool-permissions",
+        "command-best-practices",
+        "parallelization-patterns"
+      ],
+      "last_updated": "2025-08-08",
+      "embedded_knowledge": {
+        "required_yaml_fields": ["name", "description"],
+        "forbidden_yaml_fields": ["model"],
+        "tool_groupings": "logical-complete-groups"
+      }
+    },
+    {
+      "path": "agents/subagent-optimizer.md",
+      "type": "optimizer",
+      "description": "Optimizes subagent definitions",
+      "knowledge_areas": [
+        "subagent-yaml-frontmatter",
+        "description-best-practices",
+        "proactive-behavior",
+        "model-selection",
+        "semantic-colors"
+      ],
+      "last_updated": "2025-08-08",
+      "embedded_knowledge": {
+        "required_yaml_fields": ["name", "description"],
+        "description_requirements": "3-4 sentences with trigger keywords",
+        "model_heuristics": "haiku-sonnet-opus selection"
+      }
+    },
+    {
+      "path": "agents/claude-md-optimizer.md",
+      "type": "optimizer",
+      "description": "Optimizes CLAUDE.md files for AI consumption",
+      "knowledge_areas": [
+        "claude-md-best-practices",
+        "ai-instruction-formatting",
+        "documentation-standards"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-commands-normalize-analyzer.md",
+      "type": "analyzer",
+      "description": "Analyzes commands for normalization",
+      "knowledge_areas": [
+        "yaml-validation",
+        "tool-permissions",
+        "naming-conventions",
+        "best-practices-enforcement"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-commit-and-push-analyzer.md",
+      "type": "analyzer",
+      "description": "Analyzes files for semantic commit grouping",
+      "knowledge_areas": [
+        "semantic-commit-conventions",
+        "file-classification"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-commit-and-push-security.md",
+      "type": "analyzer",
+      "description": "Security analysis for git commits",
+      "knowledge_areas": [
+        "security-patterns",
+        "file-size-guidelines",
+        "risk-assessment"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-commit-and-push-validator.md",
+      "type": "validator",
+      "description": "Validates git operations readiness",
+      "knowledge_areas": [
+        "git-validation",
+        "repository-state-analysis",
+        "push-readiness"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-create-command-validator.md",
+      "type": "validator",
+      "description": "Validates command definitions",
+      "knowledge_areas": [
+        "yaml-frontmatter-validation",
+        "tool-permission-enforcement",
+        "parallelization-assessment",
+        "anti-pattern-detection"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/documentation-auditor.md",
+      "type": "auditor",
+      "description": "Audits project documentation",
+      "knowledge_areas": [
+        "claude-md-patterns",
+        "agent-specialization",
+        "documentation-consistency"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/implan-auditor.md",
+      "type": "auditor",
+      "description": "Audits implementation plans",
+      "knowledge_areas": [
+        "implementation-plan-structure",
+        "testing-philosophy",
+        "cross-agent-integration"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/implan-generator.md",
+      "type": "generator",
+      "description": "Generates implementation plans",
+      "knowledge_areas": [
+        "template-structure",
+        "testing-requirements",
+        "project-standards"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/memory-keeper.md",
+      "type": "curator",
+      "description": "Manages CLAUDE.md memory storage",
+      "knowledge_areas": [
+        "claude-md-structure",
+        "contradiction-resolution",
+        "memory-patterns"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/commands/create.md",
+      "type": "command",
+      "description": "Creates new slash commands",
+      "knowledge_areas": [
+        "yaml-requirements",
+        "tool-permissions",
+        "model-selection",
+        "template-generation",
+        "parallelization-strategies"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/commands/normalize.md",
+      "type": "command",
+      "description": "Normalizes command structure",
+      "knowledge_areas": [
+        "naming-conventions",
+        "functional-domains",
+        "best-practices-reference"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/docs/capture-session.md",
+      "type": "command",
+      "description": "Captures development session",
+      "knowledge_areas": [
+        "parallel-execution",
+        "task-tool-patterns",
+        "batching-strategies"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/git/commit-and-push.md",
+      "type": "command",
+      "description": "Git commit and push workflow",
+      "knowledge_areas": [
+        "parallel-patterns",
+        "subagent-architecture",
+        "performance-optimization"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/implan/create.md",
+      "type": "command",
+      "description": "Creates implementation plans",
+      "knowledge_areas": [
+        "parallel-processing",
+        "testing-standards",
+        "template-generation"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/maintenance/update-knowledge-base.md",
+      "type": "command",
+      "description": "Updates embedded Claude Code knowledge",
+      "knowledge_areas": [
+        "knowledge-detection-patterns",
+        "best-practices",
+        "component-classification"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/memory/learn.md",
+      "type": "command",
+      "description": "Learns from conversations",
+      "knowledge_areas": [
+        "parallel-optimization",
+        "task-tool-usage",
+        "memory-integration"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "resources/slash_commands_best_practices_research.md",
+      "type": "documentation",
+      "description": "Comprehensive slash command best practices",
+      "knowledge_areas": [
+        "command-patterns",
+        "anti-patterns",
+        "performance-optimization",
+        "security-practices"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "resources/subagent_invocation_research.md",
+      "type": "documentation",
+      "description": "Subagent invocation patterns and architecture",
+      "knowledge_areas": [
+        "invocation-mechanics",
+        "proactive-patterns",
+        "multi-agent-architecture",
+        "performance-considerations"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "resources/commands_and_agents.md",
+      "type": "documentation",
+      "description": "Technical deep dive on commands vs agents",
+      "knowledge_areas": [
+        "architectural-decisions",
+        "parallel-execution",
+        "orchestration-strategies",
+        "technical-constraints"
+      ],
+      "last_updated": "2025-08-08"
+    }
+  ],
+  "official_sources": [
+    {
+      "url": "https://docs.anthropic.com/en/docs/claude-code/slash-commands",
+      "type": "documentation",
+      "check_queries": [
+        "YAML frontmatter requirements",
+        "tool permissions best practices",
+        "command placeholders and arguments"
+      ]
+    },
+    {
+      "url": "https://docs.anthropic.com/en/docs/claude-code/sub-agents",
+      "type": "documentation",
+      "check_queries": [
+        "description field best practices",
+        "proactive subagent configuration",
+        "model selection guidelines"
+      ]
+    },
+    {
+      "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
+      "type": "changelog",
+      "check_queries": [
+        "recent changes to commands",
+        "recent changes to agents",
+        "deprecated features"
+      ]
+    }
+  ],
+  "update_history": [
+    {
+      "date": "2025-08-08",
+      "action": "Initial comprehensive scan",
+      "components_added": 18,
+      "components_updated": 0,
+      "findings": "All embedded knowledge consistent with current documentation. Minor enhancements available: @-mention support, argument-hint field, /permissions rename."
+    },
+    {
+      "date": "2025-08-08",
+      "action": "Applied minor enhancements",
+      "components_added": 0,
+      "components_updated": 4,
+      "findings": "Updated command-optimizer.md, subagent-optimizer.md, and cmd-create-command-validator.md with @-mention support and argument-hint awareness. Updated references to /permissions command."
+    }
+  ],
+  "pending_updates": []
+}
