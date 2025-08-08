@@ -156,6 +156,28 @@ The following resources contain comprehensive best practices and technical detai
 ### Using These Resources
 These documents should be consulted regularly during development to ensure consistency with established patterns and best practices. They contain research-backed approaches that have been validated through practical implementation.
 
+## Optimizer Maintenance
+
+### Simplified Optimizer Architecture
+The optimizer subagents (`command-optimizer` and `subagent-optimizer`) use embedded best practices rather than fetching documentation at runtime. This design choice provides:
+- **Faster execution**: No network calls during optimization
+- **Reliability**: No dependency on external services
+- **Consistency**: Predictable behavior across runs
+
+### Knowledge Base Updates
+To keep optimizer knowledge current with Claude Code updates:
+- **Command**: `/maintenance:update-knowledge-base`
+- **Frequency**: Run quarterly or after major Claude Code releases
+- **Purpose**: Fetches latest documentation and identifies components needing updates
+- **Scope**: Updates both optimizers and resource documentation
+
+### Maintenance Schedule
+- **Quarterly**: Run `/maintenance:update-knowledge-base` to check for updates
+- **After Claude Code releases**: Check changelog and run maintenance command
+- **Manual trigger**: Use `force` argument to skip time-based checks
+
+The knowledge base manifest (`resources/knowledge-base-manifest.json`) tracks all components with embedded Claude Code knowledge and their update status.
+
 ## Session Learnings (2025-08-07)
 
 ### Tool Permission Architecture
