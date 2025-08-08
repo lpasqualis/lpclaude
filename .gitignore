@@ -3,3 +3,4 @@ archive/
 .DS_Store
 **/*.local.*
 knowledge-base-reports/
+jobs/*
