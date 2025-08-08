@@ -2,3 +2,5 @@ archive/
 **/.DS_Store
 .DS_Store
 **/*.local.*
+knowledge-base-update-report*.md
+
