@@ -18,12 +18,19 @@ This command maintains the accuracy of embedded Claude Code best practices throu
 
 ## Process
 
-### 1. Comprehensive Component Analysis
-- Read `resources/knowledge-base-manifest.json` if it exists
-- Scan ALL files in `agents/`, `commands/`, and `resources/` directories
+### 1. Load and Analyze Manifest
+- Read `resources/knowledge-base-manifest.json` (create if doesn't exist)
+- Extract lists of tracked components by type
+- Identify documentation resources vs implementation components
+
+#### Scan for New Components
+Scan directories for files not yet in manifest:
+- Check `agents/` directory against manifest's agent entries
+- Check `commands/` directory against manifest's command entries  
+- Check `resources/` directory against manifest's resource entries
 
 #### Automatic Knowledge Detection
-For each file, analyze content to determine if it contains embedded Claude Code knowledge:
+For each file not in manifest, analyze content to determine if it contains embedded Claude Code knowledge:
 
 **Indicators of embedded knowledge:**
 - References to YAML frontmatter requirements (e.g., "must include name and description")
@@ -42,20 +49,62 @@ For each file, analyze content to determine if it contains embedded Claude Code 
 
 Automatically update the manifest with any newly discovered components or changed knowledge areas.
 
-### 2. Fetch Latest Documentation
+### 2. Analyze Local Resource Documentation
+**CRITICAL STEP**: Read and analyze the local resource documentation to establish baseline knowledge.
+
+**IMPORTANT**: You MUST actually READ these files using the Read tool, not just reference them!
+
+From the manifest (`resources/knowledge-base-manifest.json`):
+1. **Filter for documentation components**: Find all entries where `type` is "documentation"
+2. **Read each documentation file**: Use the Read tool on each file path found
+3. **Process dynamically**: Don't assume which files exist - use only what's in the manifest
+
+For each resource document found and read:
+1. **Extract key knowledge patterns** based on its declared `knowledge_areas`:
+   - YAML frontmatter requirements and restrictions
+   - Tool permission best practices and groupings
+   - Model selection guidelines
+   - Parallelization patterns and limits
+   - Naming conventions and anti-patterns
+   - Proactive invocation triggers
+   - Command vs subagent architectural decisions
+2. **Build a comprehensive baseline** of current best practices
+3. **Create a knowledge map** showing which patterns are documented where
+
+This baseline becomes the authoritative reference for validating all components.
+
+### 3. Fetch Latest Documentation
 Read the official sources from `resources/knowledge-base-manifest.json` and use WebFetch to retrieve current best practices from each source using their specified check queries.
 
-### 3. Analyze Components with Embedded Knowledge
+### 4. Compare and Analyze Components
 
-Read the components list from `resources/knowledge-base-manifest.json` and analyze each component based on its type and knowledge areas.
+Read the components list from `resources/knowledge-base-manifest.json` and perform three-way analysis:
 
-For each component, check for:
-- Outdated requirements or patterns
-- Missing new best practices
-- Deprecated patterns still being enforced
-- Inconsistencies with latest documentation
+For each component in the manifest:
+1. **Read the actual component file** using its `path` field
+2. **Compare against local resource documentation baseline**:
+   - Match component's `knowledge_areas` with resource documentation coverage
+   - Verify it follows patterns documented in resources with matching knowledge areas
+   - Check implementation against all applicable best practices from the baseline
+   - Validate consistency with the component's declared `type` and `description`
+3. **Cross-reference with fetched official documentation** for updates
 
-### 4. Generate Update Report
+Specifically check for:
+- **Against Local Resources**:
+  - Components not following documented best practices
+  - Missing implementation of documented patterns
+  - Deviations from established conventions
+  - Opportunities to apply documented optimizations
+- **Against Official Documentation**:
+  - New features not yet in local resources
+  - Deprecated patterns still in local documentation
+  - Breaking changes affecting current implementations
+- **Consistency Issues**:
+  - Discrepancies between what's documented locally vs implemented
+  - Conflicts between local resources and official docs
+  - Components using outdated patterns from either source
+
+### 5. Generate Update Report
 
 Create a comprehensive report and save it to `knowledge-base-reports/` folder with timestamp:
 
@@ -87,6 +136,22 @@ Then create the report showing:
 [These don't need tracking]
 - [file path] - Pure functionality component
 ```
+
+#### Local Resources Analysis
+```markdown
+### Resource Documentation Baseline
+- Resources analyzed: [list of resource files]
+- Key patterns extracted: [number]
+- Best practices identified: [number]
+
+### Knowledge Coverage Map
+- YAML Frontmatter: [source documents]
+- Tool Permissions: [source documents]
+- Parallelization: [source documents]
+- Model Selection: [source documents]
+- Naming Conventions: [source documents]
+```
+
 ```markdown
 ## Knowledge Base Update Report
 
@@ -96,6 +161,14 @@ Then create the report showing:
 
 ### Components Analyzed
 - [List of files checked]
+
+### Local vs Implementation Consistency
+#### Components Not Following Local Best Practices
+- Component: [file]
+  Local Resource: [which resource document]
+  Best Practice: [what should be done]
+  Current Implementation: [what is actually done]
+  Action Required: [specific fix]
 
 ### Updates Needed
 #### High Priority (Breaking Changes)
@@ -120,14 +193,19 @@ Then create the report showing:
 
 Save the complete report to the timestamped file in `knowledge-base-reports/`.
 
-### 5. Apply Updates (Optional)
+### 6. Apply Updates (Optional)
 
 If user confirms, apply the updates:
-- Edit optimizer agents to reflect new best practices
-- Update resource documentation
-- Update the knowledge manifest with new timestamps
+- **Update Components**: Edit optimizer agents and commands to reflect new best practices
+- **Update Local Resources**: 
+  - Add new patterns discovered from official documentation
+  - Mark deprecated patterns with warnings
+  - Add cross-references between resources
+  - Update examples to reflect current syntax
+- **Synchronize Knowledge**: Ensure consistency between resources and implementations
+- **Update Manifest**: Record all changes with timestamps
 
-### 6. Update Manifest
+### 7. Update Manifest
 
 Save/update `resources/knowledge-base-manifest.json`:
 ```json

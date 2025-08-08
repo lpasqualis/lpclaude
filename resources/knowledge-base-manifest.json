@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "last_check": "2025-08-08T10:00:00Z",
+    "last_check": "2025-08-08T10:06:20Z",
     "documentation_version": "Latest as of 2025-08-08",
     "created": "2025-08-08",
     "description": "Tracks components with embedded Claude Code knowledge and their update status"
@@ -49,6 +49,18 @@
         "claude-md-best-practices",
         "ai-instruction-formatting",
         "documentation-standards"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-capture-session-analyzer.md",
+      "type": "analyzer",
+      "description": "Analyzes development sessions for capture",
+      "knowledge_areas": [
+        "tool-usage-optimization",
+        "performance-patterns",
+        "tool-orchestration",
+        "output-formatting"
       ],
       "last_updated": "2025-08-08"
     },
@@ -105,6 +117,30 @@
         "tool-permission-enforcement",
         "parallelization-assessment",
         "anti-pattern-detection"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-learn-analyzer.md",
+      "type": "analyzer",
+      "description": "Analyzes conversation segments for learning",
+      "knowledge_areas": [
+        "tool-permissions",
+        "json-output-requirements",
+        "quality-standards",
+        "integration-patterns"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "agents/cmd-review-subagent-ecosystem-analyzer.md",
+      "type": "analyzer",
+      "description": "Analyzes subagent definitions for quality",
+      "knowledge_areas": [
+        "subagent-definition-standards",
+        "claude-code-architecture",
+        "quality-assessment-criteria",
+        "structured-assessment-format"
       ],
       "last_updated": "2025-08-08"
     },
@@ -188,6 +224,18 @@
       "last_updated": "2025-08-08"
     },
     {
+      "path": "commands/docs/capture-strategy.md",
+      "type": "command",
+      "description": "Captures high-level strategies and decisions",
+      "knowledge_areas": [
+        "tool-permissions",
+        "parallel-execution",
+        "system-constraints",
+        "template-variables"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
       "path": "commands/git/commit-and-push.md",
       "type": "command",
       "description": "Git commit and push workflow",
@@ -210,6 +258,19 @@
       "last_updated": "2025-08-08"
     },
     {
+      "path": "commands/implan/execute.md",
+      "type": "command",
+      "description": "Executes implementation plans",
+      "knowledge_areas": [
+        "tool-permissions",
+        "subagent-integration",
+        "parallel-patterns",
+        "quality-standards",
+        "workflow-integration"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
       "path": "commands/maintenance/update-knowledge-base.md",
       "type": "command",
       "description": "Updates embedded Claude Code knowledge",
@@ -228,6 +289,20 @@
         "parallel-optimization",
         "task-tool-usage",
         "memory-integration"
+      ],
+      "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/subagents/review-ecosystem.md",
+      "type": "command",
+      "description": "Reviews subagent ecosystem comprehensively",
+      "knowledge_areas": [
+        "external-documentation-integration",
+        "parallel-execution-framework",
+        "subagent-architecture",
+        "system-constraints",
+        "agent-optimization-integration",
+        "yaml-frontmatter-requirements"
       ],
       "last_updated": "2025-08-08"
     },
@@ -326,6 +401,20 @@
       "components_added": 0,
       "components_updated": 4,
       "findings": "Updated command-optimizer.md, subagent-optimizer.md, and cmd-create-command-validator.md with @-mention support and argument-hint awareness. Updated references to /permissions command."
+    },
+    {
+      "date": "2025-08-08T10:01:45Z",
+      "action": "Component discovery and manifest update",
+      "components_added": 6,
+      "components_updated": 0,
+      "findings": "Discovered 6 new components with embedded knowledge (3 cmd-* analyzer agents, 3 commands). All components current with documentation. Minor enhancements available: @-mention support, argument-hint field awareness."
+    },
+    {
+      "date": "2025-08-08T10:06:20Z",
+      "action": "Quarterly knowledge base review",
+      "components_added": 0,
+      "components_updated": 0,
+      "findings": "All 28 tracked components remain current with official documentation. Confirmed hack-spotter has no embedded knowledge. Minor enhancements available: @-mention typeahead support, improved argument-hint usage. No critical updates required. Report saved to knowledge-base-reports/update-report-2025-08-08-100620.md"
     }
   ],
   "pending_updates": []
