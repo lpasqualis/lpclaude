@@ -141,6 +141,28 @@ echo "Follow exactly and without stopping:
 Generate test coverage report" | addjob --stdin --parallel --n 120 coverage-report
 ```
 
+## Jobs Creating Other Jobs
+
+**IMPORTANT**: Jobs themselves can use the addjob subagent to create additional jobs for later processing!
+
+When a job needs to defer additional work:
+- The job can invoke the addjob subagent to create new job files
+- These new jobs will be queued and executed automatically AFTER the current job queue completes
+- This enables sophisticated job chaining and workflow orchestration
+
+Example job that creates more jobs:
+```markdown
+Follow exactly and without stopping:
+
+## Task: Analyze codebase and create optimization jobs
+
+1. Scan all Python files for performance issues
+2. For each issue found, use the addjob subagent to create a specific optimization job
+3. Group related optimizations into parallel jobs where possible
+
+The addjob subagent will handle creating the new jobs, which will run after this analysis completes.
+```
+
 ## Best Practices
 
 1. **Make instructions self-contained** - Don't assume context will be available
@@ -150,6 +172,7 @@ Generate test coverage report" | addjob --stdin --parallel --n 120 coverage-repo
 5. **Optimize for parallelism** - Use parallel jobs when possible for better performance
 6. **Use descriptive names** - Job names should clearly indicate their purpose
 7. **Include error handling** - Specify what to do if steps fail
+8. **Jobs can create jobs** - Use addjob subagent within jobs for complex workflows
 
 ## Output Format
 
