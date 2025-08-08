@@ -266,6 +266,21 @@
         "technical-constraints"
       ],
       "last_updated": "2025-08-08"
+    },
+    {
+      "path": "resources/understanding_commands_and_subagents.md",
+      "type": "documentation",
+      "description": "Comprehensive guide to commands and subagents in Claude Code",
+      "knowledge_areas": [
+        "main-agent-vs-subagents",
+        "subagent-configuration",
+        "slash-command-creation",
+        "tool-permissions",
+        "advanced-usage-patterns",
+        "modularization-strategies",
+        "workflow-orchestration"
+      ],
+      "last_updated": "2025-08-08"
     }
   ],
   "official_sources": [
