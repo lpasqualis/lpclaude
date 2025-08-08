@@ -23,7 +23,7 @@
 
 # First build the global directives file
 
-./build.sh
+./rebuild_claude_md.sh
 
 # Claude Home Location
 CLAUDE_HOME="$HOME/.claude"
@@ -75,4 +75,16 @@ if [ -n "$FAILED_SYMLINKS" ]; then
     echo -e "$FAILED_SYMLINKS"
 else
     echo "✓ All symlinks created successfully!"
+fi
+
+echo
+
+# Check if addjob alias exists
+if ! command -v addjob &> /dev/null && ! alias addjob &> /dev/null 2>&1; then
+    echo "💡 TIP: To use the addjob utility from anywhere, add this alias to your shell profile:"
+    echo
+    echo "  alias addjob='python3 ~/.claude/utils/addjob'"
+    echo
+    echo "Add it to ~/.bashrc, ~/.zshrc, or ~/.bash_profile, then reload your shell."
+    echo "This will allow you to create job files easily: addjob my-task"
 fi

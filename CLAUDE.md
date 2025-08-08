@@ -59,7 +59,7 @@ Your Computer
 ./setup.sh
 
 # Build directives - compiles all directives into CLAUDE_global_directives.md
-./build.sh
+./rebuild_claude_md.sh
 
 # Test agents/commands after modification
 # For agents: Use Task tool with subagent_type
@@ -102,7 +102,7 @@ Your Computer
 - After any modification, immediately test the component
 - Agents: Invoke via Task tool and verify expected behavior
 - Commands: Execute the slash command and verify output
-- Run `./build.sh` after modifying directives
+- Run `./rebuild_claude_md.sh` after modifying directives
 
 ## Project Overview
 
@@ -141,7 +141,7 @@ agent/
 ├── directives/       # Behavioral modification files
 ├── resources/        # Documentation and reference materials
 ├── setup.sh          # Creates symlinks to ~/.claude/
-└── build.sh          # Compiles directives into CLAUDE_global_directives.md
+└── rebuild_claude_md.sh          # Compiles directives into CLAUDE_global_directives.md
 ```
 
 ## Reference Documentation

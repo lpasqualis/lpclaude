@@ -84,7 +84,7 @@ cd ~/claude-framework
 ```
 
 This will:
-- ✅ Automatically run `build.sh` to compile directives
+- ✅ Automatically run `rebuild_claude_md.sh` to compile directives
 - ✅ Create symlinks from `~/.claude/` to this repository
 - ✅ Make all agents and commands available globally
 - ✅ Skip any existing symlinks (non-destructive)
@@ -97,26 +97,48 @@ Once installed:
 - **In this repository**: You also get special maintenance commands from `.claude/`
 - **Changes are instant**: Edit an agent here, it's immediately updated everywhere
 
+#### Setting Up the addjob Alias (Recommended)
+
+After running setup.sh, the `addjob` utility is available at `~/.claude/utils/addjob`. To make it easily accessible from anywhere, add this alias to your shell profile (`~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`):
+
+```bash
+alias addjob='python3 ~/.claude/utils/addjob'
+```
+
+Then reload your shell:
+```bash
+source ~/.zshrc  # or ~/.bashrc or ~/.bash_profile
+```
+
+This allows you to create job files from anywhere:
+```bash
+addjob my-task                      # Create a sequential job
+addjob --parallel worker-task       # Create a parallel job
+echo "Task content" | addjob --stdin task-name  # Create from stdin
+```
+
+For more addjob usage examples and options, see `utils/README.md`.
+
 #### Important: Building CLAUDE_global_directives.md
 
-The `CLAUDE_global_directives.md` file is **automatically generated** and should **NEVER be edited manually**. This file is built by the `build.sh` script, which:
+The `CLAUDE_global_directives.md` file is **automatically generated** and should **NEVER be edited manually**. This file is built by the `rebuild_claude_md.sh` script, which:
 
 1. **Collects all directive files** from the `directives/` directory (excluding .gitignore and local files)
 2. **Aggregates their content** into a single comprehensive file
 3. **Adds metadata** including build timestamp
 4. **Creates the final CLAUDE_global_directives.md** file
 
-**When to run build.sh:**
+**When to run rebuild_claude_md.sh:**
 - Automatically runs when you execute `setup.sh`
 - **Must be run manually** whenever you:
   - Add a new directive file to `directives/`
   - Modify any existing directive file
   - Delete a directive file
 
-**How to run build.sh:**
+**How to run rebuild_claude_md.sh:**
 ```bash
 # From the repository root
-./build.sh
+./rebuild_claude_md.sh
 ```
 
 **Build process details:**
@@ -205,6 +227,17 @@ The `CLAUDE_global_directives.md` file is **automatically generated** and should
 - Consolidating redundant documentation
 - Ensuring code examples and API documentation are current
 - Note: Excludes CLAUDE.md files (use specialized agents for those)
+
+### 9. Addjob Agent
+**File:** `agents/addjob.md`  
+**Purpose:** Creates job files for deferred task execution using the addjob utility when tasks need to be scheduled for later processing.  
+**Use Cases:**
+- Scheduling complex operations for later execution
+- Creating batch processing jobs
+- Queueing related tasks for sequential or parallel execution
+- Deferring work that doesn't need immediate execution
+- Creating self-contained tasks that will run via `/jobs:do` command
+- **Proactive**: Automatically triggered when tasks need to be deferred
 
 ## Command-Specific Subagents (cmd-*)
 
@@ -361,6 +394,7 @@ The repository includes specialized subagents designed to work in parallel with 
 │   ├── subagent-optimizer.md      # Optimizes subagent definitions
 │   ├── memory-keeper.md           # Manages long-term memory
 │   ├── hack-spotter.md            # Detects technical debt
+│   ├── addjob.md                  # Creates deferred job files
 │   └── cmd-*.md                   # Command-specific parallel workers
 │
 ├── commands/                       # GLOBAL COMMANDS (symlinked to ~/.claude/)
@@ -398,7 +432,7 @@ The repository includes specialized subagents designed to work in parallel with 
 ├── CLAUDE.md                       # Project instructions for Claude
 ├── README.md                       # This file
 ├── setup.sh                        # Installation script
-└── build.sh                        # Directive compiler
+└── rebuild_claude_md.sh                        # Directive compiler
 ```
 
 ## 🔧 Development Workflow
@@ -495,7 +529,7 @@ The `resources/` directory contains critical documentation:
 | Task | Command/Action |
 |------|---------------|
 | Install framework globally | `./setup.sh` |
-| Update directives | `./build.sh` |
+| Update directives | `./rebuild_claude_md.sh` |
 | Create new agent | Add to `agents/`, test with Task tool |
 | Create new command | Add to `commands/namespace/`, test with slash |
 | Update embedded knowledge | `/maintenance:update-knowledge-base` |
