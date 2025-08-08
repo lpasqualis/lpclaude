@@ -57,7 +57,16 @@ For each component, check for:
 
 ### 4. Generate Update Report
 
-Create a comprehensive report showing:
+Create a comprehensive report and save it to `knowledge-base-reports/` folder with timestamp:
+
+**Report Location**: `knowledge-base-reports/update-report-YYYY-MM-DD-HHMMSS.md`
+
+First ensure the reports directory exists:
+```bash
+mkdir -p knowledge-base-reports
+```
+
+Then create the report showing:
 
 #### Component Discovery Results
 ```markdown
@@ -108,6 +117,8 @@ Create a comprehensive report showing:
 ### Recommended Actions
 1. [Specific update instructions]
 ```
+
+Save the complete report to the timestamped file in `knowledge-base-reports/`.
 
 ### 5. Apply Updates (Optional)
 
