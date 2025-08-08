@@ -2,14 +2,60 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-This project is a Claude Code framework of agents, commands and directives.
+## Project Purpose
+
+This is the **Claude Framework Development Workspace** - a central repository where custom agents, commands, and directives are developed and maintained for global use across all projects. This repository serves as the source of truth for your personal Claude Code customizations.
+
+## Critical Architecture: Dual .claude Folder System
+
+This project uses a sophisticated dual-folder architecture for Claude configurations:
+
+### 1. Global Configuration (via Symlinks)
+- **Location**: `~/.claude/` (your home directory)
+- **Purpose**: Makes agents and commands available globally across ALL projects
+- **How it works**: The `setup.sh` script creates symlinks from `~/.claude/` to this repository's folders:
+  - `~/.claude/agents/` → `{this-repo}/agents/`
+  - `~/.claude/commands/` → `{this-repo}/commands/`
+  - `~/.claude/resources/` → `{this-repo}/resources/`
+  - `~/.claude/CLAUDE.md` → `{this-repo}/CLAUDE_global_directives.md`
+- **Result**: Any project you work on can use these agents and commands
+
+### 2. Project-Local Configuration (Maintenance Commands)
+- **Location**: `.claude/` (in THIS repository only)
+- **Purpose**: Contains specialized maintenance commands for developing the framework itself
+- **Contents**:
+  - `.claude/commands/maintenance/` - Framework maintenance commands
+  - `.claude/settings.local.json` - Local tool permissions (gitignored)
+- **Special commands**: Available ONLY when working in this framework project:
+  - `/maintenance:update-knowledge-base` - Updates embedded Claude Code knowledge
+- **Why separate**: These meta-commands are for framework development, not general use
+
+### Understanding the Flow
+```
+Your Computer
+├── ~/.claude/                    # Global Claude config (symlinks)
+│   ├── agents/ → this-repo/agents/
+│   ├── commands/ → this-repo/commands/
+│   └── resources/ → this-repo/resources/
+│
+├── this-repository/               # Framework development workspace
+│   ├── agents/                   # Source of global agents
+│   ├── commands/                  # Source of global commands
+│   ├── resources/                 # Source of global resources
+│   ├── .claude/                   # LOCAL maintenance commands
+│   │   └── commands/maintenance/  # Framework-only commands
+│   └── setup.sh                   # Creates the symlinks
+│
+└── other-projects/                # Your other projects
+    └── (uses global ~/.claude/)  # Access to all agents/commands
+```
 
 ## Bash Commands
 
 **ALWAYS use these commands when working in this repository:**
 
 ```bash
-# Initial setup - creates symlinks to ~/.claude/
+# Initial setup - creates symlinks from ~/.claude/ to this repository
 ./setup.sh
 
 # Build directives - compiles all directives into CLAUDE_global_directives.md
@@ -18,6 +64,9 @@ This project is a Claude Code framework of agents, commands and directives.
 # Test agents/commands after modification
 # For agents: Use Task tool with subagent_type
 # For commands: Type the slash command (e.g., /memory:learn, /git:commit-and-push)
+
+# Framework maintenance (only available in THIS project)
+/maintenance:update-knowledge-base
 ```
 
 ## Workflow Instructions

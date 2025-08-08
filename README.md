@@ -1,30 +1,101 @@
-**Version:** 1.1  
-**Date:** August 7, 2025  
+**Version:** 2.0  
+**Date:** August 8, 2025  
 **Author:** Lorenzo Pasqualis  
 
-# Claude Agent Configuration Repository
+# Claude Framework Development Workspace
 
-This repository contains custom agents and commands for Claude AI, designed to enhance productivity and maintain project-specific conventions.
+**This is the central repository for developing and maintaining custom Claude Code agents, commands, and directives that are used globally across all your projects.**
 
-## Usage
+## 🎯 What This Repository Does
 
-These agents and commands are designed to be used with Claude AI to enhance project management, code quality, and knowledge retention. Each agent and command has specific trigger conditions and use cases as outlined in their respective files.
+This repository serves as your personal Claude Code customization framework. Once set up, the agents and commands you develop here become available in EVERY project you work on. Think of it as your personal Claude Code extension library.
 
-### Installation
+## 🏗️ Architecture: The Dual .claude Folder System
 
-To use this repository's agents and commands globally, run the setup script:
+This project implements a sophisticated dual-configuration system that separates global tools from framework maintenance tools:
 
+### 1️⃣ Global Configuration (`~/.claude/` - Symlinked)
+**What it is:** Your home directory's Claude configuration that makes agents/commands available everywhere.
+
+**How it works:**
+- Running `./setup.sh` creates symlinks from `~/.claude/` to this repository
+- These symlinks make your custom agents and commands available in ALL projects
+- Any changes you make here are immediately available globally
+
+**What gets symlinked:**
+```
+~/.claude/agents/ → {this-repo}/agents/
+~/.claude/commands/ → {this-repo}/commands/
+~/.claude/resources/ → {this-repo}/resources/
+~/.claude/CLAUDE.md → {this-repo}/CLAUDE_global_directives.md
+```
+
+### 2️⃣ Project-Local Configuration (`.claude/` - In This Repo)
+**What it is:** Special maintenance commands that are ONLY available when working on the framework itself.
+
+**Why it exists:**
+- Contains meta-commands for maintaining the framework
+- These commands shouldn't be available in regular projects
+- Includes specialized tools like `/maintenance:update-knowledge-base`
+
+**Contents:**
+```
+.claude/
+├── commands/
+│   └── maintenance/           # Framework maintenance commands
+│       └── update-knowledge-base.md
+└── settings.local.json       # Local permissions (gitignored)
+```
+
+### 📊 Visual Architecture
+```
+Your Development Environment
+│
+├── ~/.claude/                      # GLOBAL: Available everywhere
+│   ├── agents/ ────────────────┐   # (symlinks to this repo)
+│   ├── commands/ ──────────────┤
+│   └── resources/ ─────────────┤
+│                               │
+├── /path/to/this/repository/ ◄─┘   # FRAMEWORK: Development workspace
+│   ├── agents/                     # Source of global agents
+│   ├── commands/                   # Source of global commands  
+│   ├── resources/                  # Source of documentation
+│   ├── .claude/                    # LOCAL: Framework-only tools
+│   │   └── commands/maintenance/   # Meta-commands for framework
+│   └── setup.sh                    # Creates the symlinks
+│
+└── /path/to/other/projects/        # OTHER PROJECTS
+    └── (automatically use ~/.claude) # Have access to all your tools
+```
+
+## 🚀 Installation & Setup
+
+### First-Time Setup
+
+1. **Clone this repository** to a permanent location:
 ```bash
-# From the repository root
+git clone [repository-url] ~/claude-framework
+cd ~/claude-framework
+```
+
+2. **Run the setup script** to install globally:
+```bash
 ./setup.sh
 ```
 
-The setup script will:
-- **Automatically run `build.sh` first** to ensure CLAUDE_global_directives.md is up to date
-- Automatically detect the repository path
-- Create all necessary symlinks
-- Skip existing files/symlinks (non-destructive)
-- Report which symlinks were created or skipped
+This will:
+- ✅ Automatically run `build.sh` to compile directives
+- ✅ Create symlinks from `~/.claude/` to this repository
+- ✅ Make all agents and commands available globally
+- ✅ Skip any existing symlinks (non-destructive)
+- ✅ Report what was installed
+
+### After Setup
+
+Once installed:
+- **In any project**: Your custom agents and commands are automatically available
+- **In this repository**: You also get special maintenance commands from `.claude/`
+- **Changes are instant**: Edit an agent here, it's immediately updated everywhere
 
 #### Important: Building CLAUDE_global_directives.md
 
@@ -280,61 +351,152 @@ The repository includes specialized subagents designed to work in parallel with 
 - Updates plan status as work progresses
 - Handles multiple active plans
 
-## Directory Structure
+## 📁 Repository Structure
 
 ```
-├── agents/
-│   ├── claude-md-optimizer.md
-│   ├── cmd-capture-session-analyzer.md
-│   ├── cmd-commit-and-push-analyzer.md
-│   ├── cmd-commit-and-push-security.md
-│   ├── cmd-commit-and-push-validator.md
-│   ├── cmd-create-command-validator.md
-│   ├── cmd-learn-analyzer.md
-│   ├── cmd-review-subagent-ecosystem-analyzer.md
-│   ├── command-optimizer.md
-│   ├── documentation-auditor.md
-│   ├── hack-spotter.md
-│   ├── implan-auditor.md
-│   ├── implan-generator.md
-│   ├── memory-keeper.md
-│   └── subagent-optimizer.md
-├── directives/
-│   ├── .gitignore
-│   └── CLAUDE_global_directives.md
-├── commands/
+.
+├── agents/                         # GLOBAL AGENTS (symlinked to ~/.claude/)
+│   ├── claude-md-optimizer.md     # Optimizes CLAUDE.md files
+│   ├── command-optimizer.md       # Optimizes command definitions
+│   ├── subagent-optimizer.md      # Optimizes subagent definitions
+│   ├── memory-keeper.md           # Manages long-term memory
+│   ├── hack-spotter.md            # Detects technical debt
+│   └── cmd-*.md                   # Command-specific parallel workers
+│
+├── commands/                       # GLOBAL COMMANDS (symlinked to ~/.claude/)
+│   ├── commands/                  # Command management
+│   │   ├── create.md              # /commands:create
+│   │   └── normalize.md           # /commands:normalize
+│   ├── docs/                      # Documentation
+│   │   ├── capture-session.md    # /docs:capture-session
+│   │   └── capture-strategy.md   # /docs:capture-strategy
+│   ├── git/                       # Git operations
+│   │   └── commit-and-push.md    # /git:commit-and-push
+│   ├── implan/                    # Implementation plans
+│   │   ├── create.md              # /implan:create
+│   │   └── execute.md             # /implan:execute
+│   ├── memory/                    # Memory management
+│   │   └── learn.md               # /memory:learn
+│   └── subagents/                 # Subagent management
+│       └── review-ecosystem.md    # /subagents:review-ecosystem
+│
+├── .claude/                        # LOCAL MAINTENANCE (this repo only)
 │   ├── commands/
-│   │   ├── create.md
-│   │   └── normalize.md
-│   ├── docs/
-│   │   ├── capture-session.md
-│   │   └── capture-strategy.md
-│   ├── git/
-│   │   └── commit-and-push.md
-│   ├── implan/
-│   │   ├── create.md
-│   │   └── execute.md
-│   ├── memory/
-│   │   └── learn.md
-│   └── subagents/
-│       └── review-ecosystem.md
-├── resources/
-│   └── commands_and_agents.md
-├── .gitignore
-├── CLAUDE.md
-├── README.md
-└── setup.sh
+│   │   └── maintenance/
+│   │       └── update-knowledge-base.md  # /maintenance:update-knowledge-base
+│   └── settings.local.json        # Local permissions (gitignored)
+│
+├── resources/                      # DOCUMENTATION (symlinked to ~/.claude/)
+│   ├── commands_and_agents.md     # Technical deep dive
+│   ├── slash_commands_best_practices_research.md
+│   ├── subagent_invocation_research.md
+│   └── knowledge-base-manifest.json  # Tracks embedded knowledge
+│
+├── directives/                     # BEHAVIOR MODIFIERS
+│   └── *.md                       # Compiled into CLAUDE_global_directives.md
+│
+├── CLAUDE.md                       # Project instructions for Claude
+├── README.md                       # This file
+├── setup.sh                        # Installation script
+└── build.sh                        # Directive compiler
 ```
 
-## Resources
+## 🔧 Development Workflow
 
-The `resources/` directory contains supporting files:
-- **`commands_and_agents.md`**: Comprehensive technical deep dive into Claude Code subagents and agentic workflows, including architecture, creation, invocation mechanics, and best practices for parallel execution
+### Creating New Components
 
-## Claude Directives
+#### New Agent
+```bash
+# 1. Create agent file
+touch agents/my-new-agent.md
 
-The `directives/` directory contains:
-- **`CLAUDE_global_directives.md`**: A dynamic loader for global Claude directives that implements situational directive loading based on context and relevance. This file can be symlinked from `~/.claude/CLAUDE.md` to enable automatic loading of relevant directive files
-- This directory enables version control of personal Claude preferences
-- The dynamic loading system analyzes directive filenames and content to apply only relevant directives based on the current project type, language, or context
-- Additional directive files can be added for specific contexts (language-specific, project-type-specific, etc.)
+# 2. Add YAML frontmatter:
+---
+name: my-new-agent
+description: Clear description for automatic invocation
+proactive: true  # Optional
+---
+
+# 3. Test immediately
+# Use Task tool with subagent_type: "my-new-agent"
+```
+
+#### New Command
+```bash
+# 1. Create command in appropriate namespace
+touch commands/namespace/my-command.md
+
+# 2. Add YAML frontmatter:
+---
+name: /namespace:my-command
+description: What this command does
+# NEVER add 'model' field - causes failure!
+---
+
+# 3. Test immediately
+# Type: /namespace:my-command
+```
+
+### Testing Your Work
+
+**In THIS repository:**
+- Test agents: Use Task tool with the agent name
+- Test commands: Type the slash command
+- Test maintenance: Use `/maintenance:update-knowledge-base`
+
+**In OTHER projects:**
+- Your new agents/commands are immediately available
+- No need to reinstall or update
+
+### Maintenance Commands (Framework Only)
+
+These commands are available ONLY when working in this repository:
+
+#### `/maintenance:update-knowledge-base`
+- Updates embedded Claude Code knowledge in optimizers
+- Fetches latest official documentation
+- Identifies components needing updates
+- Run quarterly or after Claude Code releases
+
+## 📚 Resources & Documentation
+
+The `resources/` directory contains critical documentation:
+
+### Best Practices Guides
+- **`slash_commands_best_practices_research.md`** - Command patterns and anti-patterns
+- **`subagent_invocation_research.md`** - Agent architecture and invocation
+- **`commands_and_agents.md`** - Technical deep dive and constraints
+
+### Knowledge Management
+- **`knowledge-base-manifest.json`** - Tracks which components have embedded Claude Code knowledge
+- Updated via `/maintenance:update-knowledge-base` command
+- Ensures optimizers stay current with Claude Code updates
+
+## 🎓 Understanding the System
+
+### Why This Architecture?
+
+1. **Global Availability**: Develop once, use everywhere
+2. **Clean Separation**: Framework tools don't pollute regular projects
+3. **Instant Updates**: Changes propagate immediately via symlinks
+4. **Version Control**: Everything is tracked in git
+5. **Maintenance Isolation**: Meta-commands only when needed
+
+### Key Concepts
+
+- **Agents**: Specialized AI workers for focused tasks
+- **Commands**: User-triggered workflows with full context
+- **Directives**: Behavioral modifications for Claude
+- **cmd-* agents**: Parallel workers for command optimization
+- **Maintenance commands**: Meta-tools for framework development
+
+### Common Tasks
+
+| Task | Command/Action |
+|------|---------------|
+| Install framework globally | `./setup.sh` |
+| Update directives | `./build.sh` |
+| Create new agent | Add to `agents/`, test with Task tool |
+| Create new command | Add to `commands/namespace/`, test with slash |
+| Update embedded knowledge | `/maintenance:update-knowledge-base` |
+| Check what's installed | `ls -la ~/.claude/` |
