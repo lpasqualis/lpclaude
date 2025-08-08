@@ -1,8 +1,10 @@
 ---
+name: /implan:execute
 description: Resume work on an existing implementation plan
 argument-hint: "[implementation plan name] (optional - will find active plan if not specified)"
-allowed-tools: Read, Edit, Write, LS, Glob, Grep, Bash, Task
+allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:51:44 -->
 
 Load and continue work on an implementation plan from the project's `docs/implans/` directory.
 
@@ -13,10 +15,8 @@ Load and continue work on an implementation plan from the project's `docs/implan
 - If no argument provided:
   - Look for all `ACTIVE_*_implan.md` files in `docs/implans/`
   - If only one active plan exists, use it
-  - If multiple active plans exist, offer parallel processing option:
-    - List all active plans for user selection
-    - If user wants to work on multiple plans, use parallel execution strategy
-  - If no active plans exist, inform the user and suggest using `/create-implan`
+  - If multiple active plans exist, list them and ask the user to select one
+  - If no active plans exist, inform the user and suggest using `/implan:create`
 
 ### 2. Read and Analyze the Plan
 Read the entire implementation plan document and pay special attention to:
@@ -41,8 +41,9 @@ Read the entire implementation plan document and pay special attention to:
 
 ### 5. Quality Assurance Integration
 - For significant progress or plan completion, use Task tool with `implan-auditor` subagent
-- Auditor will verify implementation completeness and identify any stubs or gaps
+- The auditor will verify implementation completeness and identify any stubs or gaps
 - Apply audit recommendations before marking the session complete
+- Ensure all tests pass before marking implementation items as complete
 
 ## Quality Standards
 
@@ -58,24 +59,14 @@ Read the entire implementation plan document and pay special attention to:
 - Add clear notes for the next session
 - Save all changes to the implementation plan
 
-## Parallel Execution Strategy
+## Implementation Focus
 
-When working with multiple implementation plans:
+This command is designed to work on **one implementation plan at a time** to ensure:
+- Full context awareness of the codebase and plan details
+- Proper sequential execution of interdependent tasks
+- Careful validation and testing at each step
+- Accurate progress tracking and documentation updates
 
-### Multiple Plan Processing
-1. **Identify Plans**: List all active plans for user selection
-2. **Batch Processing**: If user selects multiple plans (3+), use parallel execution:
-   - Use Task tool with subagent_type: 'implan-auditor' for plan analysis
-   - Process up to 10 plans in parallel
-   - Batch remaining plans if exceeding system limit
-3. **Aggregated Results**: 
-   - Consolidate status from all plans
-   - Identify cross-plan dependencies
-   - Provide unified next steps recommendation
-
-### Integration Strategy
-- **Single Plan**: Direct implementation with integrated quality checks
-- **Multiple Plans**: Parallel analysis with coordinated execution
-- **Quality Gates**: Use implan-auditor proactively for verification
+**Note**: Implementation plans require focused, contextual work and cannot be effectively parallelized.
 
 **Start by loading the implementation plan and showing a summary of the current status and what needs to be done next.**

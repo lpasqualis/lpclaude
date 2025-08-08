@@ -1,8 +1,10 @@
 ---
+name: /docs:capture-strategy
 description: Create comprehensive project documentation capturing current session context and implementation strategy
 argument-hint: [project name or documentation focus area]
-allowed-tools: Read, Write, LS, Glob, Grep, Task
+allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:52:36 -->
 
 # Capture Strategy Documentation
 

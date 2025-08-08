@@ -1,8 +1,10 @@
 ---
+name: /subagents:review-ecosystem
 description: Audit subagents for compatibility, overlap, and optimization opportunities
 argument-hint: "[agent-name1 agent-name2...] or [path/to/agent.md...] (optional - defaults to all agents)"
-allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task, WebFetch
+allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:50:04 -->
 
 Analyze the provided list of sub-agent definition files. Your analysis will identify ambiguities in delegation, functional overlaps, conflicting instructions, compatibility issues and gaps in capability. Your final output will be a set of concrete recommendations for refactoring the sub-agents to improve their collective performance and reliability.
 
@@ -10,7 +12,7 @@ Analyze the provided list of sub-agent definition files. Your analysis will iden
 
 ## Step 1 - Understand Sub-Agents
 
-- Read and understand any latest updates about agents: https://docs.anthropic.com/en/docs/claude-code/sub-agents (this documentation is the most recent and authoritative source)
+- Use your embedded knowledge of Claude Code subagent best practices and current documentation
 
 ## Step 2 - Determine Scope
 

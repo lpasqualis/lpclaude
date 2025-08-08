@@ -42,7 +42,7 @@ For each file not in manifest, analyze content to determine if it contains embed
 - Documentation about Claude Code architecture
 
 **Classification:**
-- **Has embedded knowledge**: Contains specific rules, requirements, or patterns about Claude Code
+- **Has embedded knowledge**: Contains (or SHOULD contain but is lacking) specific rules, requirements, or patterns about Claude Code
 - **No embedded knowledge**: Pure functionality without Claude Code-specific rules
 - **Already tracked**: Present in manifest with accurate knowledge areas
 - **Needs update**: In manifest but knowledge areas have changed
@@ -68,6 +68,8 @@ For each resource document found and read:
    - Naming conventions and anti-patterns
    - Proactive invocation triggers
    - Command vs subagent architectural decisions
+   - General best practices
+   - Features and capabilities that could be used for maximum benefit
 2. **Build a comprehensive baseline** of current best practices
 3. **Create a knowledge map** showing which patterns are documented where
 
@@ -94,7 +96,7 @@ Specifically check for:
   - Components not following documented best practices
   - Missing implementation of documented patterns
   - Deviations from established conventions
-  - Opportunities to apply documented optimizations
+  - Opportunities to apply documented optimizations or features
 - **Against Official Documentation**:
   - New features not yet in local resources
   - Deprecated patterns still in local documentation
