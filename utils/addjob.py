@@ -118,10 +118,10 @@ def renumber_jobs(jobs_dir):
     print(f"\nSuccessfully renumbered {len(renames)} job file(s).")
 
 
-def create_job_file(job_number, name, is_parallel, jobs_dir):
+def create_job_file(job_number, name, is_parallel, jobs_dir, content=None):
     """Create a new job file with the specified parameters."""
     # Ensure jobs directory exists
-    jobs_dir.mkdir(exist_ok=True)
+    jobs_dir.mkdir(parents=True, exist_ok=True)
     
     # Construct filename
     extension = ".parallel.md" if is_parallel else ".md"
@@ -133,11 +133,11 @@ def create_job_file(job_number, name, is_parallel, jobs_dir):
         print(f"Error: File {filename} already exists.")
         return None
     
-    # Create file with default content
-    default_content = DEFAULT_CONTENT
+    # Use provided content or default
+    file_content = content if content is not None else DEFAULT_CONTENT
     
     try:
-        filepath.write_text(default_content)
+        filepath.write_text(file_content)
         print(f"Created job file: {filename}")
         return filepath
     except Exception as e:
@@ -176,6 +176,8 @@ Examples:
   %(prog)s --parallel worker  # Create parallel job file NNNN-worker.parallel.md
   %(prog)s --n 1500 custom    # Create job file 1500-custom.md
   %(prog)s --renumber         # Renumber all existing job files
+  %(prog)s -jf ~/my-jobs task # Use custom job folder
+  echo "Task content" | %(prog)s --stdin task  # Create from stdin
         """
     )
     
@@ -187,14 +189,23 @@ Examples:
                         help='Use specific job number instead of calculated')
     parser.add_argument('--renumber', action='store_true',
                         help='Renumber all existing jobs from 0010 in increments of 10')
+    parser.add_argument('--job-folder', '-jf', type=str, metavar='PATH',
+                        help='Use specific job folder instead of project-root/jobs')
+    parser.add_argument('--stdin', action='store_true',
+                        help='Read job content from stdin instead of opening editor')
     
     args = parser.parse_args()
     
-    # Get project root and jobs directory
-    project_root = get_project_root()
-    jobs_dir = project_root / 'jobs'
-    
-    print(f"Working in project: {project_root}")
+    # Get jobs directory
+    if args.job_folder:
+        # Use custom job folder
+        jobs_dir = Path(args.job_folder).expanduser().resolve()
+        print(f"Using job folder: {jobs_dir}")
+    else:
+        # Use default project-root/jobs
+        project_root = get_project_root()
+        jobs_dir = project_root / 'jobs'
+        print(f"Working in project: {project_root}")
     
     # Handle renumbering
     if args.renumber:
@@ -216,12 +227,27 @@ Examples:
     # Sanitize the name (remove special characters that might cause issues)
     name = re.sub(r'[^\w\-]', '-', args.name)
     
+    # Read content from stdin if requested
+    content = None
+    if args.stdin:
+        if sys.stdin.isatty():
+            print("Error: --stdin specified but no input provided via pipe")
+            sys.exit(1)
+        content = sys.stdin.read()
+        if not content:
+            print("Error: Empty content received from stdin")
+            sys.exit(1)
+    
     # Create the job file
-    filepath = create_job_file(job_number, name, args.parallel, jobs_dir)
+    filepath = create_job_file(job_number, name, args.parallel, jobs_dir, content)
     
     if filepath:
-        # Open in editor
-        open_in_editor(filepath)
+        if args.stdin:
+            # Don't open editor when using stdin
+            print(f"Job file created from stdin: {filepath}")
+        else:
+            # Open in editor
+            open_in_editor(filepath)
 
 
 if __name__ == '__main__':

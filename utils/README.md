@@ -70,6 +70,17 @@ addjob --parallel data-processing
 # Create a job with specific number
 addjob --n 2000 high-priority
 
+# Use a custom job folder
+addjob -jf ~/my-jobs-folder task-name
+addjob --job-folder /path/to/jobs daily-task
+
+# Create job from stdin (for automation)
+echo "Run all unit tests and fix failures" | addjob --stdin test-task
+cat instructions.md | addjob --stdin --parallel batch-job
+
+# Combine features
+echo "Process data files" | addjob --stdin --parallel -jf ~/batch-jobs data-processor
+
 # Renumber all existing jobs
 addjob --renumber
 
@@ -106,6 +117,55 @@ export EDITOR=subl
 # For any other editor
 export EDITOR=your-editor-command
 ```
+
+## Advanced Features
+
+### Custom Job Folders
+Use the `--job-folder` or `-jf` option to specify a custom directory for job files instead of the default `project-root/jobs`:
+
+```bash
+# Use absolute path
+addjob -jf /home/user/global-jobs my-task
+
+# Use relative path
+addjob -jf ../shared-jobs team-task
+
+# Use home directory expansion
+addjob -jf ~/my-jobs personal-task
+```
+
+This is useful for:
+- Maintaining global job queues across projects
+- Sharing job folders between team members
+- Organizing jobs by category or priority
+
+### Automated Job Creation via stdin
+Use the `--stdin` option to create jobs programmatically without opening an editor:
+
+```bash
+# Simple command
+echo "Update documentation for API endpoints" | addjob --stdin doc-task
+
+# Multi-line instructions
+cat <<EOF | addjob --stdin complex-task
+1. Review all test files
+2. Update deprecated assertions
+3. Run full test suite
+4. Fix any failures
+EOF
+
+# From a file
+cat task-template.md | addjob --stdin --parallel batch-task
+
+# Generated from scripts
+./generate-tasks.sh | addjob --stdin generated-task
+```
+
+When using `--stdin`:
+- The editor is NOT opened after file creation
+- Content is read from standard input
+- Useful for CI/CD pipelines and automation scripts
+- Can be combined with other options (--parallel, -jf, --n)
 
 ## File Naming Convention
 
