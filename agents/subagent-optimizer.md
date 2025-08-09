@@ -61,6 +61,7 @@ When given the name of a subagent or path to a subagent file, you will perform t
     * **D. Use Case Examples:** Include phrases like "Use when..." or "Invoke to..." with concrete scenarios
     * **E. @-mention Support:** Agents can be invoked via @-mentions in commands (e.g., `@agent-name`). Ensure the agent name follows lowercase-hyphenated format for proper typeahead support
     * **Example of a GOOD description:** "An expert test automation specialist for Python applications using pytest. Invoke this agent to write comprehensive unit and integration tests from requirements, debug failing test suites by analyzing pytest output and stack traces, ensure implementations aren't overfitting to existing tests, or create test fixtures and mocks. Use when tests are failing, when new features need test coverage, or when you need to improve test quality and coverage metrics."
+    * **F. Slash Command Clarity:** When referencing Claude slash commands in descriptions, always specify they are "Claude slash commands" or "slash commands" to avoid confusion with bash commands
 
 **3. Audit Tool Permissions and Format:**
 * **First, audit the `tools` field.**
@@ -105,7 +106,17 @@ When given the name of a subagent or path to a subagent file, you will perform t
     * **A. High-Risk Override Check:** If `Bash` is explicitly present in the `tools` list, ensure the color is `Red`. This overrides all other analysis.
     * **B. Semantic-First Analysis:** If the `Red` override is not triggered, determine the agent's primary function from its prompt and ensure the color matches the schema.
 
-**7. Finalize and Report:**
+**7. Check for Slash Command Reference Clarity:**
+* **Audit the system prompt for slash command references that could be misinterpreted:**
+    * Look for patterns like "Use the command /command-name" or "Run /command-name"
+    * These can be confused with bash commands and cause execution failures
+    * **Fix by clarifying:** Replace with explicit language:
+        - Instead of: "Use the command /docs:readme-audit"
+        - Use: "Use the Claude slash command /docs:readme-audit" or "Invoke the /docs:readme-audit slash command"
+        - Alternative: "Have the user run the slash command /docs:readme-audit"
+    * This prevents AI confusion between slash commands and executable paths
+
+**8. Finalize and Report:**
 * **If SIGNIFICANT changes were made during the audit (per the Significance Threshold criteria):**
     * Assemble the newly optimized YAML frontmatter and structured system prompt
     * **Step 1 - Write optimized content WITHOUT timestamp:**
