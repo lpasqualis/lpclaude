@@ -113,24 +113,40 @@ That's it! Your custom agents and commands are now available in every project.
 
 ## The Framework That Improves Itself
 
-### Automatic Optimization - Just Ask!
+### 🧠 Intelligent Optimizers - Transform Your Extensions
 
-The framework includes powerful optimizers that **automatically trigger** when you ask Claude to improve components:
+The framework includes sophisticated optimizers that don't just fix issues - they **transform your extensions into high-performance, parallel-capable systems**:
 
+#### Command Optimizer - Makes Commands Lightning Fast
 ```bash
-# After creating or modifying any component, just say:
-"Please optimize this agent"
-"Make this command better"
-"Review my new command for best practices"
+# After creating any command, just say:
+"Please optimize my command"
 
-# The framework's optimizers will automatically:
-# ✅ Apply current best practices
-# ✅ Fix common issues
-# ✅ Enhance effectiveness
-# ✅ Ensure proper structure
+# The command-optimizer will:
+# ⚡ Analyze for parallelization opportunities
+# ⚡ Automatically create specialized subagents for parallel execution
+# ⚡ Convert sequential operations into concurrent workflows
+# ⚡ Set up proper tool permissions and model selection
+# ⚡ Transform monolithic commands into efficient, distributed systems
+
+# Example: A command that analyzes 50 files sequentially becomes
+# a parallel system processing 10 files simultaneously!
 ```
 
-**No manual invocation needed** - The optimizers are marked as `proactive: true` and trigger automatically when you mention optimization!
+#### Subagent Optimizer - Ensures Reliable Invocation
+```bash
+# After creating any agent, just say:
+"Optimize this agent"
+
+# The subagent-optimizer will:
+# 🎯 Enhance descriptions with trigger keywords for automatic invocation
+# 🎯 Optimize model selection (haiku for speed, opus for complexity)
+# 🎯 Validate YAML frontmatter and proactive settings
+# 🎯 Ensure proper tool permissions are granted
+# 🎯 Add semantic colors and improve discoverability
+```
+
+**The Magic**: These optimizers are marked as `proactive: true` - they trigger automatically when you mention optimization. They don't just fix problems; they architect solutions that leverage Claude's full parallel processing capabilities!
 
 ## Featured Extensions
 
@@ -140,11 +156,17 @@ The framework includes powerful optimizers that **automatically trigger** when y
 - **`/docs:capture-session`** - Document work for seamless handoff
 - **`/implan:create`** - Generate detailed implementation plans
 
-### Code Quality
+### Code Quality & Performance
 - **`hack-spotter`** - Detect technical debt and security issues
 - **`documentation-auditor`** - Keep docs in sync with code
-- **`command-optimizer`** - Optimize Claude command definitions
-- **`subagent-optimizer`** - Improve agent effectiveness
+- **`command-optimizer`** - Transform commands into parallel-capable systems
+  - Automatically creates specialized worker subagents
+  - Converts sequential workflows to concurrent execution
+  - Optimizes for up to 10x performance improvement
+- **`subagent-optimizer`** - Maximize agent effectiveness
+  - Ensures reliable automatic invocation
+  - Optimizes model selection and tool permissions
+  - Enhances discoverability through keyword optimization
 
 ### Development Workflow
 
