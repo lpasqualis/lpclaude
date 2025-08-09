@@ -33,6 +33,21 @@ Task(subagent_type="documentation-auditor", prompt="Audit API docs")
 /docs:capture-session
 ```
 
+### Job Queue System - Never Lose Focus
+```bash
+# Queue tasks without interrupting your flow
+addjob "Refactor the authentication module"
+addjob "Update API documentation" 
+addjob "Run comprehensive test suite"
+addjob "Review and fix linting issues"
+
+# Later, execute all queued jobs in parallel with a single command
+/jobs:do
+
+# The system processes up to 10 jobs simultaneously, 
+# maintaining context and handling each task independently
+```
+
 ### Global Directives - Shape Claude's Behavior
 - Enforce coding standards across all projects
 - Set project-specific conventions
@@ -132,8 +147,16 @@ The framework includes powerful optimizers that **automatically trigger** when y
 - **`subagent-optimizer`** - Improve agent effectiveness
 
 ### Development Workflow
-- **`/jobs:do`** - Execute deferred tasks
-- **`addjob` utility** - Queue tasks for later execution
+
+#### 🚀 Powerful Job Queue System - Work Without Interruptions
+- **`addjob` utility** - Queue tasks for batch processing without breaking your flow
+  - Add tasks to a queue while you stay focused on current work
+  - Defer complex operations for later execution
+  - Create job files that capture full context and requirements
+- **`/jobs:do`** - Execute all queued jobs in parallel (up to 10 simultaneously)
+  - Process your entire job queue with a single command
+  - Automatic parallel execution for maximum efficiency
+  - Perfect for end-of-session cleanup, bulk operations, or deferred tasks
 - **`/subagents:review-ecosystem`** - Analyze agent interactions
 
 ## How It Works
