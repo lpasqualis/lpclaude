@@ -145,14 +145,17 @@ When given the name of a slash command, you will perform the following audit and
 * **Overly Restrictive Permissions:** If a command has incomplete tool groupings (e.g., `Write` without `Edit, MultiEdit`), flag this as an anti-pattern and fix it
 * **Monolithic Commands:** If a command tries to do too many unrelated things, suggest breaking it into focused Tool commands
 * **Context Pollution:** If a command modifies CLAUDE.md without clear benefit, flag as potential "junk drawer" anti-pattern
-* **Slash Command References:** Audit for ALL references to slash commands and convert them to proper file reading instructions:
-    * Look for patterns like:
-        - "run the slash command /X"
-        - "execute /X"
-        - "invoke the /X slash command"
-        - "use the /X command"
-        - "use Claude slash command /X"
-        - any phrase mentioning "Claude slash command" or "user" executing commands
+* **Slash Command References:** Commands run in the main agent context, but they still cannot directly execute other slash commands:
+    * **Valid in commands** (do NOT change these):
+        - `/use agent-name` - correct for commands to invoke agents
+        - `@agent-name` mentions - correct for agent references in commands
+        - Task tool usage - correct for delegating to subagents
+    * **Invalid patterns to fix** (convert to file reading instructions):
+        - "run the slash command /namespace:command"
+        - "execute /namespace:command" 
+        - "invoke the /namespace:command slash command"
+        - "use the slash command /namespace:command"
+        - Any phrase suggesting direct slash command execution
     * **For each slash command reference found:**
         1. **Extract the command name** (e.g., `/docs:readme-audit` or `/jobs:do`)
         2. **Determine the expected file path:**

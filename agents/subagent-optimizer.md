@@ -51,8 +51,8 @@ When given the name of a subagent, you will perform the following audit and opti
         - Action verbs matching the task (optimize, review, audit, analyze, etc.)
         - Problem indicators (failing, broken, not working, needs improvement)
         - Domain terminology relevant to the agent's specialty
-    * **D. Use Case Examples:** Include phrases like "Use when..." or "Invoke to..." with concrete scenarios
-    * **E. @-mention Support:** Agents can be invoked via @-mentions in commands (e.g., `@agent-name`). Ensure the agent name follows lowercase-hyphenated format for proper typeahead support
+    * **D. Use Case Examples:** Include phrases like "Use when..." or "Invoke this agent when..." with concrete scenarios for when the main agent or commands should use this subagent
+    * **E. Naming Convention:** Ensure the agent name follows lowercase-hyphenated format for proper typeahead support in commands
     * **Example of a GOOD description:** "An expert test automation specialist for Python applications using pytest. Invoke this agent to write comprehensive unit and integration tests from requirements, debug failing test suites by analyzing pytest output and stack traces, ensure implementations aren't overfitting to existing tests, or create test fixtures and mocks. Use when tests are failing, when new features need test coverage, or when you need to improve test quality and coverage metrics."
 
 **3. Audit Tool Permissions and Format:**
@@ -98,15 +98,23 @@ When given the name of a subagent, you will perform the following audit and opti
     * **A. High-Risk Override Check:** If `Bash` is explicitly present in the `tools` list, ensure the color is `Red`. This overrides all other analysis.
     * **B. Semantic-First Analysis:** If the `Red` override is not triggered, determine the agent's primary function from its prompt and ensure the color matches the schema.
 
-**7. Check for Slash Command References and Convert to Proper Execution Instructions:**
-* **Audit the system prompt for ALL slash command references and convert them to proper file reading instructions:**
-    * Look for patterns like:
-        - "run the slash command /X"
-        - "execute /X"
-        - "invoke the /X slash command"
-        - "use the /X command"
-        - "use Claude slash command /X"
-        - any phrase mentioning "Claude slash command" or "user" executing commands
+**7. Check for Slash Command References and Agent Invocation Issues:**
+* **Critical Rule**: Subagents CANNOT invoke other agents or slash commands directly. They can only use the Task tool if granted.
+* **Audit for these problematic patterns and fix them:**
+    * **Slash command execution attempts**:
+        - "run the slash command /namespace:command"
+        - "execute /namespace:command"
+        - "invoke the /namespace:command slash command"
+        - "use the slash command /namespace:command"
+        - Any phrase mentioning executing commands
+    * **Invalid agent invocation attempts**:
+        - "/use agent-name" - subagents cannot use this
+        - "@agent-name" invocations - subagents cannot invoke agents this way
+        - "invoke agent-name" or "use agent-name agent"
+    * **For slash command references**: Convert to file reading instructions as described above
+    * **For agent invocation attempts**: 
+        - If the subagent has Task tool permission, change to: "Use the Task tool with subagent_type: 'agent-name'"
+        - If no Task tool permission, remove the reference entirely and note the subagent cannot delegate
     * **For each slash command reference found:**
         1. **Extract the command name** (e.g., `/docs:readme-audit` or `/jobs:do`)
         2. **Determine the expected file path:**
