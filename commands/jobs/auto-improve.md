@@ -3,7 +3,7 @@ name: /jobs:auto-improve
 description: Continuously improve the project by finding and queueing improvement tasks using intelligent analysis and job creation
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-09 10:48:06 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-09 21:15:42 -->
 
 # System Prompt
 
@@ -57,7 +57,7 @@ After gathering scan results:
 If continuous improvement is enabled:
 
 1. **Validate improvement potential**: Only continue if improvements were found
-2. **Create continuation job**: Queue a job that re-invokes the Claude slash command `/jobs:auto-improve` with same parameters
+2. **Create continuation job**: Queue a job that reads the command definition file at commands/jobs/auto-improve.md and follows its instructions with same parameters
 3. **Set appropriate delay**: Allow time for queued jobs to be processed first
 
 ## Input Format
@@ -176,7 +176,7 @@ Found and queued 3 priority improvement jobs:
    Job: "Implement automatic token refresh logic in auth.js"
 
 4. **Continue improvements** (queued)
-   Job: "Run Claude slash command /jobs:auto-improve with same parameters after current jobs complete"
+   Job: "Read the command definition file at commands/jobs/auto-improve.md and follow its instructions with same parameters after current jobs complete"
 
 ✓ 4 jobs queued total (3 improvements + 1 continuation)
 ✓ Continuous improvement active - will run again automatically
