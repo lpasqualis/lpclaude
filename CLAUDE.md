@@ -233,7 +233,7 @@ When optimizers encounter references to slash commands (e.g., "run the slash com
    - First: `.claude/commands/[path]` (project-local)
    - Then: `~/.claude/commands/[path]` (global)
 3. **Replace with Specific Instructions**: Instead of generic templates, the optimizer provides the actual path:
-   - Example: "To execute /docs:readme-audit, read the command definition file at ~/.claude/commands/docs/readme-audit.md and follow its instructions."
+   - Example: "Execute the requested /docs:readme-audit command now by reading ~/.claude/commands/docs/readme-audit.md and following all its instructions."
 4. **Maintain Scope Consistency**: Companion agents are created in the same scope as their parent command:
    - Local command → Local companion agent
    - Global command → Global companion agent

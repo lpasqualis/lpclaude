@@ -170,9 +170,9 @@ When given the name of a slash command, you will perform the following audit and
             - Then check `~/.claude/commands/[path]` (global)
         4. **Replace with the ACTUAL path found:**
             - If found at `.claude/commands/docs/readme-audit.md`:
-              "To execute /docs:readme-audit, read the command definition file at .claude/commands/docs/readme-audit.md and follow its instructions."
+              "Execute the requested /docs:readme-audit command now by reading .claude/commands/docs/readme-audit.md and following all its instructions."
             - If found at `~/.claude/commands/jobs/do.md`:
-              "To execute /jobs:do, read the command definition file at ~/.claude/commands/jobs/do.md and follow its instructions."
+              "Execute the requested /jobs:do command now by reading ~/.claude/commands/jobs/do.md and following all its instructions."
             - If NOT found, report an error that the referenced command doesn't exist
     * **Rationale:** Agents cannot directly execute slash commands. They must read the command definition files from either project-local (.claude/) or global (~/.claude/) locations.
 

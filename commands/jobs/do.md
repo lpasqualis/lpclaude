@@ -98,8 +98,8 @@ If the job file mentions executing a slash command (e.g., "run /memory:learn", "
    - First check `.claude/commands/[path]` (project-local)
    - Then check `~/.claude/commands/[path]` (global)
    - Finally check `commands/[path]` (this framework repository)
-4. If found, read the command definition file and execute its instructions
-5. If not found, report an error that the command doesn't exist
+4. If found: Immediately read that command definition file and execute all its instructions
+5. If not found: Report an error that the command doesn't exist
 
 Follow the instructions EXACTLY as written in the working file:
 - Treat the entire file content as a user message
