@@ -50,6 +50,17 @@ Your Computer
     └── (uses global ~/.claude/)  # Access to all agents/commands
 ```
 
+### Critical Understanding: Global vs Local Scope in this Repository
+
+**IMPORTANT**: Since this repository's `commands/` and `agents/` folders ARE the global folders (via symlinks):
+- Files in `commands/` and `agents/` = Global scope (accessible everywhere via `~/.claude/`)
+- Files in `.claude/commands/` and `.claude/agents/` = Project-local scope (only in this repo)
+
+This distinction is crucial for:
+1. **Optimizer agents**: They should only look in `.claude/` (project-local) and `~/.claude/` (global)
+2. **Companion agents**: Must be created in the same scope as their parent command
+3. **Slash command references**: Must specify correct paths for reading command files
+
 ## Bash Commands
 
 **ALWAYS use these commands when working in this repository:**
@@ -212,6 +223,25 @@ The optimizer subagents (`command-optimizer` and `subagent-optimizer`) use embed
 - **Faster execution**: No network calls during optimization
 - **Reliability**: No dependency on external services
 - **Consistency**: Predictable behavior across runs
+
+### Critical: How Optimizers Handle Slash Command References
+
+When optimizers encounter references to slash commands (e.g., "run the slash command /docs:readme-audit"), they:
+
+1. **Identify the Problem**: Agents cannot directly execute slash commands - they must read command definition files
+2. **Find the Actual Command File**: The optimizer uses Glob to locate the command in:
+   - First: `.claude/commands/[path]` (project-local)
+   - Then: `~/.claude/commands/[path]` (global)
+3. **Replace with Specific Instructions**: Instead of generic templates, the optimizer provides the actual path:
+   - Example: "To execute /docs:readme-audit, read the command definition file at ~/.claude/commands/docs/readme-audit.md and follow its instructions."
+4. **Maintain Scope Consistency**: Companion agents are created in the same scope as their parent command:
+   - Local command → Local companion agent
+   - Global command → Global companion agent
+
+**Why This Matters**: In this framework repository:
+- `commands/` and `agents/` folders ARE the global folders (via symlinks to `~/.claude/`)
+- `.claude/commands/` and `.claude/agents/` are project-local (only for this repo)
+- Optimizers must understand this distinction to create proper file paths
 
 ### Knowledge Base Updates
 To keep optimizer knowledge current with Claude Code updates:
