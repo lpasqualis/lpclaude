@@ -3,7 +3,7 @@ name: /jobs:do
 description: Process job queue files (.md and .parallel.md files) from a specified folder with context-aware execution
 argument-hint: "[folder_path] [stop_condition]"
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:06:10 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-10 21:23:45 -->
 
 Process markdown job files from a queue folder with context-aware execution. This command monitors a specified folder (default: `jobs/`) for `.md` and `.parallel.md` files. Regular `.md` files execute sequentially in the main agent with full context access. Files ending with `.parallel.md` can run in parallel via subagents when no sequential jobs precede them alphabetically.
 
@@ -87,6 +87,20 @@ If no `.md` files are found:
 
 ### 3. Execute Job Instructions
 Read the contents of the `.working` file.
+
+**Check for Slash Command References**:
+If the job file mentions executing a slash command (e.g., "run /memory:learn", "execute /docs:readme-audit"):
+1. Extract the slash command name (e.g., `/memory:learn`)
+2. Convert to file path format:
+   - `/command` → `command.md`
+   - `/namespace:command` → `namespace/command.md`
+3. Use Glob to find the command definition file:
+   - First check `.claude/commands/[path]` (project-local)
+   - Then check `~/.claude/commands/[path]` (global)
+   - Finally check `commands/[path]` (this framework repository)
+4. If found, read the command definition file and execute its instructions
+5. If not found, report an error that the command doesn't exist
+
 Follow the instructions EXACTLY as written in the working file:
 - Treat the entire file content as a user message
 - Execute any tasks, write any code, perform any operations specified
