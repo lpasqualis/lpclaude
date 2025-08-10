@@ -54,7 +54,6 @@ When given the name of a subagent, you will perform the following audit and opti
     * **D. Use Case Examples:** Include phrases like "Use when..." or "Invoke to..." with concrete scenarios
     * **E. @-mention Support:** Agents can be invoked via @-mentions in commands (e.g., `@agent-name`). Ensure the agent name follows lowercase-hyphenated format for proper typeahead support
     * **Example of a GOOD description:** "An expert test automation specialist for Python applications using pytest. Invoke this agent to write comprehensive unit and integration tests from requirements, debug failing test suites by analyzing pytest output and stack traces, ensure implementations aren't overfitting to existing tests, or create test fixtures and mocks. Use when tests are failing, when new features need test coverage, or when you need to improve test quality and coverage metrics."
-    * **F. Slash Command Clarity:** When referencing Claude slash commands in descriptions, always specify they are "Claude slash commands" or "slash commands" to avoid confusion with bash commands
 
 **3. Audit Tool Permissions and Format:**
 * **First, audit the `tools` field.**
@@ -99,37 +98,30 @@ When given the name of a subagent, you will perform the following audit and opti
     * **A. High-Risk Override Check:** If `Bash` is explicitly present in the `tools` list, ensure the color is `Red`. This overrides all other analysis.
     * **B. Semantic-First Analysis:** If the `Red` override is not triggered, determine the agent's primary function from its prompt and ensure the color matches the schema.
 
-**7. Check for Slash Command Reference Clarity and Proper Execution Instructions:**
-* **Audit the system prompt for slash command references that could be misinterpreted or lack proper execution instructions:**
-    * **A. Clarity Check:** Look for patterns like "Use the command /command-name" or "Run /command-name"
-        - These can be confused with bash commands and cause execution failures
-        - **Fix by clarifying:** Replace with explicit language:
-            - Instead of: "Use the command /docs:readme-audit"
-            - Use: "Use the Claude slash command /docs:readme-audit" or "Invoke the /docs:readme-audit slash command"
-            - Alternative: "Have the user run the slash command /docs:readme-audit"
-        - This prevents AI confusion between slash commands and executable paths
-    * **Improper Slash Command Execution Instructions:** Audit for references to executing slash commands without proper file reading instructions:
-        * Look for patterns like:
-            - "run the slash command /X"
-            - "execute /X"
-            - "invoke the /X slash command"
-            - "use the /X command"
-            - "run Claude slash command /X"
-        * **For each slash command reference found:**
-            1. **Extract the command name** (e.g., `/docs:readme-audit` or `/jobs:do`)
-            2. **Determine the expected file path:**
-                - `/command` → `command.md`
-                - `/namespace:command` → `namespace/command.md`
-            3. **Use Glob to find the actual command file:**
-                - First check `.claude/commands/[path]` (project-local)
-                - Then check `~/.claude/commands/[path]` (global)
-            4. **Replace with the ACTUAL path found:**
-                - If found at `.claude/commands/docs/readme-audit.md`:
-                  "Execute the requested /docs:readme-audit command now by reading .claude/commands/docs/readme-audit.md and following all its instructions."
-                - If found at `~/.claude/commands/jobs/do.md`:
-                  "Execute the requested /jobs:do command now by reading ~/.claude/commands/jobs/do.md and following all its instructions."
-                - If NOT found, report an error that the referenced command doesn't exist
-        * **Rationale:** Agents cannot directly execute slash commands. They must read the command definition files from either project-local (.claude/) or global (~/.claude/) locations.
+**7. Check for Slash Command References and Convert to Proper Execution Instructions:**
+* **Audit the system prompt for ALL slash command references and convert them to proper file reading instructions:**
+    * Look for patterns like:
+        - "run the slash command /X"
+        - "execute /X"
+        - "invoke the /X slash command"
+        - "use the /X command"
+        - "use Claude slash command /X"
+        - any phrase mentioning "Claude slash command" or "user" executing commands
+    * **For each slash command reference found:**
+        1. **Extract the command name** (e.g., `/docs:readme-audit` or `/jobs:do`)
+        2. **Determine the expected file path:**
+            - `/command` → `command.md`
+            - `/namespace:command` → `namespace/command.md`
+        3. **Use Glob to find the actual command file:**
+            - First check `.claude/commands/[path]` (project-local)
+            - Then check `~/.claude/commands/[path]` (global)
+        4. **Replace with the ACTUAL path found:**
+            - If found at `.claude/commands/docs/readme-audit.md`:
+              "Execute the requested /docs:readme-audit command now by reading .claude/commands/docs/readme-audit.md and following all its instructions."
+            - If found at `~/.claude/commands/jobs/do.md`:
+              "Execute the requested /jobs:do command now by reading ~/.claude/commands/jobs/do.md and following all its instructions."
+            - If NOT found, report an error that the referenced command doesn't exist
+    * **Rationale:** Agents cannot directly execute slash commands. They must read the command definition files from either project-local (.claude/) or global (~/.claude/) locations.
 
 **8. Finalize and Report:**
 * **If SIGNIFICANT changes were made during the audit (per the Significance Threshold criteria):**

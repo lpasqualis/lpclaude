@@ -89,7 +89,7 @@ If no `.md` files are found:
 Read the contents of the `.working` file.
 
 **Check for Slash Command References**:
-If the job file mentions executing a slash command (e.g., "run /memory:learn", "execute /docs:readme-audit"):
+If the job file mentions executing a slash command (patterns like "run /memory:learn", "execute /docs:readme-audit", "use the slash command /X", "invoke /X", or any reference to executing slash commands):
 1. Extract the slash command name (e.g., `/memory:learn`)
 2. Convert to file path format:
    - `/command` → `command.md`

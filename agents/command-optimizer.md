@@ -58,7 +58,6 @@ When given the name of a slash command, you will perform the following audit and
         - **The final output for this field must be a plain, comma-separated string, not a YAML list.**
     * **D. `argument-hint`:** Audit the argument hint for clarity and accuracy. If the prompt is designed to work with arguments but the hint is missing, vague, or inaccurate (e.g., `argument-hint: [text]`), suggest a more descriptive one (e.g., `argument-hint: [question about the selected code]`).
     * **E. `@-mention support`:** Commands can reference custom agents using @-mentions (e.g., `@agent-name`). If the command involves delegation to specific agents, ensure @-mentions are properly formatted with typeahead support.
-    * **F. Slash Command References in Description:** When the description mentions using other slash commands, always prefix with "Claude slash command" or "slash command" to avoid confusion with bash commands
 
 **3. Detect Command Type and Suggest Improvements:**
 * **Classify the command as Tool or Workflow:**
@@ -146,20 +145,14 @@ When given the name of a slash command, you will perform the following audit and
 * **Overly Restrictive Permissions:** If a command has incomplete tool groupings (e.g., `Write` without `Edit, MultiEdit`), flag this as an anti-pattern and fix it
 * **Monolithic Commands:** If a command tries to do too many unrelated things, suggest breaking it into focused Tool commands
 * **Context Pollution:** If a command modifies CLAUDE.md without clear benefit, flag as potential "junk drawer" anti-pattern
-* **Slash Command Confusion:** Audit for references to slash commands that could be misinterpreted:
-    * Look for patterns like "Use the command /command-name" or "Run /command-name" that could be confused with bash commands
-    * **Fix by clarifying:** Replace with explicit language:
-        - Instead of: "Use the command /docs:readme-audit to audit documentation"
-        - Use: "Use the Claude slash command /docs:readme-audit to audit documentation"
-        - Alternative: "Invoke the /docs:readme-audit slash command" or "Have the user run the slash command /docs:readme-audit"
-    * This prevents AI confusion between slash commands and executable paths
-* **Improper Slash Command Execution Instructions:** Audit for references to executing slash commands without proper file reading instructions:
+* **Slash Command References:** Audit for ALL references to slash commands and convert them to proper file reading instructions:
     * Look for patterns like:
         - "run the slash command /X"
         - "execute /X"
         - "invoke the /X slash command"
         - "use the /X command"
-        - "run Claude slash command /X"
+        - "use Claude slash command /X"
+        - any phrase mentioning "Claude slash command" or "user" executing commands
     * **For each slash command reference found:**
         1. **Extract the command name** (e.g., `/docs:readme-audit` or `/jobs:do`)
         2. **Determine the expected file path:**
