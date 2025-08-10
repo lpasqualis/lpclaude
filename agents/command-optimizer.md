@@ -210,18 +210,20 @@ When given the name of a slash command, you will perform the following audit and
         - ✅ Complete tool permission groupings
         ```
 * **If the audit determined that the command is already fully compliant OR only minor issues exist that don't meet the Significance Threshold:**
-    * **Step 1 - Add/Update optimization timestamp anyway:**
-        - Use `Bash` tool to get current timestamp: `date "+%Y-%m-%d %H:%M:%S"`
-        - Save the timestamp output
-        - Add or update the timestamp comment RIGHT AFTER YAML frontmatter: `<!-- OPTIMIZATION_TIMESTAMP: [exact timestamp from date command] -->`
-        - This tracks that the file was reviewed even if no changes were needed
+    * **Check if timestamp exists:**
+        - Search the file content for `<!-- OPTIMIZATION_TIMESTAMP:`
+        - **If NO timestamp exists** (first-time review):
+            - Use `Bash` tool to get current timestamp: `date "+%Y-%m-%d %H:%M:%S"`
+            - Save the timestamp output
+            - Add the timestamp comment RIGHT AFTER YAML frontmatter: `<!-- OPTIMIZATION_TIMESTAMP: [exact timestamp from date command] -->`
+            - This marks that the file has been reviewed for the first time
+        - **If timestamp already exists**: Do not modify the file at all
     * **FINAL REPORT FORMAT:**
         ```markdown
         ## Command Review Complete ✅
         
         **Command**: /[command-name]
         **Status**: Already fully compliant with best practices (or only minor issues not worth changing)
-        **Optimization Timestamp**: YYYY-MM-DD HH:MM:SS
         
-        No significant changes needed.
+        No changes needed.
         ```
