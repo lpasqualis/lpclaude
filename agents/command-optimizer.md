@@ -169,7 +169,8 @@ When given the name of a slash command, you will perform the following audit and
               Example: "Execute the requested /docs:readme-audit command now by reading ~/.claude/commands/docs/readme-audit.md and following all its instructions."
             - For project-local commands (in .claude/): Use `.claude/commands/[path]`
               Example: "Execute the requested /maintenance:update command now by reading .claude/commands/maintenance/update.md and following all its instructions."
-            - NEVER use absolute paths like `/Users/username/project/commands/`
+            - **CRITICAL**: NEVER EVER use absolute paths containing usernames or home directories like `/Users/username/project/commands/` - these break portability across installations
+            - **CRITICAL**: Always use portable paths: `~/.claude/commands/[path]` or `.claude/commands/[path]` only
             - If NOT found, report an error that the referenced command doesn't exist
     * **Rationale:** Agents cannot directly execute slash commands. They must read the command definition files from either project-local (.claude/) or global (~/.claude/) locations.
 
@@ -183,7 +184,7 @@ When given the name of a slash command, you will perform the following audit and
         - Save the timestamp output to use in next step
         - Add or update the timestamp comment RIGHT AFTER the YAML frontmatter closing `---` using a separate Edit:
         ```html
-        <!-- OPTIMIZATION_TIMESTAMP: YYYY-MM-DD HH:MM:SS -->
+        <!-- OPTIMIZATION_TIMESTAMP: YYYY-MM-DD HH:MM:SS TZ -->
         ```
         - Replace YYYY-MM-DD HH:MM:SS with the EXACT output from the date command
         - This provides tracking of when the file was last optimized
@@ -206,7 +207,7 @@ When given the name of a slash command, you will perform the following audit and
         - [List created subagents with purposes]
         
         ### The command now includes:
-        - ✅ Optimization timestamp: <!-- OPTIMIZATION_TIMESTAMP: YYYY-MM-DD HH:MM:SS -->
+        - ✅ Optimization timestamp: <!-- OPTIMIZATION_TIMESTAMP: YYYY-MM-DD HH:MM:SS TZ -->
         - ✅ Best practices compliance
         - ✅ Complete tool permission groupings
         ```
@@ -214,7 +215,7 @@ When given the name of a slash command, you will perform the following audit and
     * **Check if timestamp exists:**
         - Search the file content for `<!-- OPTIMIZATION_TIMESTAMP:`
         - **If NO timestamp exists** (first-time review):
-            - Use `Bash` tool to get current timestamp: `date "+%Y-%m-%d %H:%M:%S"`
+            - Use `Bash` tool to get current timestamp: `date "+%Y-%m-%d %H:%M:%S %Z"`
             - Save the timestamp output
             - Add the timestamp comment RIGHT AFTER YAML frontmatter: `<!-- OPTIMIZATION_TIMESTAMP: [exact timestamp from date command] -->`
             - This marks that the file has been reviewed for the first time

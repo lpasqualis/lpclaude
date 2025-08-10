@@ -123,13 +123,14 @@ When given the name of a subagent, you will perform the following audit and opti
         3. **Use Glob to find the actual command file:**
             - First check `.claude/commands/[path]` (project-local)
             - Then check `~/.claude/commands/[path]` (global)
-        4. **Replace with the CORRECT relative path:**
-            - For global commands (found via symlink): Always use `~/.claude/commands/[path]`
-              Example: "Execute the requested /docs:readme-audit command now by reading ~/.claude/commands/docs/readme-audit.md and following all its instructions."
-            - For project-local commands (in .claude/): Use `.claude/commands/[path]`
-              Example: "Execute the requested /maintenance:update command now by reading .claude/commands/maintenance/update.md and following all its instructions."
-            - NEVER use absolute paths like `/Users/username/project/commands/`
-            - If NOT found, report an error that the referenced command doesn't exist
+        4. **Replace with the CORRECT portable path format:**
+            - For global commands: Always use `~/.claude/commands/[relative-path]`
+              Example: "Execute the requested /docs:readme-audit command by reading ~/.claude/commands/docs/readme-audit.md and following all its instructions."
+            - For project-local commands: Use `.claude/commands/[relative-path]`
+              Example: "Execute the requested /maintenance:update command by reading .claude/commands/maintenance/update.md and following all its instructions."
+            - **CRITICAL**: NEVER EVER use absolute paths containing usernames, home directories, or specific project paths
+            - **CRITICAL**: NEVER include full system paths like `/Users/[username]/[project]/...` - these break portability
+            - If command file NOT found in either location, report an error that the referenced command doesn't exist
     * **Rationale:** Agents cannot directly execute slash commands. They must read the command definition files from either project-local (.claude/) or global (~/.claude/) locations.
 
 **8. Finalize and Report:**
@@ -142,7 +143,7 @@ When given the name of a subagent, you will perform the following audit and opti
         - Save the timestamp output to use in next step
         - Add or update the timestamp comment RIGHT AFTER the YAML frontmatter closing `---` using a separate Edit:
         ```html
-        <!-- OPTIMIZATION_TIMESTAMP: YYYY-MM-DD HH:MM:SS -->
+        <!-- OPTIMIZATION_TIMESTAMP: YYYY-MM-DD HH:MM:SS TZ -->
         ```
         - Replace YYYY-MM-DD HH:MM:SS with the EXACT output from the date command
         - This provides tracking of when the file was last optimized
@@ -157,7 +158,7 @@ When given the name of a subagent, you will perform the following audit and opti
         - [List each specific change made]
         
         ### The agent now includes:
-        - ✅ Optimization timestamp: <!-- OPTIMIZATION_TIMESTAMP: YYYY-MM-DD HH:MM:SS -->
+        - ✅ Optimization timestamp: <!-- OPTIMIZATION_TIMESTAMP: YYYY-MM-DD HH:MM:SS TZ -->
         - ✅ Enhanced description for better triggering
         - ✅ Optimized tool permissions
         - ✅ Appropriate model selection
@@ -167,7 +168,7 @@ When given the name of a subagent, you will perform the following audit and opti
     * **Check if timestamp exists:**
         - Search the file content for `<!-- OPTIMIZATION_TIMESTAMP:`
         - **If NO timestamp exists** (first-time review):
-            - Use `Bash` tool to get current timestamp: `date "+%Y-%m-%d %H:%M:%S"`
+            - Use `Bash` tool to get current timestamp: `date "+%Y-%m-%d %H:%M:%S %Z"`
             - Save the timestamp output
             - Add the timestamp comment RIGHT AFTER YAML frontmatter: `<!-- OPTIMIZATION_TIMESTAMP: [exact timestamp from date command] -->`
             - This marks that the file has been reviewed for the first time
