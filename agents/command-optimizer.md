@@ -164,11 +164,12 @@ When given the name of a slash command, you will perform the following audit and
         3. **Use Glob to find the actual command file:**
             - First check `.claude/commands/[path]` (project-local)
             - Then check `~/.claude/commands/[path]` (global)
-        4. **Replace with the ACTUAL path found:**
-            - If found at `.claude/commands/docs/readme-audit.md`:
-              "Execute the requested /docs:readme-audit command now by reading .claude/commands/docs/readme-audit.md and following all its instructions."
-            - If found at `~/.claude/commands/jobs/do.md`:
-              "Execute the requested /jobs:do command now by reading ~/.claude/commands/jobs/do.md and following all its instructions."
+        4. **Replace with the CORRECT relative path:**
+            - For global commands (found via symlink): Always use `~/.claude/commands/[path]`
+              Example: "Execute the requested /docs:readme-audit command now by reading ~/.claude/commands/docs/readme-audit.md and following all its instructions."
+            - For project-local commands (in .claude/): Use `.claude/commands/[path]`
+              Example: "Execute the requested /maintenance:update command now by reading .claude/commands/maintenance/update.md and following all its instructions."
+            - NEVER use absolute paths like `/Users/username/project/commands/`
             - If NOT found, report an error that the referenced command doesn't exist
     * **Rationale:** Agents cannot directly execute slash commands. They must read the command definition files from either project-local (.claude/) or global (~/.claude/) locations.
 

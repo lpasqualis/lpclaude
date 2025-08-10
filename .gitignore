@@ -4,3 +4,4 @@ archive/
 **/*.local.*
 knowledge-base-reports/
 jobs/*
+commands/lpct
