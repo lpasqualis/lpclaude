@@ -4,7 +4,7 @@ description: Analyze the current session to extract and preserve key learnings a
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task
 argument-hint: [specific area to focus on (optional)]
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:50:47 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-09 21:14:37 -->
 
 Analyze our current conversation session to identify the most important learnings and discoveries that should be preserved for future sessions. Extract key insights that were difficult to discover and have a good chance of being needed again when the current context is lost.
 
