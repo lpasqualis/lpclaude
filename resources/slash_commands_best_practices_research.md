@@ -125,6 +125,26 @@ Data sourced from.13
 
 By mastering these foundational mechanics—from the basic file structure and scoping to the advanced control offered by frontmatter—developers can build commands that are not only functional but also secure, efficient, and well-organized, laying the groundwork for the sophisticated, multi-command workflows discussed in the following sections.
 
+### **2.4 Enhanced User Experience Features (2025 Updates)**
+
+Recent Claude Code releases have introduced several features that significantly improve the developer experience with slash commands:
+
+**@-Mention Support with Typeahead:** Claude Code now supports @-mentioning custom subagents with intelligent typeahead completion. This feature, introduced in version 1.0.62, enhances discoverability and makes it easier to invoke specific agents directly. When typing `@` in the command line, Claude Code presents a filterable list of available subagents, enabling quick selection without memorizing exact names.
+
+**Enhanced Argument Hints:** The `argument-hint` field has become increasingly important for user experience. Well-designed argument hints not only guide users on expected input but also serve as inline documentation. Best practices include:
+- Use descriptive placeholders: `argument-hint: "[component-name] [action: create|update|delete]"`
+- Include optional parameters: `argument-hint: "[required-param] [optional-flag]"`
+- Provide examples for complex formats: `argument-hint: "add [tagId] | remove [tagId] | list"`
+
+**Model Customization per Command:** Version 1.0.64 enhanced model selection capabilities, allowing commands to specify different Claude models based on task complexity. This enables cost optimization by using:
+- `haiku` for simple, repetitive tasks (file formatting, basic analysis)
+- `sonnet` for general development tasks (code generation, review)
+- `opus` for complex reasoning tasks (architectural analysis, comprehensive planning)
+
+**Integration with Bash Output:** Commands can now execute bash commands before the main prompt runs, with the output automatically injected into context. This pattern is particularly powerful for context-aware commands that need current system state.
+
+These enhancements collectively reduce cognitive load on developers while increasing the precision and effectiveness of custom commands. The combination of intelligent autocomplete, clear argument guidance, and optimized model selection represents a significant evolution in command-line AI tooling.
+
 ## **Section 3: Architecting Intelligent Workflows: From Chains to Swarms**
 
 While individual slash commands provide significant productivity gains by automating repetitive tasks, their true potential is realized when they are composed into larger, intelligent workflows. This section transitions from the design of discrete commands to the architecture of multi-command, multi-agent systems. By orchestrating commands sequentially and in parallel, delegating tasks to specialized sub-agents, and structuring complex internal logic, developers can move beyond simple automation to build sophisticated, user-defined agentic architectures.
