@@ -195,19 +195,93 @@ Then create the report showing:
 
 Save the complete report to the timestamped file in `knowledge-base-reports/`.
 
-### 6. Apply Updates (Optional)
+### 6. Synchronize Local Resources
+
+**CRITICAL STEP**: Update local resource documentation to incorporate discoveries from official documentation and maintain currency with Claude Code evolution.
+
+#### Resource Update Strategy
+
+**Identify Update Opportunities:**
+1. **Enhancement Gaps**: New features not yet documented in local resources
+   - @-mention support and typeahead completion
+   - Enhanced argument-hint field usage patterns
+   - Model customization capabilities per command/agent
+   - Bash output integration patterns
+
+2. **Pattern Evolution**: Discoveries from component analysis
+   - New UX optimization patterns from advanced commands
+   - Workflow orchestration innovations from complex implementations  
+   - Job-based improvement patterns from automated systems
+   - Architecture patterns from sophisticated multi-agent systems
+
+3. **Best Practice Refinements**: Updated guidance based on official changes
+   - YAML frontmatter requirements and restrictions
+   - Tool permission grouping recommendations
+   - Security and performance optimization guidelines
+   - Naming convention updates and domain organization
+
+#### Implementation Approach
+
+**Update Existing Resources:**
+```markdown
+For each resource file in resources/:
+1. Read current content and identify sections needing updates
+2. Add new subsections for 2025 features and enhancements
+3. Update examples and code snippets to reflect latest syntax
+4. Add cross-references to related patterns in other resources
+5. Mark deprecated patterns with clear migration guidance
+```
+
+**Create New Resource Documentation:**
+```markdown
+When discoveries warrant new dedicated documentation:
+1. Create focused resource files for significant new pattern areas
+2. Follow established documentation structure and tone
+3. Include comprehensive examples and implementation guidance
+4. Reference existing resources to create knowledge web
+5. Add to knowledge-base-manifest.json with appropriate knowledge areas
+```
+
+**Quality Assurance for Resource Updates:**
+- **Consistency Check**: Ensure new content aligns with existing tone and structure
+- **Cross-Reference Validation**: Verify all links and references work correctly
+- **Example Verification**: Test that all code examples and patterns are current and functional
+- **Knowledge Gap Analysis**: Confirm updates address identified gaps from analysis phase
+
+#### Specific Update Actions
+
+**For `resources/slash_commands_best_practices_research.md`:**
+- Add section on @-mention support with typeahead completion (version 1.0.62)
+- Enhance argument-hint field documentation with best practice examples
+- Update model customization section with per-command optimization patterns
+- Include bash output integration patterns for context-aware commands
+
+**For `resources/subagent_invocation_research.md`:**
+- Update @-mentioning section with typeahead functionality details
+- Add enhanced proactive invocation patterns based on component analysis
+- Include semantic color usage for improved agent organization
+- Document latest model selection heuristics for different agent types
+
+**For `resources/commands_and_agents.md` and `resources/understanding_commands_and_subagents.md`:**
+- Integrate findings from advanced component analysis
+- Add orchestration patterns discovered from complex implementations
+- Update parallel execution guidance with system constraint awareness
+- Include job-based workflow patterns for automated improvement systems
+
+**Create New Resources (if warranted):**
+- `resources/ux_optimization_patterns.md`: Document UX patterns from README audit and similar commands
+- `resources/job_workflow_patterns.md`: Document automated improvement and job orchestration patterns  
+- `resources/advanced_architecture_patterns.md`: Document sophisticated multi-agent system designs
+
+### 7. Apply Updates (Optional)
 
 If user confirms, apply the updates:
 - **Update Components**: Edit optimizer agents and commands to reflect new best practices
-- **Update Local Resources**: 
-  - Add new patterns discovered from official documentation
-  - Mark deprecated patterns with warnings
-  - Add cross-references between resources
-  - Update examples to reflect current syntax
+- **Update Local Resources**: Apply the resource synchronization strategy defined in Step 6
 - **Synchronize Knowledge**: Ensure consistency between resources and implementations
 - **Update Manifest**: Record all changes with timestamps
 
-### 7. Update Manifest
+### 8. Update Manifest
 
 Save/update `resources/knowledge-base-manifest.json`:
 ```json

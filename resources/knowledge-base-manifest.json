@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "last_check": "2025-08-08T09:06:31-07:00",
-    "documentation_version": "Latest as of 2025-08-08",
+    "last_check": "2025-08-14T11:29:35-07:00",
+    "documentation_version": "Latest as of 2025-08-14",
     "created": "2025-08-08",
     "description": "Tracks components with embedded Claude Code knowledge and their update status"
   },
@@ -384,6 +384,76 @@
         "context-aware-processing"
       ],
       "last_updated": "2025-08-08"
+    },
+    {
+      "path": "commands/docs/readme-audit.md",
+      "type": "command",
+      "description": "Audits and optimizes repository README.md for outstanding user experience",
+      "knowledge_areas": [
+        "user-experience-optimization",
+        "documentation-standards", 
+        "progressive-disclosure-principles",
+        "content-relocation-strategies"
+      ],
+      "last_updated": "2025-08-14",
+      "embedded_knowledge": {
+        "ux_principles": "30-second test, progressive disclosure",
+        "structural_patterns": "core README structure with adaptations",
+        "relocation_strategies": "move complex content to docs/ with references"
+      }
+    },
+    {
+      "path": "commands/jobs/auto-improve.md",
+      "type": "command",
+      "description": "Continuously improve projects by finding and queueing improvement tasks",
+      "knowledge_areas": [
+        "parallel-execution-framework",
+        "improvement-categorization",
+        "job-creation-patterns",
+        "continuous-improvement-loops"
+      ],
+      "last_updated": "2025-08-14",
+      "embedded_knowledge": {
+        "parallel_scanning": "up to 5 categories simultaneous via cmd-jobs-auto-improve-scanner",
+        "improvement_categories": "documentation, code-quality, bugs, performance, security",
+        "job_integration": "uses addjob subagent for task creation"
+      }
+    },
+    {
+      "path": "resources/ux_optimization_patterns.md",
+      "type": "documentation",
+      "description": "User experience optimization patterns for Claude Code development",
+      "knowledge_areas": [
+        "30-second-rule-principles",
+        "progressive-disclosure-architecture",
+        "user-journey-optimization",
+        "content-relocation-strategies",
+        "validation-frameworks"
+      ],
+      "last_updated": "2025-08-14",
+      "embedded_knowledge": {
+        "ux_principles": "30-second test, progressive disclosure, audience-first design",
+        "content_patterns": "scannable structure, relocation decision matrix, adaptation methodology",
+        "validation_methods": "multi-level validation framework, continuous improvement"
+      }
+    },
+    {
+      "path": "resources/job_workflow_patterns.md", 
+      "type": "documentation",
+      "description": "Advanced workflow patterns for automated project improvement using job systems",
+      "knowledge_areas": [
+        "job-based-improvement-architecture",
+        "parallel-execution-patterns", 
+        "improvement-categorization",
+        "continuous-improvement-cycles",
+        "automated-analysis-patterns"
+      ],
+      "last_updated": "2025-08-14",
+      "embedded_knowledge": {
+        "architecture_patterns": "temporal decoupling, batch processing, priority management",
+        "scanning_framework": "five-domain classification, parallel orchestration, scanner subagents",
+        "job_management": "addjob integration, self-perpetuating cycles, adaptive learning"
+      }
     }
   ],
   "official_sources": [
@@ -450,6 +520,20 @@
       "components_added": 2,
       "components_updated": 0,
       "findings": "Discovered 2 new components with embedded knowledge: cmd-jobs-do-worker.md and commands/jobs/do.md. Critical gap identified: /subagents:review-ecosystem lacks embedded knowledge for self-sufficiency, currently relies on external documentation references. All official documentation remains current. Comprehensive recommendations provided for embedding complete best practices knowledge. Report saved to knowledge-base-reports/update-report-2025-08-08-090631.md"
+    },
+    {
+      "date": "2025-08-14T11:29:35-07:00",
+      "action": "Comprehensive maintenance review with component discovery",
+      "components_added": 2,
+      "components_updated": 0,
+      "findings": "Discovered 2 new components with embedded knowledge: commands/docs/readme-audit.md and commands/jobs/auto-improve.md. All 30 tracked components remain current with official documentation. Confirmed @-mention support and argument-hint field as minor enhancement opportunities. System demonstrates excellent maintenance standards with full best practices compliance. No critical updates required. Report saved to knowledge-base-reports/update-report-2025-08-14-112935.md"
+    },
+    {
+      "date": "2025-08-14T11:35:00-07:00", 
+      "action": "Resource synchronization and maintenance command enhancement",
+      "components_added": 2,
+      "components_updated": 4,
+      "findings": "Enhanced maintenance command with resource synchronization step. Updated existing resources with @-mention typeahead and argument-hint best practices. Created 2 new resource documents: ux_optimization_patterns.md and job_workflow_patterns.md documenting advanced patterns discovered from component analysis. Updated 4 existing resource files with latest Claude Code features and innovations. Maintenance command now includes comprehensive resource update workflow ensuring documentation stays current with framework evolution."
     }
   ],
   "pending_updates": []
