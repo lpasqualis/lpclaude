@@ -45,13 +45,21 @@ You are a PDF to Markdown conversion specialist. Convert the provided PDF file t
 
 ### Step 4: Content Cleaning
 - Read the generated markdown file
-- Use Grep tool to identify all image references in the content
-- Remove ALL image references, including:
-  - `![alt text](image.png)` format
-  - `![alt text](./images/image.png)` format  
-  - `<img src="...">` HTML tags
+- Use Grep tool to identify all unwanted references in the content
+- Remove ALL unwanted references, including:
+  - **Image references**: `![alt text](image.png)` format
+  - **Image references**: `![alt text](./images/image.png)` format  
+  - **HTML image tags**: `<img src="...">` HTML tags
+  - **File URI references**: `[number](file://file-identifier#:~:text=...)` format
+  - **Local file links**: Any `file://` protocol links
+  - **Temporary file references**: Links containing temporary file identifiers
   - Any relative or absolute image paths
-- Use MultiEdit tool for efficient removal of multiple image references
+- Use MultiEdit tool for efficient removal of multiple unwanted references
+- **Specific patterns to remove**:
+  - `\[[0-9]+\]\(file://[^)]+\)` - Numbered file URI references like [19](file://...)
+  - `!\[[^\]]*\]\([^)]*\.(png|jpg|jpeg|gif|svg|webp)[^)]*\)` - Image markdown links
+  - `<img[^>]*>` - HTML image tags
+  - `file://[^\s\)]+` - Any standalone file:// URLs
 - Preserve all other markdown formatting and content
 
 ### Step 5: File Placement
