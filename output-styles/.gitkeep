@@ -1,0 +1,4 @@
+# Output Styles Directory
+# This directory contains Claude Code output styles that modify the system prompt
+# Output styles are markdown files with YAML frontmatter containing name and description
+# They can be activated via /output-style command or settings

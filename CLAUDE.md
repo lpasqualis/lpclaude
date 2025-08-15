@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Purpose
 
-This is the **Claude Framework Development Workspace** - a central repository where custom agents, commands, and directives are developed and maintained for global use across all projects. This repository serves as the source of truth for your personal Claude Code customizations.
+This is the **Claude Framework Development Workspace** - a central repository where custom agents, commands, directives, and output styles are developed and maintained for global use across all projects. This repository serves as the source of truth for your personal Claude Code customizations.
 
 ## Critical Architecture: Dual .claude Folder System
 
@@ -12,13 +12,14 @@ This project uses a sophisticated dual-folder architecture for Claude configurat
 
 ### 1. Global Configuration (via Symlinks)
 - **Location**: `~/.claude/` (your home directory)
-- **Purpose**: Makes agents and commands available globally across ALL projects
+- **Purpose**: Makes agents, commands, and output styles available globally across ALL projects
 - **How it works**: The `setup.sh` script creates symlinks from `~/.claude/` to this repository's folders:
   - `~/.claude/agents/` → `{this-repo}/agents/`
   - `~/.claude/commands/` → `{this-repo}/commands/`
   - `~/.claude/resources/` → `{this-repo}/resources/`
+  - `~/.claude/output-styles/` → `{this-repo}/output-styles/`
   - `~/.claude/CLAUDE.md` → `{this-repo}/CLAUDE_global_directives.md`
-- **Result**: Any project you work on can use these agents and commands
+- **Result**: Any project you work on can use these agents, commands, and output styles
 
 ### 2. Project-Local Configuration (Maintenance Commands)
 - **Location**: `.claude/` (in THIS repository only)
@@ -36,24 +37,26 @@ Your Computer
 ├── ~/.claude/                    # Global Claude config (symlinks)
 │   ├── agents/ → this-repo/agents/
 │   ├── commands/ → this-repo/commands/
-│   └── resources/ → this-repo/resources/
+│   ├── resources/ → this-repo/resources/
+│   └── output-styles/ → this-repo/output-styles/
 │
 ├── this-repository/               # Framework development workspace
 │   ├── agents/                   # Source of global agents
 │   ├── commands/                  # Source of global commands
 │   ├── resources/                 # Source of global resources
+│   ├── output-styles/             # Source of global output styles
 │   ├── .claude/                   # LOCAL maintenance commands
 │   │   └── commands/maintenance/  # Framework-only commands
 │   └── setup.sh                   # Creates the symlinks
 │
 └── other-projects/                # Your other projects
-    └── (uses global ~/.claude/)  # Access to all agents/commands
+    └── (uses global ~/.claude/)  # Access to all agents/commands/styles
 ```
 
 ### Critical Understanding: Global vs Local Scope in this Repository
 
-**IMPORTANT**: Since this repository's `commands/` and `agents/` folders ARE the global folders (via symlinks):
-- Files in `commands/` and `agents/` = Global scope (accessible everywhere via `~/.claude/`)
+**IMPORTANT**: Since this repository's `commands/`, `agents/`, and `output-styles/` folders ARE the global folders (via symlinks):
+- Files in `commands/`, `agents/`, and `output-styles/` = Global scope (accessible everywhere via `~/.claude/`)
 - Files in `.claude/commands/` and `.claude/agents/` = Project-local scope (only in this repo)
 
 This distinction is crucial for:
@@ -108,6 +111,19 @@ This distinction is crucial for:
    ```
 4. Test immediately by invoking the slash command
 
+### Creating a New Output Style
+1. Create a new `.md` file in `output-styles/` directory
+2. Use descriptive naming: `style-name.md`
+3. Include YAML frontmatter with required fields:
+   ```yaml
+   ---
+   name: Style Name
+   description: Brief description of what this style does
+   ---
+   ```
+4. Add custom system prompt instructions below the frontmatter
+5. Test by using `/output-style` command to activate it
+
 ### Testing and Validation
 - **CRITICAL**: No implementation is complete without passing tests
 - After any modification, immediately test the component
@@ -117,7 +133,7 @@ This distinction is crucial for:
 
 ## Project Overview
 
-This repository contains a collection of Claude Code subagents, commands, and directives designed to enhance AI-assisted development workflows. It serves as both a framework and a shareable configuration that can be symlinked into the Claude home directory (~/.claude).
+This repository contains a collection of Claude Code subagents, commands, directives, and output styles designed to enhance AI-assisted development workflows. It serves as both a framework and a shareable configuration that can be symlinked into the Claude home directory (~/.claude).
 
 ## Architecture & Components
 
@@ -144,12 +160,20 @@ This repository contains a collection of Claude Code subagents, commands, and di
 - **Use When**: Need to establish behavioral rules or guidelines
 - **Note**: Only `.md` files are tracked; `.local.md` files are ignored
 
+#### Output Styles (`output-styles/`)
+- **Purpose**: Modify Claude's system prompt for specialized use cases and domains
+- **Invocation**: Via `/output-style` command or settings
+- **Context**: Changes Claude's overall behavior and communication style
+- **Use When**: Need domain-specific expertise or communication patterns
+- **Examples**: `claude-agentic-framework` for framework development
+
 ### Directory Structure
 ```
 agent/
 ├── agents/           # Subagent definitions with YAML frontmatter
 ├── commands/         # Slash command definitions  
 ├── directives/       # Behavioral modification files
+├── output-styles/    # Output style definitions for modifying Claude's behavior
 ├── resources/        # Documentation and reference materials
 ├── setup.sh          # Creates symlinks to ~/.claude/
 └── rebuild_claude_md.sh          # Compiles directives into CLAUDE_global_directives.md
@@ -297,6 +321,17 @@ The knowledge base manifest (`resources/knowledge-base-manifest.json`) tracks al
 
 ## Development Guidelines
 
+### VS Code Integration Resources
+
+**Date Added**: 2025-08-15
+
+#### Theme Color Customization
+When working with VS Code workspace customization commands (like `/vs:tint-workspace`), refer to the official documentation for available color properties:
+- **Theme Color Reference**: https://code.visualstudio.com/api/references/theme-color
+- Lists all available `workbench.colorCustomizations` properties
+- Organized by UI component (Activity Bar, Status Bar, Sidebar, etc.)
+- Includes descriptions of what each color property affects
+
 ### Command Naming and Organization Philosophy
 
 **Date Added**: 2025-08-07 - Emerged from command normalization session
@@ -314,6 +349,7 @@ The knowledge base manifest (`resources/knowledge-base-manifest.json`) tracks al
 - **Memory Management** (`memory:*`): Commands for learning capture and long-term memory management
 - **Subagent Management** (`subagents:*`): Commands for managing and reviewing subagents
 - **Command Management** (`commands:*`): Commands for managing the Claude command system itself
+- **VS Code Integration** (`vs:*`): Commands for VS Code workspace customization and tooling
 
 #### Naming Conventions
 - Use lowercase-hyphenated format for multi-word command names
