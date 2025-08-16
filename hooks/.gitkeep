@@ -1,0 +1,13 @@
+# Hooks directory
+# 
+# This directory contains hook scripts that can be symlinked to ~/.claude/hooks
+# 
+# Hook scripts are shell commands that execute in response to events like tool calls.
+# They provide a way to customize Claude Code's behavior based on specific triggers.
+#
+# Example hooks:
+# - user-prompt-submit-hook: Executed when user submits a prompt
+# - tool-call-hook: Executed when Claude calls a tool
+# - session-start-hook: Executed when a new session begins
+#
+# To use hooks, they must be configured in your Claude Code settings.
