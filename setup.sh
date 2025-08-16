@@ -3,7 +3,7 @@
 # setup.sh - Claude Framework Symlink Setup Script
 # 
 # This script creates symbolic links from the Claude home directory to the
-# repository's component folders (agents, commands, resources, directives, utils, output-styles).
+# repository's component folders (agents, commands, resources, directives, utils, output-styles, hooks).
 # 
 # What it does:
 # 1. Creates symlinks in $CLAUDE_HOME (default: ~/.claude) pointing to:
@@ -13,6 +13,7 @@
 #    - directives/    -> Repository's directives folder
 #    - utils/         -> Repository's utils folder
 #    - output-styles/ -> Repository's output-styles folder
+#    - hooks/         -> Repository's hooks folder
 #    - CLAUDE.md      -> Repository's global directives file
 # 
 # 2. Performs non-destructive operations - skips existing files/symlinks
@@ -67,6 +68,7 @@ create_symlink "$REPO_PATH/resources/" "resources" "resources"
 create_symlink "$REPO_PATH/directives/" "directives" "directives"
 create_symlink "$REPO_PATH/utils/" "utils" "utils"
 create_symlink "$REPO_PATH/output-styles/" "output-styles" "output-styles"
+create_symlink "$REPO_PATH/hooks/" "hooks" "hooks"
 create_symlink "$REPO_PATH/directives/CLAUDE_global_directives.md" "CLAUDE.md" "CLAUDE.md"
 
 echo
