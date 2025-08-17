@@ -42,7 +42,7 @@ shopt -s extglob
 trimmed="$(sed -E 's/^[[:space:]]+|[[:space:]]+$//g' <<<"$cmd")"
 
 # Extract leading subshell header if present
-if [[ "$trimmed" =~ ^\([[:space:]]*cd[[:space:]]+([^[:space:];|)]+)[[:space:]]*&&[[:space:]] ]]; then
+if [[ "$trimmed" =~ ^\([[:space:]]*cd[[:space:]]+([^[:space:]\;\|\)]+)[[:space:]]*&&[[:space:]] ]]; then
   cd_arg="${BASH_REMATCH[1]}"
   # Expand env vars like $CLAUDE_PROJECT_DIR safely
   # shellcheck disable=SC2016
