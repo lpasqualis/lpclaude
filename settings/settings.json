@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "opus",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/guard-cd.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/show-cwd.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); model_name=$(echo \"$input\" | jq -r '.model.display_name'); output_style=$(echo \"$input\" | jq -r '.output_style.name // \"default\"'); current_dir=$(echo \"$input\" | jq -r '.workspace.current_dir'); printf \"\\033[42;37m %s \\033[0m \\033[44;97m %s \\033[0m \\033[92m%s\\033[0m\" \"$model_name\" \"$output_style\" \"$current_dir\""
+  },
+  "feedbackSurveyState": {
+    "lastShownTime": 1754086523198
+  }
+}
