@@ -51,6 +51,7 @@ cd src && cd tests && pytest
 2. **Forces clarity** - Absolute paths mean Claude always knows exactly where commands run
 3. **Automatic return** - Subshell pattern means Claude returns to original directory after each command
 4. **Teaches better patterns** - Error messages guide Claude toward more reliable command structures
+5. **Works for subagents too** - The hook applies to ALL Bash tool invocations, including those from subagents
 
 ### Configuration
 The hook automatically detects the project root from the `CLAUDE_PROJECT_DIR` environment variable. No configuration needed.
