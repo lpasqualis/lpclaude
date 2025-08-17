@@ -70,6 +70,7 @@ create_symlink "$REPO_PATH/utils/" "utils" "utils"
 create_symlink "$REPO_PATH/output-styles/" "output-styles" "output-styles"
 create_symlink "$REPO_PATH/hooks/" "hooks" "hooks"
 create_symlink "$REPO_PATH/directives/CLAUDE_global_directives.md" "CLAUDE.md" "CLAUDE.md"
+create_symlink "$REPO_PATH/settings/settings.json" "settings.json" "settings.json"
 
 echo
 
