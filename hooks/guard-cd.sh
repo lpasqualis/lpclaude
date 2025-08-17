@@ -62,8 +62,46 @@ PY
 )"
     [[ -n "$rp" ]] || block
     t="$(sed -n '1p'<<<"$rp")"; r="$(sed -n '2p'<<<"$rp")"
-    [[ -d "$t" ]] || block
-    case "$t" in "$r"|"$r"/*) ;; *) block ;; esac
+    
+    # Check if directory exists
+    if [[ ! -d "$t" ]]; then
+      # Special message for non-existent directory
+      cat >&2 <<EOF
+[CLAUDE_GUARD] POLICY_VIOLATION: DIRECTORY_NOT_FOUND
+TARGET="$target"
+REASON: The directory does not exist yet.
+SOLUTION: Create the directory first, or use full paths without cd:
+  mkdir -p "$target"
+  pdftoppm /full/path/to/input.pdf /full/path/to/output
+EOF
+      exit 2
+    fi
+    
+    # Check containment
+    case "$t" in 
+      "$r"|"$r"/*) 
+        ;; 
+      *)
+        # Special message for symlink resolution issues
+        if [[ "$target" == "$proj"/* ]]; then
+          cat >&2 <<EOF
+[CLAUDE_GUARD] POLICY_VIOLATION: SYMLINK_OUTSIDE_PROJECT
+REQUESTED="$target"
+RESOLVED="$t"
+ROOT="$proj"
+REASON: Path resolves outside project due to symlinks or directory structure.
+The requested path appears to be inside the project but actually resolves to:
+  $t
+which is outside the project root.
+SOLUTION: Use full paths without cd, or work with files in the actual project:
+  pdftoppm /full/path/to/input.pdf /full/path/to/output
+EOF
+          exit 2
+        else
+          block
+        fi
+        ;;
+    esac
   fi
 
   # Disallow any additional 'cd' tokens beyond the leading subshell

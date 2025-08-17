@@ -52,6 +52,10 @@ cd src && cd tests && pytest
 3. **Automatic return** - Subshell pattern means Claude returns to original directory after each command
 4. **Teaches better patterns** - Error messages guide Claude toward more reliable command structures
 5. **Works for subagents too** - The hook applies to ALL Bash tool invocations, including those from subagents
+6. **Clear diagnostics** - Provides specific error messages for:
+   - Non-existent directories (suggests creating them first)
+   - Symlink resolution issues (explains why a path that looks valid is blocked)
+   - General violations (provides alternative commands)
 
 ### Configuration
 The hook automatically detects the project root from the `CLAUDE_PROJECT_DIR` environment variable. No configuration needed.
