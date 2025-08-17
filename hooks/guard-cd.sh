@@ -46,7 +46,7 @@ if [[ "$trimmed" =~ ^\([[:space:]]*cd[[:space:]]+([^[:space:]\;\|\)]+)[[:space:]
   cd_arg="${BASH_REMATCH[1]}"
   # Expand env vars like $CLAUDE_PROJECT_DIR safely
   # shellcheck disable=SC2016
-  target="$(eval printf %s -- "$cd_arg" 2>/dev/null || true)"
+  target="$(eval printf '%s' "$cd_arg" 2>/dev/null || true)"
   [[ -n "$target" ]] || block
 
   # Must be absolute
@@ -54,16 +54,16 @@ if [[ "$trimmed" =~ ^\([[:space:]]*cd[[:space:]]+([^[:space:]\;\|\)]+)[[:space:]
 
   # If we know ROOT, enforce containment and existence
   if [[ -n "$proj" ]]; then
-    rp="$(python3 - <<PY
+    rp="$(python3 - "$target" "$proj" <<'PY' 2>/dev/null || true
 import os,sys
 p=os.path.realpath(sys.argv[1]); r=os.path.realpath(sys.argv[2])
 print(p); print(r)
 PY
-"$target" "$proj" 2>/dev/null || true)"
+)"
     [[ -n "$rp" ]] || block
     t="$(sed -n '1p'<<<"$rp")"; r="$(sed -n '2p'<<<"$rp")"
     [[ -d "$t" ]] || block
-    case "$t" in "$r"/*) ;; *) block ;; esac
+    case "$t" in "$r"|"$r"/*) ;; *) block ;; esac
   fi
 
   # Disallow any additional 'cd' tokens beyond the leading subshell
