@@ -72,7 +72,7 @@ TARGET="$target"
 REASON: The directory does not exist yet.
 SOLUTION: Create the directory first, or use full paths without cd:
   mkdir -p "$target"
-  pdftoppm /full/path/to/input.pdf /full/path/to/output
+  command /full/path/to/input.pdf /full/path/to/output
 EOF
       exit 2
     fi
@@ -94,7 +94,7 @@ The requested path appears to be inside the project but actually resolves to:
   $t
 which is outside the project root.
 SOLUTION: Use full paths without cd, or work with files in the actual project:
-  pdftoppm /full/path/to/input.pdf /full/path/to/output
+  command /full/path/to/input.pdf /full/path/to/output
 EOF
           exit 2
         else
