@@ -1,0 +1,5 @@
+# Behaviours Rules
+
+- Respect the KISS principles: Keep it Simple. Avoid over-engineering solutions.
+- Don't overbuild speculatively. We only want to build what we need, not what we might need later.
+- Prefer explicit over implicit: Make intentions clear in code and communication.
