@@ -2,7 +2,15 @@
 
 ## Executive Summary
 
-**REVISED UNDERSTANDING**: After clarification, the architectural constraints are more nuanced than initially assessed. The key insight is that **commands CAN use Task to invoke worker subagents** (including parallel execution), which is a valid and powerful pattern. The main issues are:
+**REVISED UNDERSTANDING**: After clarification, the architectural constraints are more nuanced than initially assessed. The key insight is that **commands CAN use Task to invoke worker subagents** (including parallel execution), which is a valid and powerful pattern. 
+
+**VERIFIED 2025-08-20**: Tested against Claude Code documentation and practical experiments confirm:
+- ✅ Subagents cannot use Task recursively (changelog evidence)
+- ✅ Commands CAN specify model in frontmatter (but beware token limits)
+- ✅ Commands CAN use Task for worker invocation
+- ⚠️ 10 concurrent agent limit NOT documented (may be empirical)
+
+The main issues are:
 
 1. **Subagents cannot invoke other subagents** - No recursive Task tool usage
 2. **Subagents cannot execute slash commands** - They run in isolated contexts
@@ -97,7 +105,30 @@ These cmd-* agents are correctly invoked by commands via Task. Just ensure they 
 - cmd-jobs-auto-improve-scanner ✓
 - cmd-jobs-do-worker ✓
 
-## Priority 4: Commands Need Minor Updates
+## Priority 4: Fix Model Field Misinformation
+
+Multiple components incorrectly state that model fields cause command failure. Need to update with accurate information.
+
+### Files to Update:
+1. **docs/DEVELOPMENT.md** (lines 95, 273)
+   - Remove "CRITICAL: Never add 'model' field - causes failure!"
+   - Update with token limit warning
+
+2. **commands/subagents/review-ecosystem.md** (lines 18, 56)
+   - Remove "Never include model field in commands - causes execution failures"
+   - Update validation logic to check for token compatibility
+
+3. **agents/command-optimizer.md** (line 45)
+   - Remove "REMOVE ANY model FIELD from command YAML frontmatter"
+   - Update to warn about token limits instead
+
+4. **agents/cmd-create-command-validator.md** (line 26)
+   - Update validation to warn about token limits, not flag as error
+
+5. **agents/subagent-optimizer.md**
+   - Update to include model selection guidance with token limit considerations
+
+## Priority 5: Commands Need Minor Updates
 
 Most commands are actually CORRECT! They properly use Task to invoke workers.
 
@@ -114,6 +145,15 @@ Most commands are actually CORRECT! They properly use Task to invoke workers.
 ### Commands needing minor fixes:
 - /commands:create - Wait for command-optimizer fix (Priority 1.1)
 
+### Model Field Considerations:
+- **DOCUMENTED**: Commands CAN have a `model` field in frontmatter
+- **CAVEAT**: Many models have token limits incompatible with Claude Code's defaults
+- **EXAMPLE**: claude-3-opus-20240229 only supports 4096 tokens vs 21333 requested
+- **SOLUTION**: Use models with higher token limits (e.g., claude-opus-4-1-20250805)
+- **REFERENCES**: 
+  - Current models: https://docs.anthropic.com/en/docs/about-claude/models/overview
+  - Deprecations: https://docs.anthropic.com/en/docs/about-claude/model-deprecations
+
 ## Implementation Plan (Simplified)
 
 ### Phase 1: Remove Task from Subagents (Priority 1)
@@ -128,7 +168,12 @@ Most commands are actually CORRECT! They properly use Task to invoke workers.
 - Quick check: Ensure no cmd-* agents have Task tool
 - Most are probably already correct
 
-### Phase 4: Minor Command Updates (Priority 4)
+### Phase 4: Fix Model Field Misinformation (Priority 4)
+- Update 5+ files that incorrectly prohibit model fields
+- Replace with token limit warnings and documentation links
+- Update validators to check token compatibility instead of blocking model fields
+
+### Phase 5: Minor Command Updates (Priority 5)
 - Most commands are already correct!
 - Fix any remaining references to flawed patterns
 
