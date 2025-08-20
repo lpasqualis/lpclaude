@@ -92,7 +92,10 @@ name: /namespace:my-command
 description: What this command does
 argument-hint: "[optional-arg]"
 allowed-tools: Read, Write, Edit, LS, Glob, Grep
-# CRITICAL: Never add 'model' field - causes failure!
+# WARNING: Model field works but check token limits!
+# Some models have lower limits than Claude Code defaults
+# e.g., claude-3-opus-20240229: 4096 tokens vs 21333 requested
+# Check: https://docs.anthropic.com/en/docs/about-claude/models/overview
 ---
 ```
 3. Write the command prompt
@@ -270,7 +273,7 @@ Located in `.claude/commands/maintenance/`, these are only available when workin
 ### Command Not Found
 1. Verify file location matches namespace structure
 2. Check YAML frontmatter syntax
-3. Ensure no `model` field in command frontmatter
+3. If using `model` field, verify token compatibility
 4. Verify symlinks are set up (`ls -la ~/.claude/`)
 
 ### Changes Not Reflecting

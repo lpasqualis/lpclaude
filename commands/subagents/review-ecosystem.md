@@ -15,7 +15,7 @@ Analyze the provided list of sub-agent definition files. Your analysis will iden
 ### YAML Frontmatter Requirements
 **Commands:**
 - Required: `name`, `description`  
-- CRITICAL: Never include `model` field in commands - causes execution failures
+- WARNING: Model field works but check token limits (see docs for details)
 - Optional: `allowed-tools`, `argument-hint`
 
 **Subagents:**  
@@ -53,7 +53,7 @@ Analyze the provided list of sub-agent definition files. Your analysis will iden
 ### Common Anti-Patterns to Avoid
 - **Circular dependencies:** Commands referencing their own optimization agents
 - **Partial tool permissions:** Granting Write without Edit, or Edit without Write
-- **Model field in commands:** Including model field causes command failures
+- **Incompatible model tokens:** Using models with low token limits causes failures
 - **Overly generic descriptions:** Vague descriptions that could match multiple contexts
 - **Context pollution:** Subagents modifying main agent context unintentionally
 
