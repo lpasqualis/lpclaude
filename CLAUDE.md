@@ -146,7 +146,11 @@ Main Claude Session
    name: /command-name
    description: What this command does
    allowed-tools: Read, Write, Edit, LS, Glob, Grep, Task  # Task is OK for commands!
-   # CRITICAL: Do NOT include 'model' field - it will cause command failure
+   # WARNING: The 'model' field works but often causes token limit errors
+   # Many models have lower max_tokens than Claude Code's default (e.g., Opus: 4096 vs 21333 requested)
+   # Only use if you know the model's token limits are compatible
+   # Check current models: https://docs.anthropic.com/en/docs/about-claude/models/overview
+   # Check deprecations: https://docs.anthropic.com/en/docs/about-claude/model-deprecations
    ---
    ```
 4. Commands CAN use Task to invoke worker subagents (including parallel execution)
@@ -408,7 +412,10 @@ When working with VS Code workspace customization commands (like `/vs:tint-works
 ### Required YAML Frontmatter Fields
 - **Agents & Commands**: Must include `name` and `description`
 - **Optional Fields for Agents**: `proactive`, `model`, `color`
-- **CRITICAL**: Commands CANNOT have a `model` field - this will cause the command to fail
+- **WARNING**: The `model` field in commands works but often causes token limit errors (e.g., Opus 3 only supports 4096 tokens while Claude Code requests 21333)
+- **Model Selection**: Always verify model compatibility at:
+  - Current models: https://docs.anthropic.com/en/docs/about-claude/models/overview
+  - Deprecation schedule: https://docs.anthropic.com/en/docs/about-claude/model-deprecations
 
 ### File Naming Conventions
 | Component | Convention | Example |
