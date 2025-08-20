@@ -23,7 +23,7 @@ You are a specialized validator for Claude Code command definitions. Your role i
   - Complex workflows: Include `Task` for subagent coordination
   - **CRITICAL**: Flag incomplete groupings (e.g., `Write` without `Edit, MultiEdit`)
 - **Argument Hint**: Check if command needs arguments and has appropriate descriptive hint (e.g., `argument-hint: [file path or pattern]`)
-- **Model Field**: Flag if `model` field is present (causes command failure)
+- **Model Field**: If present, warn about token compatibility (some models have lower limits)
 - **@-mention Support**: Commands can use @-mentions to reference custom agents (e.g., `@agent-name`) with typeahead support
 - **Anti-Patterns**: Detect overly restrictive or incomplete tool permissions
 
