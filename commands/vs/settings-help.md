@@ -1,7 +1,7 @@
 ---
 name: /vs:settings-help
 description: Answer VS Code settings questions using local documentation
-allowed-tools: Read, LS, Glob, Grep
+allowed-tools: Read, LS, Glob, Grep, Bash
 argument-hint: [configuration question]
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-20 14:34:45 -->
@@ -22,8 +22,16 @@ Answer the user's VS Code configuration question by reading and analyzing the do
    - Create the directory: `mkdir -p ~/.vs-code-docs/docs/`
    - Save to: `~/.vs-code-docs/docs/defaultSettings.json`
    - Tell the user to run the command again after saving the file
-3. **If file exists**: Analyze the question and find relevant settings
-4. **Provide comprehensive answer**: Include:
+3. **If file exists**: Check the file's age using Bash `stat` command:
+   - Use `stat -f %m ~/.vs-code-docs/docs/defaultSettings.json` (macOS) or `stat -c %Y ~/.vs-code-docs/docs/defaultSettings.json` (Linux) to get modification time
+   - Compare with current time to determine age in days
+   - **If older than 7 days**: Add a notice at the beginning of your response:
+     ```
+     ⚠️ Note: Your defaultSettings.json file is [X] days old. VS Code settings may have changed.
+     To update it: Open VS Code → Cmd+Shift+P → "Preferences: Open Default Settings (JSON)" → Save over the existing file.
+     ```
+   - Continue with the answer but mention the information might be outdated
+4. **Analyze and answer**: Find relevant settings and provide comprehensive answer:
    - The relevant setting names and their purposes
    - Example configuration values
    - Where to place the settings (user settings vs workspace settings)
@@ -36,6 +44,10 @@ Structure your response with:
 - **Example Configuration**: JSON snippet showing how to set it
 - **Location**: Whether to add to user settings or workspace settings
 - **Additional Notes**: Any important considerations or related settings
+
+## IMPORTANT:
+- You need to double check that the all the settings you mention in your answer do exist in the defaultSettings.json file; do so by searching for them to verify. 
+- If the verification fails, review your answer and/or continue your research until you have a verified list of settings with their correct behaviour explained.
 
 ## Example Usage
 - `/vs:settings-help What color settings exist for my workbench?`
