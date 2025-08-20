@@ -11,6 +11,15 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check"
+          }
+        ]
       }
     ],
     "PostToolUse": [

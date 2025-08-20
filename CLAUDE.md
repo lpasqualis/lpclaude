@@ -83,6 +83,43 @@ This distinction is crucial for:
 /maintenance:update-knowledge-base
 ```
 
+## Critical Framework Execution Rules
+
+### Claude Code Execution Hierarchy and Constraints
+
+**IMPORTANT**: These are fundamental architectural constraints of Claude Code that must be respected when designing commands and agents:
+
+```
+Main Claude Session
+    ├── Can use Task → Invoke any subagent
+    ├── Can execute → Slash commands
+    └── Slash Commands (run in main session)
+            ├── Can use Task → Invoke worker subagents (parallel OK!)
+            ├── Cannot → Execute other slash commands directly
+            └── Worker Subagents (isolated context)
+                    ├── Can use → Their allowed tools
+                    ├── Cannot use → Task tool (no recursive delegation)
+                    └── Cannot → Execute slash commands
+```
+
+### Valid Patterns ✅
+1. **Commands using Task to invoke multiple worker subagents in parallel** - This is powerful and should be used
+2. **Main Claude using Task to invoke any subagent** - Standard delegation pattern
+3. **Commands creating cmd-* worker agents for parallel execution** - Excellent for performance
+4. **Commands reading other command files for reference** - Use direct file reading, not execution
+
+### Invalid Patterns ❌ (Will Not Work)
+1. **Subagents with Task tool attempting recursive delegation** - Subagents cannot invoke other subagents
+2. **Subagents trying to execute slash commands** - They run in isolated contexts without command access
+3. **Commands trying to directly execute other slash commands** - Commands cannot invoke other commands
+4. **The slash-command-executor agent concept** - Fundamentally flawed as subagents can't execute commands
+
+### Key Rules for Framework Development
+- **Subagents MUST NOT have Task tool** - They cannot use it anyway (no recursive delegation)
+- **Commands CAN and SHOULD use Task** - For invoking worker subagents, including parallel execution
+- **Worker pattern is valid** - Commands orchestrate, workers execute, results return to command
+- **Parallel execution from commands works** - Up to 10 concurrent subagent invocations
+
 ## Workflow Instructions
 
 ### Creating a New Agent
@@ -94,9 +131,11 @@ This distinction is crucial for:
    name: agent-name
    description: Clear, action-oriented description for automatic delegation
    proactive: true/false  # Optional: whether agent should be used proactively
+   tools: Read, LS, Glob, Grep  # NO Task tool for subagents!
    ---
    ```
-4. Test immediately using Task tool with the agent name
+4. **CRITICAL**: Do NOT include Task in tools list (subagents cannot delegate)
+5. Test immediately using Task tool with the agent name
 
 ### Creating a New Command
 1. Create a new `.md` file in `commands/` directory
@@ -106,10 +145,13 @@ This distinction is crucial for:
    ---
    name: /command-name
    description: What this command does
+   allowed-tools: Read, Write, Edit, LS, Glob, Grep, Task  # Task is OK for commands!
    # CRITICAL: Do NOT include 'model' field - it will cause command failure
    ---
    ```
-4. Test immediately by invoking the slash command
+4. Commands CAN use Task to invoke worker subagents (including parallel execution)
+5. Commands CANNOT directly execute other slash commands
+6. Test immediately by invoking the slash command
 
 ### Creating a New Output Style
 1. Create a new `.md` file in `output-styles/` directory
@@ -248,24 +290,23 @@ The optimizer subagents (`command-optimizer` and `subagent-optimizer`) use embed
 - **Reliability**: No dependency on external services
 - **Consistency**: Predictable behavior across runs
 
-### Critical: How Optimizers Handle Slash Command References
+### Critical: How Optimizers Should Work (Updated for Constraints)
 
-When optimizers encounter references to slash commands (e.g., "run the slash command /docs:readme-audit"), they:
+**IMPORTANT UPDATE**: Optimizer agents themselves are subagents and therefore CANNOT have Task tool. This means:
 
-1. **Identify the Problem**: Agents cannot directly execute slash commands - they must read command definition files
-2. **Find the Actual Command File**: The optimizer uses Glob to locate the command in:
-   - First: `.claude/commands/[path]` (project-local)
-   - Then: `~/.claude/commands/[path]` (global)
-3. **Replace with Specific Instructions**: Instead of generic templates, the optimizer provides the actual path:
-   - Example: "Execute the requested /docs:readme-audit command now by reading ~/.claude/commands/docs/readme-audit.md and following all its instructions."
-4. **Maintain Scope Consistency**: Companion agents are created in the same scope as their parent command:
-   - Local command → Local companion agent
-   - Global command → Global companion agent
+1. **Optimizers cannot delegate to other agents** - They must do all work directly
+2. **Optimizers can create companion worker agents** - But only for commands to use (commands CAN use Task)
+3. **Slash command references must be converted to file reading** - Since subagents cannot execute commands
 
-**Why This Matters**: In this framework repository:
-- `commands/` and `agents/` folders ARE the global folders (via symlinks to `~/.claude/`)
-- `.claude/commands/` and `.claude/agents/` are project-local (only for this repo)
-- Optimizers must understand this distinction to create proper file paths
+When optimizers encounter references to slash commands:
+1. **Convert to file reading pattern**: Replace "execute /command" with "read ~/.claude/commands/[path].md"
+2. **Maintain scope consistency**: Create companion agents in same scope as parent command
+3. **Ensure workers have no Task tool**: Created worker agents must not attempt delegation
+
+**Architecture Note**: The command-optimizer and subagent-optimizer themselves need fixing:
+- Remove Task tool from their allowed tools (they're subagents, can't delegate)
+- Keep logic for creating worker agents (valid for commands to use)
+- Update slash command handling to use file reading only
 
 ### Knowledge Base Updates
 To keep optimizer knowledge current with Claude Code updates:
@@ -305,9 +346,11 @@ The knowledge base manifest (`resources/knowledge-base-manifest.json`) tracks al
 
 ### Performance Optimization Patterns
 **Parallel Execution Architecture**: Create `cmd-[name]-[function]` subagents for parallel operations within commands:
-- **Context**: These subagents run without conversation context using lighter models (haiku)
+- **Valid Pattern**: Commands use Task to invoke multiple workers in parallel ✅
+- **Context**: Worker subagents run without conversation context using lighter models (haiku)
 - **Capacity**: Enable up to 10 parallel executions
-- **Design**: Should be independent and focused on result aggregation
+- **Design**: Workers should be independent and focused on result aggregation
+- **Critical Rule**: Worker subagents MUST NOT have Task tool (no recursive delegation)
 
 **Idempotent Optimization Pattern**: Follow "analyze first, act only if necessary" approach:
 - **Process**: Check if changes are actually required before using Edit/Write tools

@@ -9,3 +9,4 @@ jobs/*
 # and shold not go in the repository
 commands/lpct
 agents/lpct-*
+commands/docs.md
