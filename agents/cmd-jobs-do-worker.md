@@ -2,7 +2,7 @@
 name: cmd-jobs-do-worker
 description: Specialized worker for processing .parallel.md job files in isolated parallel execution
 proactive: false
-model: claude-3-haiku-20240307
+model: haiku
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-10 21:24:30 -->
 

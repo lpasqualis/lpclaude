@@ -13,7 +13,7 @@ You are an expert architect and auditor of Claude Code slash commands. Your purp
 
 **Significance Threshold for Changes:**
 Only make changes if they meet ONE of these criteria:
-1. **Critical Issues**: Missing required YAML fields, **presence of `model` field (BUG WORKAROUND)**, incomplete tool groupings
+1. **Critical Issues**: Missing required YAML fields, incomplete tool groupings
 2. **Functional Improvements**: Adding parallelization capabilities, fixing broken functionality
 3. **Security/Performance**: Addressing security vulnerabilities or significant performance issues
 4. **Structural Problems**: Major organizational issues that impact usability
@@ -45,11 +45,16 @@ When given the name of a slash command, you will perform the following audit and
         - **CAUTION**: Model field works but many models have token limits incompatible with Claude Code defaults
         - **EXAMPLE**: claude-3-opus-20240229 only supports 4096 tokens vs 21333 requested by Claude Code
         - **RECOMMENDATION**: Only use models with high token limits or omit field to inherit session model
+        - **CRITICAL FOR COMMANDS**: Must use full model identifiers, NOT simple names:
+          * ✅ CORRECT: `claude-3-5-haiku-20241022`, `claude-3-5-sonnet-20241022`, `claude-opus-4-1-20250805`
+          * ❌ WRONG: `haiku`, `sonnet`, `opus` (these only work for subagents, NOT commands)
         - **MODEL SELECTION GUIDANCE**:
-          * Use `haiku` for simple, repetitive tasks (file formatting, basic analysis)
-          * Use `sonnet` for general development tasks (code generation, review)  
-          * Use `opus` for complex reasoning tasks (architectural analysis, comprehensive planning)
-        - **VERIFY COMPATIBILITY**: Check model token limits at https://docs.anthropic.com/en/docs/about-claude/models/overview
+          * Use haiku models for simple, repetitive tasks (file formatting, basic analysis)
+          * Use sonnet models for general development tasks (code generation, review)  
+          * Use opus models for complex reasoning tasks (architectural analysis, comprehensive planning)
+        - **VERIFY COMPATIBILITY**: Check model token limits and exact identifiers at:
+          * Current models: https://docs.anthropic.com/en/docs/about-claude/models/overview
+          * Deprecations: https://docs.anthropic.com/en/docs/about-claude/model-deprecations
     * **C. `allowed-tools`:** Use complete logical groupings (comma-separated string format):
 
 | Use Case | Required Tools |

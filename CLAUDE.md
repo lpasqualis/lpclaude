@@ -413,6 +413,10 @@ When working with VS Code workspace customization commands (like `/vs:tint-works
 - **Agents & Commands**: Must include `name` and `description`
 - **Optional Fields for Agents**: `proactive`, `model`, `color`
 - **WARNING**: The `model` field in commands works but often causes token limit errors (e.g., Opus 3 only supports 4096 tokens while Claude Code requests 21333)
+- **CRITICAL Model Naming Distinction**:
+  - **Subagents**: Use simple names: `haiku`, `sonnet`, `opus`
+  - **Commands**: Must use full model identifiers: `claude-3-5-haiku-20241022`, `claude-3-5-sonnet-20241022`, `claude-opus-4-1-20250805`
+  - **Why**: Subagents and commands have different model resolution mechanisms in Claude Code
 - **Model Selection**: Always verify model compatibility at:
   - Current models: https://docs.anthropic.com/en/docs/about-claude/models/overview
   - Deprecation schedule: https://docs.anthropic.com/en/docs/about-claude/model-deprecations
