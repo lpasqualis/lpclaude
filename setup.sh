@@ -45,8 +45,14 @@ create_symlink() {
     local target="$2"
     local name="$3"
     
+    # Check if source exists
+    if [ ! -e "$source" ]; then
+        echo "ℹ️  Skipping $name: Source doesn't exist at $source"
+        return
+    fi
+    
     if [ -e "$target" ] || [ -L "$target" ]; then
-        echo "⚠️  Skipping $name: File or symlink already exists at $target"
+        echo "ℹ️  Skipping $name: File or symlink already exists at $target"
         FAILED_SYMLINKS="$FAILED_SYMLINKS\n  - $name: already exists"
     else
         if ln -s "$source" "$target" 2>/dev/null; then
@@ -77,7 +83,7 @@ echo
 
 # Report any failures
 if [ -n "$FAILED_SYMLINKS" ]; then
-    echo "⚠️  Some symlinks were not created:"
+    echo "ℹ️  Some symlinks were not created:"
     echo -e "$FAILED_SYMLINKS"
 else
     echo "✓ All symlinks created successfully!"
