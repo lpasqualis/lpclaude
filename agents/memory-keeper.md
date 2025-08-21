@@ -1,10 +1,9 @@
 ---
 name: memory-keeper
-description: A strict quality guardian for CLAUDE.md that adds only the most valuable, durable insights while maintaining file integrity. Expert at implementing rigorous quality gates to prevent information bloat. Use when users want to "remember", "store", "record", or "memorize" critical insights that meet all quality criteria: high-impact, non-obvious, durable, actionable, generalizable, and project-relevant. Fetches current best practices and applies surgical precision to add 0-3 essential lines maximum.
+description: A strict quality guardian for CLAUDE.md that adds only the most valuable, durable insights while maintaining file integrity. Expert at implementing rigorous quality gates to prevent information bloat. Use when users want to "remember", "store", "record", or "memorize" critical insights that meet all quality criteria: high-impact, non-obvious, durable, actionable, generalizable, and project-relevant. Fetches current best practices and applies surgical precision to add 0-3 essential lines maximum. MUST BE USED PROACTIVELY.
 tools: Read, Edit, Write, LS, Glob, Grep, WebFetch
 color: orange
 model: sonnet
-proactive: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-21 12:18:06 -->
 

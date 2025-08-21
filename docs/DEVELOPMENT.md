@@ -14,7 +14,7 @@
 # This interactive command will:
 # - Guide you through defining the agent's purpose
 # - Create properly formatted YAML frontmatter
-# - Set appropriate model and proactive settings
+# - Set appropriate model and other settings
 # - Place the agent in the correct location
 # - Ensure best practices from the start
 ```
@@ -30,7 +30,7 @@
 # - Refine the description for better auto-invocation
 # - Optimize model selection (haiku/sonnet/opus)
 # - Add semantic colors
-# - Ensure proactive settings are appropriate
+# - Ensure automatic invocation triggers are appropriate
 # - Apply all current best practices
 ```
 
@@ -74,8 +74,7 @@ While the automated tools above are recommended, you can still create components
 ```yaml
 ---
 name: my-new-agent
-description: Clear, action-oriented description
-proactive: true  # Optional
+description: Clear, action-oriented description. MUST BE USED PROACTIVELY when [conditions].
 model: sonnet    # Optional: haiku, sonnet, or opus
 color: blue      # Optional
 ---
@@ -106,7 +105,7 @@ allowed-tools: Read, Write, Edit, LS, Glob, Grep
 | Component | Convention | Example |
 |-----------|-----------|---------|
 | Agents | lowercase-hyphenated.md | `memory-keeper.md` |
-| Command-Specific Agents | cmd-{command}-{purpose}.md | `cmd-commit-and-push-analyzer.md` |
+| Task Templates | {command}-{purpose}.md | `commit-and-push-analyzer.md` |
 | Commands | lowercase-hyphenated.md | `commit-and-push.md` |
 | Directives | descriptive_names.md | `development_projects_directives.md` |
 
@@ -147,7 +146,7 @@ Run `./rebuild_claude_md.sh` when you:
 
 ### How It Works
 
-The framework includes two powerful optimizers that are **proactively triggered** when you ask:
+The framework includes two powerful optimizers that are **automatically triggered** when you ask:
 
 1. **subagent-optimizer**: Automatically invoked when you mention optimizing an agent
 2. **command-optimizer**: Automatically invoked when you mention optimizing a command
@@ -202,7 +201,7 @@ The optimizers will:
 ### Agent Development
 1. **Single Responsibility**: Each agent should do one thing well
 2. **Clear Boundaries**: Define what the agent will and won't do
-3. **Proactive Design**: Use `proactive: true` for agents that should trigger automatically
+3. **Automatic Invocation Design**: Include "MUST BE USED PROACTIVELY" in description for agents that should trigger automatically
 4. **Model Selection**:
    - `haiku`: Simple, fast tasks (parallel workers)
    - `sonnet`: Default for most agents
@@ -216,24 +215,31 @@ The optimizers will:
 4. **Error Handling**: Include graceful failure paths
 5. **Documentation**: Commands are self-documenting via frontmatter
 
-### Command-Specific Agent Pattern (cmd-*)
+### Task Template Pattern (for parallelization)
 
 For commands that benefit from parallelization:
 
-1. **Create worker agents** with `cmd-{command}-{function}` naming
-2. **Use haiku model** for speed in parallel execution
-3. **Design for independence** - no shared state between workers
-4. **Return structured data** (JSON preferred) for aggregation
-5. **Limit to focused tasks** that can run concurrently
+1. **Create task templates** in `tasks/` directory with `{command}-{function}.md` naming
+2. **Design for independence** - no shared state between parallel tasks
+3. **Return structured data** (JSON preferred) for aggregation
+4. **Limit to focused tasks** that can run concurrently
+5. **No YAML frontmatter** - task templates are pure prompts
 
 Example structure:
-```yaml
----
-name: cmd-mycommand-analyzer
-description: Analyzes specific aspect for mycommand
-model: haiku
-proactive: false  # Never proactive for cmd-* agents
----
+```markdown
+# Task: Analyze specific aspect for mycommand
+
+You are analyzing [specific aspect]. Focus on [specific criteria].
+
+Note: This task operates without conversation context.
+
+Return your findings as structured JSON.
+```
+
+Usage in commands:
+```markdown
+template = Read('tasks/mycommand-analyzer.md')
+Task(subagent_type: 'general-purpose', prompt: template + context)
 ```
 
 ## Maintenance Commands
@@ -265,7 +271,7 @@ Located in `.claude/commands/maintenance/`, these are only available when workin
 ## Troubleshooting
 
 ### Agent Not Triggering
-1. Check `proactive: true` in frontmatter
+1. Check for "MUST BE USED PROACTIVELY" in description
 2. Verify description contains clear trigger words
 3. Test with explicit Task tool invocation
 4. Run agent through optimizer
