@@ -196,10 +196,18 @@ Your ~/.claude/                    This Repository
 
 ## Documentation
 
+### Quick Start
+- **[Getting Started](docs/QUICK_START.md)** - 2-minute setup guide
+- **[Component Reference](docs/REFERENCE.md)** - Complete list of agents and commands
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+
+### Deep Dives
 - **[Architecture Guide](docs/ARCHITECTURE.md)** - Technical design and structure
-- **[Component Reference](docs/COMPONENTS.md)** - Complete list of agents and commands
 - **[Development Guide](docs/DEVELOPMENT.md)** - Create your own extensions
+- **[Advanced Patterns](docs/ADVANCED_PATTERNS.md)** - Parallel processing and complex workflows
+- **[Migration Guide](docs/MIGRATION_GUIDE.md)** - Upgrading from legacy patterns
 - **[Best Practices](resources/)** - Research and patterns
+
 
 ## Quick Reference
 

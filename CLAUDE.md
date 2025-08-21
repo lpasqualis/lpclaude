@@ -74,17 +74,23 @@ Main Claude → Can use Task → Invoke any subagent
 - Namespaces: `/domain:action-target`
 - Task templates: `{command}-{purpose}.md`
 
-## Additional Documentation
+## Documentation
 
-For detailed information, consult these references:
+### Quick References
+- **Getting Started** (`docs/QUICK_START.md`): 2-minute setup and basic usage
+- **Component Reference** (`docs/REFERENCE.md`): Complete inventory of all components
+- **Troubleshooting** (`docs/TROUBLESHOOTING.md`): Common issues and solutions
 
-- **Component Creation Guide** (`docs/DEVELOPMENT.md`): Step-by-step instructions for creating agents, commands, and templates
-- **Architecture Details** (`docs/ARCHITECTURE.md`): Deep dive into Task tool constraints and execution model
-- **Component Reference** (`docs/COMPONENTS.md`): Complete list of available agents, commands, and templates
-- **Best Practices** (`resources/`): Research documents on command and agent patterns
-  - `slash_commands_best_practices_research.md`: Command design patterns
-  - `subagent_invocation_research.md`: Agent architecture and invocation
-  - `commands_and_agents.md`: Technical implementation details
+### Advanced Topics
+- **Development Guide** (`docs/DEVELOPMENT.md`): Creating and optimizing components
+- **Architecture** (`docs/ARCHITECTURE.md`): System design and structure
+- **Advanced Patterns** (`docs/ADVANCED_PATTERNS.md`): Parallel processing and complex workflows
+- **Migration Guide** (`docs/MIGRATION_GUIDE.md`): Upgrading from legacy patterns
+
+### Research & Best Practices (`resources/`)
+- `slash_commands_best_practices_research.md`: Command design patterns
+- `subagent_invocation_research.md`: Agent architecture
+- `commands_and_agents.md`: Technical implementation
 
 ## Project-Specific Notes
 
