@@ -32,7 +32,7 @@ When processing multiple improvement categories or large codebases:
 
 1. **Identify scanning work**: Determine improvement categories to analyze
 2. **Use parallel execution for efficiency**:
-   - Use Task tool with `subagent_type: 'cmd-jobs-auto-improve-scanner'`
+   - Use Task tool with `Read template: Read('tasks/jobs-auto-improve-scanner.md') then use Task with subagent_type: 'general-purpose'`
    - Process up to 5 categories in parallel for faster analysis
    - Each scanner analyzes one specific improvement category
 3. **Provide scanners with**:

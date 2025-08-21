@@ -102,23 +102,61 @@ Main Claude Session
                     └── Cannot → Execute slash commands
 ```
 
+### Task Tool Architecture Deep Dive
+
+#### Why Subagents Cannot Use Task Tool (Tested and Confirmed)
+
+1. **Tool Availability Filtering**: When a subagent is invoked via Task, Claude Code completely removes the Task tool from the available tools list. This is a hard constraint - the Task tool simply doesn't exist in the subagent's context.
+
+2. **Test Results**: We tested this directly by having a Task attempt to invoke another Task. The result: The Task tool is not available in the subagent's tool list at all. It's filtered out at the framework level.
+
+3. **Prevents Problems**: This design prevents:
+   - Infinite recursion and stack overflow
+   - Resource exhaustion (memory, tokens, execution contexts)
+   - Deadlocks from circular dependencies
+   - Unpredictable execution order
+   - Context management chaos
+
+#### Task Communication Limitations
+
+**Tasks cannot instruct the main agent to start new tasks**. The execution model is strictly unidirectional:
+- Main agent → delegates to Task → receives results → decides next action
+- Tasks return **information/results**, not **instructions**
+- There's no callback or continuation mechanism for Tasks to request new work
+
+**Best Practice for Multi-Stage Workflows**:
+```markdown
+# In a command (good pattern)
+1. Run diagnostic task
+2. Analyze diagnostic results  
+3. Based on findings, run appropriate remediation tasks:
+   - If type A issue: Task(fix-type-a)
+   - If type B issue: Task(fix-type-b)
+```
+
+Rather than trying to have Tasks request new Tasks, commands should anticipate the workflow and orchestrate based on Task results.
+
 ### Valid Patterns ✅
 1. **Commands using Task to invoke multiple worker subagents in parallel** - This is powerful and should be used
 2. **Main Claude using Task to invoke any subagent** - Standard delegation pattern
-3. **Commands creating cmd-* worker agents for parallel execution** - Excellent for performance
+3. **Commands creating task templates for parallel execution** - Using `general-purpose` with templates
 4. **Commands reading other command files for reference** - Use direct file reading, not execution
+5. **Commands orchestrating multi-stage workflows** - Based on Task results
 
 ### Invalid Patterns ❌ (Will Not Work)
-1. **Subagents with Task tool attempting recursive delegation** - Subagents cannot invoke other subagents
+1. **Subagents with Task tool attempting recursive delegation** - Task tool not available in subagent context
 2. **Subagents trying to execute slash commands** - They run in isolated contexts without command access
 3. **Commands trying to directly execute other slash commands** - Commands cannot invoke other commands
-4. **The slash-command-executor agent concept** - Fundamentally flawed as subagents can't execute commands
+4. **Tasks trying to spawn new Tasks** - Task tool is filtered out, preventing recursion
+5. **Tasks attempting to instruct main agent** - No mechanism for upward instruction flow
 
 ### Key Rules for Framework Development
-- **Subagents MUST NOT have Task tool** - They cannot use it anyway (no recursive delegation)
+- **Subagents MUST NOT have Task tool** - It's not available to them anyway (filtered by framework)
 - **Commands CAN and SHOULD use Task** - For invoking worker subagents, including parallel execution
 - **Worker pattern is valid** - Commands orchestrate, workers execute, results return to command
 - **Parallel execution from commands works** - Up to 10 concurrent subagent invocations
+- **Task templates are self-contained** - Must complete work without delegation
+- **Orchestration logic belongs in commands** - Not in Tasks or subagents
 
 ## Workflow Instructions
 
@@ -414,12 +452,13 @@ When working with VS Code workspace customization commands (like `/vs:tint-works
 - **Optional Fields for Agents**: `proactive`, `model`, `color`
 - **WARNING**: The `model` field in commands works but often causes token limit errors (e.g., Opus 3 only supports 4096 tokens while Claude Code requests 21333)
 - **CRITICAL Model Naming Distinction**:
-  - **Subagents**: Use simple names: `haiku`, `sonnet`, `opus`
-  - **Commands**: Must use full model identifiers: `claude-3-5-haiku-20241022`, `claude-3-5-sonnet-20241022`, `claude-opus-4-1-20250805`
+  - **Subagents**: Use simple names: `haiku`, `sonnet`, `opus` (map to latest versions)
+  - **Commands**: Must use full model identifiers fetched from documentation
   - **Why**: Subagents and commands have different model resolution mechanisms in Claude Code
-- **Model Selection**: Always verify model compatibility at:
-  - Current models: https://docs.anthropic.com/en/docs/about-claude/models/overview
-  - Deprecation schedule: https://docs.anthropic.com/en/docs/about-claude/model-deprecations
+- **Model Selection**: 
+  - **Always fetch current models from**: https://docs.anthropic.com/en/docs/about-claude/models/overview
+  - **Prefer latest versions**: Use newest Opus, Sonnet, or Haiku (not older 3.5 versions)
+  - **Check deprecations**: https://docs.anthropic.com/en/docs/about-claude/model-deprecations
 
 ### File Naming Conventions
 | Component | Convention | Example |

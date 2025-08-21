@@ -38,11 +38,5 @@
         "FIRECRAWL_API_KEY": "no-key-needed-for-local"
       }
     }
-    // ,
-    // "structured-memory": {
-    //   "command": "uv",
-    //   "args": ["run", "python", "-m", "structured_memory"],
-    //   "cwd": "/Users/lpasqualis/Dropbox/prj/MCP_Servers/mcp-structured-memory"
-    // }
   }
 }
