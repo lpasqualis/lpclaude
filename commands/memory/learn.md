@@ -31,8 +31,14 @@ Analyze the current conversation to identify critical insights that should be pr
 
 ## Execution Process
 
-### Step 1: Focused Analysis
-Scan the conversation for insights that meet ALL quality gates above. Look specifically for:
+### Step 1: Load CLAUDE.md Best Practices
+Fetch current guidelines to ensure additions align with best practices:
+- WebFetch https://www.anthropic.com/engineering/claude-code-best-practices for structure guidelines
+- WebFetch https://docs.anthropic.com/en/docs/claude-code/memory for scope and content guidelines
+- Extract what belongs in CLAUDE.md vs external documentation
+
+### Step 2: Focused Analysis
+Using the fetched best practices as guidance, scan the conversation for insights that meet ALL quality gates above. Look specifically for:
 
 - **Critical architectural constraints** discovered through trial and error
 - **Non-obvious tool behaviors** that caused issues or enabled solutions
@@ -40,7 +46,9 @@ Scan the conversation for insights that meet ALL quality gates above. Look speci
 - **Workflow patterns** that proved unexpectedly effective
 - **Integration insights** about how components interact in unexpected ways
 
-### Step 2: CLAUDE.md Best Practices Validation
+Ensure findings align with what the best practices indicate belongs in CLAUDE.md.
+
+### Step 3: CLAUDE.md Best Practices Validation
 Read the current CLAUDE.md to understand:
 - Existing organizational structure and conventions
 - Current directive categories and formatting
@@ -53,14 +61,14 @@ Read the current CLAUDE.md to understand:
 - Should integrate seamlessly into appropriate sections
 - Must follow established formatting patterns
 
-### Step 3: Minimal Addition Strategy
+### Step 4: Minimal Addition Strategy
 For each insight that passes all quality gates:
 - Write in concise, directive style matching existing CLAUDE.md tone
 - Place in the most appropriate existing section
 - Use clear, actionable language without unnecessary explanation
 - Include only essential context
 
-### Step 4: Storage with Memory-Keeper
+### Step 5: Storage with Memory-Keeper
 Use Task tool with memory-keeper agent to add validated insights:
 - Provide the specific text to add and target section
 - Request confirmation of successful integration
