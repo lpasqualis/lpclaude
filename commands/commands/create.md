@@ -271,7 +271,7 @@ Only if the user provides feedback after creation:
 - **Context awareness**: Remember that subagents start with fresh context (good for parallel tasks)
 
 ### Validation Integration:
-- **Parallel Validation**: Use `cmd-create-command-validator` subagent for efficient quality assurance
+- **Parallel Validation**: Use validation task templates for efficient quality assurance
 - **Continuous Improvement**: Apply validation feedback iteratively during creation process
 - **Quality Gates**: Don't proceed to next step without addressing validation issues
 - **Best Practice Enforcement**: Validate against current standards, not outdated patterns
@@ -287,8 +287,8 @@ Only if the user provides feedback after creation:
 ### Parallel Creation Workflow
 When creating complex commands with multiple components:
 
-1. **Requirements Analysis**: Use Task tool with `cmd-create-command-validator` to analyze requirements
-2. **Component Creation**: Create main command first, then create companion subagents if needed
+1. **Requirements Analysis**: Use Task tool with validation templates to analyze requirements
+2. **Component Creation**: Create main command first, then create task templates if needed for parallelization
 3. **Validation**: Use Task tool to validate all components against best practices
 4. **Integration Testing**: Ensure command and subagent coordination works effectively
 

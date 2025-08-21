@@ -85,7 +85,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-capture-session-analyzer.md",
       "type": "analyzer",
       "description": "Analyzes development sessions for capture",
       "knowledge_areas": [
@@ -97,7 +96,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-commands-normalize-analyzer.md",
       "type": "analyzer",
       "description": "Analyzes commands for normalization",
       "knowledge_areas": [
@@ -109,7 +107,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-commit-and-push-analyzer.md",
       "type": "analyzer",
       "description": "Analyzes files for semantic commit grouping",
       "knowledge_areas": [
@@ -119,7 +116,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-commit-and-push-security.md",
       "type": "analyzer",
       "description": "Security analysis for git commits",
       "knowledge_areas": [
@@ -130,7 +126,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-commit-and-push-validator.md",
       "type": "validator",
       "description": "Validates git operations readiness",
       "knowledge_areas": [
@@ -141,7 +136,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-create-command-validator.md",
       "type": "validator",
       "description": "Validates command definitions",
       "knowledge_areas": [
@@ -153,7 +147,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-learn-analyzer.md",
       "type": "analyzer",
       "description": "Analyzes conversation segments for learning",
       "knowledge_areas": [
@@ -165,7 +158,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-review-subagent-ecosystem-analyzer.md",
       "type": "analyzer",
       "description": "Analyzes subagent definitions for quality",
       "knowledge_areas": [
@@ -390,7 +382,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/cmd-jobs-do-worker.md",
       "type": "analyzer",
       "description": "Specialized worker for processing .parallel.md job files in parallel execution",
       "knowledge_areas": [
@@ -446,7 +437,6 @@
       ],
       "last_updated": "2025-08-14",
       "embedded_knowledge": {
-        "parallel_scanning": "up to 5 categories simultaneous via cmd-jobs-auto-improve-scanner",
         "improvement_categories": "documentation, code-quality, bugs, performance, security",
         "job_integration": "uses addjob subagent for task creation"
       }
@@ -488,7 +478,6 @@
       }
     },
     {
-      "path": "agents/cmd-jobs-auto-improve-scanner.md",
       "type": "analyzer",
       "description": "Specialized scanner for analyzing specific improvement categories in project files",
       "knowledge_areas": [
@@ -499,7 +488,6 @@
       ],
       "last_updated": "2025-08-16",
       "embedded_knowledge": {
-        "parallel_scanning": "up to 5 categories simultaneous via specialized scanners",
         "improvement_categories": "documentation, code-quality, bugs, performance, security",
         "project_heuristics": "size-based category selection and execution strategy"
       }

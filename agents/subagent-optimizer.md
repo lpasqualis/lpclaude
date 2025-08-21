@@ -36,7 +36,7 @@ When given the name of a subagent, you will perform the following audit and opti
 * Dynamic content fetching and specific tool usage are often intentional
 
 **1. Locate and Analyze the Agent File:**
-* Parse the agent name (e.g., `agent-name` or `cmd-command-analyzer`)
+* Parse the agent name (e.g., `agent-name`)
 * Search for the file using Glob in this order:
     - First check `.claude/agents/[name].md` (project-local)
     - Then check `~/.claude/agents/[name].md` (global)

@@ -104,81 +104,44 @@ Complete inventory of all agents and commands in the Claude Framework.
 - Creating self-contained tasks that will run via `/jobs:do` command
 - **Proactive**: Automatically triggered when tasks need to be deferred
 
-## Command-Specific Subagents (cmd-*)
+## Task Templates
 
-These specialized agents work in parallel with specific commands for optimized processing.
+Task templates are specialized prompts used by commands for parallel processing and focused analysis. They replace the old cmd-* agent pattern with a cleaner architecture.
 
-### Session Analysis Agent
-**File:** `agents/cmd-capture-session-analyzer.md`  
-**Purpose:** Specialized agent for analyzing specific aspects of development sessions in parallel for capture-session and capture-strategy commands.  
-**Use Cases:**
-- Codebase structure analysis and architectural pattern identification
-- Recent changes analysis and git history review
-- Technical context analysis of specific files or code sections
-- Problem domain analysis and requirement understanding
-- **Model**: haiku (optimized for speed in parallel execution)
+**Location:** `tasks/` directory  
+**Format:** Pure prompts without YAML frontmatter  
+**Usage:** Loaded via `Read('tasks/template.md')` and executed with `Task(subagent_type: 'general-purpose', prompt: template + context)`
 
-### Commit Analysis Agent  
-**File:** `agents/cmd-commit-and-push-analyzer.md`  
-**Purpose:** Analyze changed files and classify them into logical commit groups with semantic commit types for the commit-and-push command.  
-**Use Cases:**
-- File classification into semantic commit categories (feat, fix, docs, etc.)
-- Logical grouping of related files for coherent commits
-- Priority assessment and commit ordering recommendations
-- JSON-structured output for automated processing
+### Available Task Templates
 
-### Commit Security Agent
-**File:** `agents/cmd-commit-and-push-security.md`  
-**Purpose:** Analyze file contents for sensitive data, large binaries, and security concerns during commit preparation.  
-**Use Cases:**
-- Sensitive data detection (API keys, passwords, private keys)
-- File size and type analysis for Git LFS recommendations
-- Security risk assessment and anti-pattern identification
-- Actionable security recommendations with risk levels
+- **capture-session-analyzer.md** - Analyzes development sessions for documentation capture
+- **commit-analyzer.md** - Classifies files into semantic commit groups
+- **commit-and-push-analyzer.md** - Full commit preparation analysis
+- **commit-and-push-security.md** - Security scanning for sensitive data
+- **commit-and-push-validator.md** - Repository state and commit validation
+- **create-command-validator.md** - Command definition validation
+- **commands-normalize-analyzer.md** - Command structure normalization
+- **jobs-auto-improve-scanner.md** - Scans for improvement opportunities
+- **jobs-do-worker.md** - Processes parallel job files
+- **review-subagent-ecosystem-analyzer.md** - Ecosystem health analysis
 
-### Commit Validator Agent
-**File:** `agents/cmd-commit-and-push-validator.md`  
-**Purpose:** Validate commit messages, file changes, and repository state before pushing changes.  
-**Use Cases:**
-- Commit message format validation against semantic conventions
-- Change impact assessment and risk analysis
-- Repository state verification and conflict detection
-- Pre-push validation and quality gates
+### How Commands Use Task Templates
 
-### Command Validator Agent
-**File:** `agents/cmd-create-command-validator.md`  
-**Purpose:** Validate command definitions during command creation process.  
-**Use Cases:**
-- YAML frontmatter validation for required fields
-- Command naming convention compliance
-- Tool permission auditing for security best practices
-- Command structure and format verification
+Commands load and execute task templates for parallel processing:
 
-### Learning Analyzer Agent
-**File:** `agents/cmd-learn-analyzer.md`  
-**Purpose:** Extract and analyze learnings from development sessions for the learn command.  
-**Use Cases:**
-- Technical discovery identification and categorization
-- Pattern recognition in development workflows
-- Knowledge extraction for future reference
-- Learning prioritization and organization
+```markdown
+# Load the template
+template = Read('tasks/analyzer.md')
 
-### Ecosystem Analyzer Agent
-**File:** `agents/cmd-review-subagent-ecosystem-analyzer.md`  
-**Purpose:** Specialized analyzer for reviewing subagent ecosystem health and optimization opportunities.  
-**Use Cases:**
-- Individual agent analysis for clarity and appropriateness
-- Cross-agent compatibility and overlap assessment
-- Parallel execution for large agent ecosystems (up to 10 agents)
-- Structured analysis output for ecosystem optimization
+# Execute with context
+Task(subagent_type: 'general-purpose', prompt: template + specific_context)
+```
 
-### Command Normalizer Agent
-**File:** `agents/cmd-commands-normalize-analyzer.md`  
-**Purpose:** Analyzes individual command files for naming conventions, structure, and best practices compliance during parallel normalization operations.
-
-### Jobs Worker Agent
-**File:** `agents/cmd-jobs-do-worker.md`  
-**Purpose:** Specialized worker for processing .parallel.md job files in isolated parallel execution.
+This pattern enables:
+- **Parallel Execution**: Process multiple items simultaneously (up to 10)
+- **Context Isolation**: Each task runs in a fresh context
+- **Focused Processing**: Templates are specialized for specific tasks
+- **Maintainability**: Templates are easier to update than full agents
 
 ## Commands
 
