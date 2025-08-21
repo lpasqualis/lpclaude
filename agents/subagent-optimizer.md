@@ -105,7 +105,8 @@ The ONLY valid YAML frontmatter fields for agents are:
   - **haiku**: Simple, repetitive tasks (file formatting, basic validation, simple analysis)
   - **sonnet**: Standard development tasks (code review, documentation generation, moderate complexity)
   - **opus**: Complex reasoning tasks (architectural analysis, comprehensive planning, semantic analysis)
-* **NEVER use versioned names like `opus-4-1` or `sonnet-3.5` - use only `opus`, `sonnet`, or `haiku`**
+* **NEVER change a simple model name (opus, sonnet, haiku) to a versioned one**
+* **If the model is already set to `opus`, `sonnet`, or `haiku`, leave it unchanged**
 * **These simple names automatically map to the latest version of each model family**
 * **Default**: If model field missing, inherit from session (acceptable default)
 
