@@ -46,7 +46,8 @@ Parse arguments from: $ARGUMENTS
 3. **Parallel Analysis for Large Sets**:
    - If analyzing 5+ commands, use parallel processing:
    ```
-   Use Task tool with subagent_type: 'cmd-commands-normalize-analyzer'
+   Read template with Read('tasks/commands-normalize-analyzer.md')
+   Use Task tool with subagent_type: 'general-purpose' and template as prompt
    - Process up to 10 commands in parallel
    - Each analyzer examines naming, structure, and conventions
    - Aggregate results for comprehensive analysis

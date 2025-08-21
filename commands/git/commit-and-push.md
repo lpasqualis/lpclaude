@@ -13,8 +13,8 @@ Analyze all changed files in the project and create logical commit groupings wit
 ### 1. Repository State Analysis
 - Execute single comprehensive `git status --porcelain=v1 --branch --ahead-behind` call for efficiency
 - Use `git diff --name-status --cached` and `git diff --name-status` for staged/unstaged analysis
-- Parallel execution of repository validation via `cmd-commit-and-push-validator` subagent
-- Concurrent security scanning via `cmd-commit-and-push-security` for large file/sensitive data detection
+- Parallel execution of repository validation via task template
+- Concurrent security scanning via task template for large file/sensitive data detection
 - Verify repository is in a clean state (no ongoing merges, rebases, or conflicts)
 
 ### 2. File Classification and Grouping Strategy
@@ -56,10 +56,10 @@ Analyze all changed files in the project and create logical commit groupings wit
 When processing projects with 3+ changed files, leverage parallel analysis:
 
 ### Phase 1: Concurrent Initial Analysis
-Execute these tasks in parallel using Task tool:
-1. **File Classification**: Use `cmd-commit-and-push-analyzer` for logical grouping
-2. **Security Analysis**: Use `cmd-commit-and-push-security` for sensitive data detection
-3. **Repository Validation**: Use `cmd-commit-and-push-validator` for git state verification
+Execute these tasks in parallel using Task tool with task templates:
+1. **File Classification**: Read `tasks/commit-and-push-analyzer.md` and invoke with Task
+2. **Security Analysis**: Read `tasks/commit-and-push-security.md` and invoke with Task
+3. **Repository Validation**: Read `tasks/commit-and-push-validator.md` and invoke with Task
 
 ### Phase 2: Parallel Processing
 - Process file groups in batches (max 10 per batch)

@@ -1,56 +1,90 @@
 ---
 name: /commands:create
 description: Interactive command creator - helps you create new Claude Code commands
-argument-hint: "[desired command name] (optional - if not provided, will suggest names based on purpose)"
+argument-hint: "[description of what the command should do] (command name optional - can be embedded in description or will be generated)"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task, WebFetch, WebSearch
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:42:51 -->
 
-First of all, learn about Claude commands here: https://docs.anthropic.com/en/docs/claude-code/slash-commands
-Then, guide the user through creating a new Claude Code command interactively. Follow this process:
+First, reference Claude commands documentation: https://docs.anthropic.com/en/docs/claude-code/slash-commands
 
-## 1. Determine Command Type
+When model selection is being considered, fetch current models from: https://docs.anthropic.com/en/docs/about-claude/models/overview
 
-Ask the user whether they want to create:
-- **Project command** (stored in `.claude/commands/` - shared with team)
-- **Personal command** (stored in `~/.claude/commands/` - available across all projects)
+## Core Principle: BE AUTONOMOUS
 
-If unclear, explain the difference and wait for their choice.
+Create commands WITHOUT asking questions unless the request is genuinely ambiguous. Make reasonable assumptions:
+- **Default to project-local** (`.claude/commands/`)
+- **Default to Tool command type** (not Workflow) 
+- **Extract or generate command name** from the description
+- **Select tools based on functionality**
+- **Create immediately**, refine if needed
 
-## 2. Gather Requirements
+Only ask for clarification if you truly cannot determine what the command should do.
 
-Ask the user to describe:
-- What the command should do
-- What problem it solves
-- When they would use it
+## Input Processing
 
-Based on their response, ask clarifying questions as needed to fully understand the intent and/or to help the user decide what they want the command to really do.
+Parse the user's input to extract:
+1. **Command description**: The full explanation of what the command should do
+2. **Command name** (if provided): Look for patterns like:
+   - "/command-name" explicitly mentioned
+   - "called [name]" or "named [name]"
+   - Commands referenced in quotes
+   - If not found, generate from the description
 
-## 3. Classify Command Architecture: Workflow vs Tool
+Example inputs:
+- "create a command that analyzes code quality and suggests improvements" → generates `/code-quality-analyzer`
+- "I need a /deploy-staging command that deploys to staging environment" → uses `/deploy-staging`
+- "make a command called security-scan that checks for vulnerabilities" → uses `/security-scan`
 
-Based on the requirements, determine the command type:
+## 1. Determine Command Scope
 
-### **Tool Commands** (Single-Purpose Utilities)
-- **Characteristics**: Well-defined, specific task with clear steps
+**Default to PROJECT-LOCAL** unless the user explicitly mentions:
+- "personal", "global", "all projects", "across projects" → Create in `~/.claude/commands/`
+- Otherwise → Create in `.claude/commands/` (project-local)
+
+Don't ask about scope - just proceed with project-local as the default.
+
+## 2. Understand Requirements
+
+From the user's description:
+- Extract the core functionality and purpose
+- Identify key operations the command needs to perform
+- Determine if specific tools or capabilities are mentioned
+- Make reasonable assumptions based on the description
+- Only ask follow-up questions if the requirements are genuinely unclear
+- Proceed with implementation rather than asking for excessive clarification
+
+## 3. Automatically Classify Command Type
+
+Based on the requirements, automatically determine and proceed with the appropriate type:
+
+### **Tool Commands** (Default for most cases)
+- **Use when**: Task has clear, defined steps
 - **Examples**: `/api-scaffold`, `/doc-generate`, `/security-scan`
-- **When to use**: Task has objective success criteria and follows a defined procedure
-- **Complexity**: Low to medium - follows pre-defined instructions
+- **Characteristics**: Single-purpose, predictable execution
 
-### **Workflow Commands** (Multi-Agent Orchestrators)  
-- **Characteristics**: Complex, multi-faceted problem requiring coordination
-- **Examples**: `/feature-development`, `/legacy-modernize`, `/smart-fix`
-- **When to use**: Solution path is not known in advance, requires emergent problem-solving
-- **Complexity**: High - coordinates multiple specialized agents
+### **Workflow Commands** (For complex orchestration)  
+- **Use when**: Task requires multiple steps, coordination, or emergent problem-solving
+- **Examples**: `/feature-development`, `/legacy-modernize`
+- **Characteristics**: Multi-agent coordination, complex decision trees
 
-Explain the classification to the user and confirm which type fits their needs.
+Don't ask the user - make the determination based on complexity and proceed.
 
-## 4. Define Command Details
+## 4. Define Command Details Automatically
 
-Work with the user to determine:
-- **Command name**: If provided in ARGUMENTS, suggest using it. Otherwise, propose names based on the purpose
+Determine without asking:
+- **Command name**: Use provided name or generate based on purpose
 - **Arguments needed**: Will it accept arguments? What format?
 - **Tool permissions**: Based on command functionality requirements
 - **Required tools**: Use PERMISSIVE tool groupings (see Tool Permission Guidelines below)
+- **Model selection** (optional): Consider if a specific model would be beneficial:
+  - Fetch current models from https://docs.anthropic.com/en/docs/about-claude/models/overview
+  - Use latest Haiku for simple, repetitive tasks (formatting, basic validation)
+  - Use latest Sonnet for standard development tasks (default - usually best choice)
+  - Use latest Opus for complex reasoning (architectural analysis, planning)
+  - **PREFER LATEST**: Always use newest versions (Opus 4.1 over 3, latest Sonnet over 3.5, etc.)
+  - **WARNING**: Check token limits in fetched documentation
+  - **RECOMMENDATION**: Usually best to omit and inherit session model
 - **Frontmatter needed**: Determine if description, argument-hint, or allowed-tools metadata is needed
 - **Parallelization needs**: Analyze if the command will perform complex, multi-step operations that could benefit from parallel execution
 
@@ -124,16 +158,16 @@ Only for sophisticated read-only parallel operations that meet ALL criteria:
 - ✅ No need for subagents or context
 - ✅ Combinable discrete results
 
-1. **Create companion subagent(s)** in the `agents/` directory:
-   - Name: `cmd-[command-name]-analyzer.md` (use "analyzer" for read-only)
+1. **Create task template(s)** in the `tasks/` directory:
+   - Name: `[command-name]-analyzer.md` (use "analyzer" for read-only tasks)
    - Purpose: Handle specific analysis subtasks in isolation
-   - Tools: Minimal read-only set (typically: Read, LS, Glob, Grep)
-   - Proactive: Always set to `false` for command-specific subagents
+   - Content: Task-specific system prompt without YAML frontmatter
 
 2. **Update command to orchestrate analysis**:
    ```markdown
    For analyzing multiple [targets]:
-   - Use Task tool with subagent_type: 'cmd-[command-name]-analyzer'
+   - Read task template: Read('tasks/[command-name]-analyzer.md')
+   - Use Task tool with subagent_type: 'general-purpose' and template as prompt
    - Run up to 10 instances in parallel for different [targets]
    - Aggregate analysis results and present unified findings
    ```
@@ -176,45 +210,50 @@ Finally, based on your analysis and synthesis, generate [output] formatted as [f
 
 This ensures Claude gives full attention to each sub-task sequentially, dramatically improving accuracy.
 
-## 7. Draft and Validate the Command
+## 7. Create and Validate the Command
 
-Create an initial command draft that:
+Generate the command file that:
 - Clearly instructs the AI agent what to do (not what to tell the user)
 - Includes any necessary context or constraints
 - Properly handles arguments if applicable
 - Follows the pattern of existing commands in the commands folder
 - Incorporates parallelization strategy if applicable
 
-### Parallel Validation Process
-Once the draft is complete, use the Task tool for efficient validation:
+### Avoid Verbosity - Keep Commands Concise:
+- **Be direct**: Use imperative statements, not explanatory prose
+- **Skip obvious explanations**: Don't explain WHY to do something unless it's non-obvious
+- **Use bullet points**: Replace paragraphs with structured lists
+- **Remove redundancy**: Say each thing once, clearly
+- **Focus on actions**: Commands are instructions, not tutorials
+- **Good**: "1. Read file 2. Extract functions 3. Generate tests"
+- **Bad**: "First, we need to read the file to understand its contents. Then, after we've read it, we should carefully extract all the functions because we need to know what functions exist. Finally, once we have the functions, we can generate tests for them."
+
+### Automatic Validation
+Use the Task tool to validate your draft:
 
 ```markdown
-Use Task tool with:
-- subagent_type: 'cmd-create-command-validator'  
-- Include the command draft and any companion subagents in the task
-- Request comprehensive validation covering YAML, prompt quality, and architectural patterns
+template = Read('tasks/create-command-validator.md')
+Task(subagent_type: 'general-purpose', prompt: template + draft)
 ```
 
-Apply validation feedback to optimize the draft before presenting to user.
+Apply validation feedback automatically to optimize the command.
 
-Show the validated, optimized draft to the user and ask for feedback.
+**Don't show drafts** - proceed directly to creating the final command file.
 
-## 8. Iterate and Refine
+## 8. Save the Command
 
-Based on user feedback:
-- Adjust the prompt wording
-- Add or remove functionality
-- Clarify instructions
-- Refine parallelization strategy if needed
-- Continue iterating until the user is satisfied
+Immediately save the command:
+- Write to `.claude/commands/` (project-local by default)
+- Create any necessary subdirectories for namespaced commands
+- If task templates were created, save them to `.claude/tasks/`
+- Confirm successful creation with a brief summary
 
-## 9. Finalize and Save the Command
+## 9. Handle User Feedback (If Any)
 
-Once approved:
-- Save the command to the appropriate directory
-- If companion subagents were created, save them to the `agents/` directory
-- **Run final validation** using Task tool with `cmd-create-command-validator` to ensure all components are optimized
-- Confirm successful creation and provide summary of all created components
+Only if the user provides feedback after creation:
+- Make requested adjustments
+- Update the saved file
+- Confirm changes made
 
 ## Important Notes
 

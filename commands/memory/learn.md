@@ -1,113 +1,76 @@
 ---
 name: learn
-description: Analyze the current session to extract and preserve key learnings and insights for future sessions
-allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task
-argument-hint: [specific area to focus on (optional)]
+description: Extract critical insights from the current session and add only the most valuable, durable learnings to CLAUDE.md
+allowed-tools: Read, Write, Edit, LS, Glob, Grep, Task
+argument-hint: [specific focus area (optional)]
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-09 21:14:37 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-21 11:57:38 -->
 
-Analyze our current conversation session to identify the most important learnings and discoveries that should be preserved for future sessions. Extract key insights that were difficult to discover and have a good chance of being needed again when the current context is lost.
+Analyze the current conversation to identify critical insights that should be preserved in CLAUDE.md. Focus on extracting only the most valuable discoveries that meet strict quality criteria.
 
-Do not capture status of the project, or something very specific and temporary. You need to extract the learnings and insights from the session, the principles behind the work we did together, and translate these in general terms that can be applied to all situations in the future. This is about learning to not make the same mistakes, not remembering specific things that will change quickly.
+**CRITICAL PRINCIPLE**: This command should add minimal, high-value content to CLAUDE.md. Quality over quantity - prefer capturing 1-2 truly valuable insights over comprehensive documentation.
 
-**Focus on capturing:**
+## Quality Gates - All Must Be Met
 
-1. **Technical Discoveries:**
-   * Solutions to complex problems we encountered
-   * Non-obvious approaches or workarounds that proved effective
-   * Tools, commands, or techniques that were particularly helpful
+**Before adding any insight to CLAUDE.md, it MUST meet ALL criteria:**
 
-2. **Configuration & Setup Details:**
-   * Important configuration steps or settings
-   * Dependencies or prerequisites that weren't immediately obvious
-   * Environment-specific requirements we discovered
+1. **High Impact**: Would save significant time or prevent major issues in future sessions
+2. **Non-obvious**: Not easily discoverable through documentation or standard practices  
+3. **Durable**: Relevant across multiple future sessions, not session-specific
+4. **Actionable**: Clear enough to guide future decision-making without additional context
+5. **Generalizable**: Applies broadly, not tied to specific implementation details
+6. **Project-relevant**: Directly applicable to this codebase/project type
 
-3. **Gotchas & Pitfalls:**
-   * Errors or issues we encountered and how we resolved them
-   * Common mistakes to avoid
-   * Counterintuitive behaviors we discovered
+**EXCLUDE entirely**:
+- Routine operations or standard procedures
+- Temporary project states or configurations
+- Information easily found in documentation
+- Session-specific troubleshooting steps
+- Obvious conclusions or expected behaviors
+- Implementation details that change frequently
 
-4. **Project-Specific Insights:**
-   * Conventions or patterns unique to this codebase
-   * Architectural decisions or constraints we uncovered
-   * Integration points or API behaviors worth remembering
+## Execution Process
 
-5. **Workflow Optimizations:**
-   * Efficient approaches we developed during the session
-   * Time-saving shortcuts or automation opportunities
-   * Testing strategies that proved valuable
+### Step 1: Focused Analysis
+Scan the conversation for insights that meet ALL quality gates above. Look specifically for:
 
-## Execution Strategy
+- **Critical architectural constraints** discovered through trial and error
+- **Non-obvious tool behaviors** that caused issues or enabled solutions
+- **Configuration gotchas** that aren't documented but are essential
+- **Workflow patterns** that proved unexpectedly effective
+- **Integration insights** about how components interact in unexpected ways
 
-### Phase 1: Initial Assessment and Domain Identification
-1. **Analyze conversation scope and complexity**:
-   - Scan conversation for distinct learning domains
-   - Count technical problem-solving sequences
-   - Identify configuration/setup discussions
-   - Note error resolution chains and workflow optimizations
-   - Flag architectural or design decision threads
+### Step 2: CLAUDE.md Best Practices Validation
+Read the current CLAUDE.md to understand:
+- Existing organizational structure and conventions
+- Current directive categories and formatting
+- Tone and specificity level of existing content
+- Areas where new insights would fit naturally
 
-2. **Determine processing approach**:
-   - **Simple conversations (1-2 domains)**: Direct analysis
-   - **Complex conversations (3+ domains)**: Parallel processing
-   - **Large conversations (10+ domains)**: Batched parallel processing
+**Validation Requirements**:
+- New content must match existing structure and tone
+- Must not duplicate or contradict existing directives
+- Should integrate seamlessly into appropriate sections
+- Must follow established formatting patterns
 
-### Phase 2: Parallel Processing (When Applicable)
-3. **Execute optimized parallel analysis**:
-   - Use Task tool with subagent_type: 'cmd-learn-analyzer'
-   - **Batch Strategy**: Process domains in optimal groups of 5-8 (maximizes throughput while staying under 10-task limit)
-   - **Error Recovery**: If any analyzer fails, retry with fallback to sequential processing
-   - **Progress Tracking**: Report processing status ("Analyzing batch 1 of 3...")
-   - **Quality Gates**: Validate each analyzer produces structured output with required fields
+### Step 3: Minimal Addition Strategy
+For each insight that passes all quality gates:
+- Write in concise, directive style matching existing CLAUDE.md tone
+- Place in the most appropriate existing section
+- Use clear, actionable language without unnecessary explanation
+- Include only essential context
 
-4. **Handle edge cases**:
-   - **Timeout Recovery**: If parallel processing stalls, switch to sequential mode
-   - **Output Validation**: Ensure each analyzer returns insights in expected format
-   - **Resource Management**: Monitor task completion and aggregate results incrementally
+### Step 4: Storage with Memory-Keeper
+Use Task tool with memory-keeper agent to add validated insights:
+- Provide the specific text to add and target section
+- Request confirmation of successful integration
+- Verify CLAUDE.md structure remains intact
 
-### Phase 3: Result Aggregation and Quality Control
-5. **Consolidate parallel findings with enhanced quality control**:
-   - Collect and validate insights from all analyzers
-   - **Deduplication**: Use semantic matching to eliminate redundant insights across segments
-   - **Cross-reference Validation**: Identify contradictory findings and resolve
-   - **Pattern Recognition**: Extract meta-patterns that emerge across multiple domains
-   - **Quality Scoring**: Rank insights by durability, actionability, and value
-   - **Categorization**: Organize by learning type for optimal storage structure
+## Success Metrics
+A successful execution should result in:
+- **0-3 new lines** added to CLAUDE.md (not paragraphs - individual directive lines)
+- Each addition provides clear, actionable guidance
+- No redundancy with existing content
+- Improved clarity for future sessions without bloating the file
 
-## Phase 4: Storage and Integration
-
-### Pre-Storage Validation Checklist
-1. **Quality assurance checklist**:
-   - [ ] All insights meet durability criteria (applicable beyond current session)
-   - [ ] Each insight has clear, actionable description
-   - [ ] Sufficient context provided for independent understanding
-   - [ ] No temporary project states or routine operations included
-   - [ ] Insights are generalizable beyond specific implementation details
-
-### Storage Integration Process
-2. **Systematic storage with memory-keeper**:
-   - **Pre-Analysis**: Read existing CLAUDE.md to identify structure and potential conflicts
-   - **Conflict Detection**: Flag any insights that contradict existing learnings
-   - **Integration Strategy**: Use Task tool with memory-keeper agent to store consolidated insights
-   - **Quality Metadata**: Include for each learning:
-     * Clear, actionable description
-     * Sufficient context for independent understanding
-     * Date stamp for reference (current session date)
-     * Appropriate categorization (Technical, Configuration, Gotcha, Workflow, etc.)
-     * Value score (High/Medium priority for future sessions)
-
-### Post-Storage Verification
-3. **Completion verification**:
-   - Confirm all high-value insights were successfully stored
-   - Validate CLAUDE.md structure remains intact
-   - Report summary of learnings captured and any conflicts resolved
-
-### Quality Criteria
-Only preserve discoveries that meet these standards:
-- **High Value**: Would save significant time or prevent issues in future sessions
-- **Generalizable**: Applicable beyond current specific context
-- **Non-obvious**: Not easily discoverable through standard documentation
-- **Durable**: Likely to remain relevant across multiple sessions
-- **Actionable**: Clear enough to guide future decision-making
-
-Exclude routine operations, temporary project states, or easily-discoverable information.
+**Remember**: The goal is surgical precision, not comprehensive capture. Better to add nothing than to dilute CLAUDE.md with non-essential information.

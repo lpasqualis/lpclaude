@@ -29,7 +29,7 @@ When analyzing sessions with multiple complex aspects (more than 3 areas):
    - Individual components, modules, or feature areas
    - Multiple files or directories requiring detailed examination
 
-2. **Execute Parallel Analysis**: Launch multiple Task calls simultaneously with subagent_type: 'cmd-capture-session-analyzer'
+2. **Execute Parallel Analysis**: Launch multiple Task calls simultaneously with Read template: Read('tasks/capture-session-analyzer.md') then use Task with subagent_type: 'general-purpose'
    ```
    # IMPORTANT: Execute these in a single message with multiple tool uses for true parallelism
    Task 1: "Analyze project structure and architecture patterns in /src and /lib directories"
