@@ -146,7 +146,7 @@ The framework includes sophisticated optimizers that don't just fix issues - the
 # 🎯 Add semantic colors and improve discoverability
 ```
 
-**The Magic**: These optimizers are marked as `proactive: true` - they trigger automatically when you mention optimization. They don't just fix problems; they architect solutions that leverage Claude's full parallel processing capabilities!
+**The Magic**: These optimizers include "MUST BE USED PROACTIVELY" in their descriptions - they trigger automatically when you mention optimization. They don't just fix problems; they architect solutions that leverage Claude's full parallel processing capabilities!
 
 ## Featured Extensions
 

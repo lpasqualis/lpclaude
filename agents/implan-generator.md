@@ -1,10 +1,9 @@
 ---
 name: implan-generator
-description: A specialized implementation planning expert that creates comprehensive, actionable plans for software features and components. Invoke this agent when you need to break down complex development tasks into structured phases with clear objectives, validation criteria, and testing requirements. Use when starting new features, refactoring components, or when development work needs systematic organization with detailed checkboxes and progress tracking. Generates complete implementation plans with agent instructions, phase breakdowns, testing requirements, and risk assessments ready for execution.
+description: A specialized implementation planning expert that creates comprehensive, actionable plans for software features and components. Invoke this agent when you need to break down complex development tasks into structured phases with clear objectives, validation criteria, and testing requirements. Use when starting new features, refactoring components, or when development work needs systematic organization with detailed checkboxes and progress tracking. Generates complete implementation plans with agent instructions, phase breakdowns, testing requirements, and risk assessments ready for execution. MUST BE USED PROACTIVELY.
 tools: Read, Write, LS, Glob, Grep
 model: sonnet
 color: Blue
-proactive: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 09:18:59 -->
 

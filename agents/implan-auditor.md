@@ -4,7 +4,6 @@ description: Expert implementation plan auditor that MUST BE USED to review impl
 tools: Read, Edit, LS, Glob, Grep
 model: sonnet
 color: orange
-proactive: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 09:18:22 -->
 

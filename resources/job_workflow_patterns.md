@@ -109,7 +109,6 @@ if (projectSize < 50 files) {
 ---
 name: cmd-jobs-auto-improve-scanner
 description: Specialized scanner for analyzing specific improvement categories
-proactive: false
 allowed-tools: Read, LS, Glob, Grep
 ---
 ```

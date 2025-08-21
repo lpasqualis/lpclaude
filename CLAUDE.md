@@ -150,6 +150,11 @@ Rather than trying to have Tasks request new Tasks, commands should anticipate t
 4. **Tasks trying to spawn new Tasks** - Task tool is filtered out, preventing recursion
 5. **Tasks attempting to instruct main agent** - No mechanism for upward instruction flow
 
+### Task Template Pattern (Replaces cmd-* subagents)
+- Commands requiring parallel execution should create task templates in `tasks/` directory, not cmd-* subagents
+- Task templates are pure prompts without YAML frontmatter loaded via Read() and executed with Task(subagent_type: 'general-purpose')
+- The command-optimizer and other framework tools follow this pattern as of 2025-08-21
+
 ### Key Rules for Framework Development
 - **Subagents MUST NOT have Task tool** - It's not available to them anyway (filtered by framework)
 - **Commands CAN and SHOULD use Task** - For invoking worker subagents, including parallel execution
@@ -157,6 +162,13 @@ Rather than trying to have Tasks request new Tasks, commands should anticipate t
 - **Parallel execution from commands works** - Up to 10 concurrent subagent invocations
 - **Task templates are self-contained** - Must complete work without delegation
 - **Orchestration logic belongs in commands** - Not in Tasks or subagents
+
+## Framework Command Design Principles
+
+### Adaptive Logic Preservation
+- Framework commands must discover project structure, not hardcode paths (e.g., find docs/ vs assume docs/)
+- Commands must adapt to project conventions rather than impose fixed patterns
+- Optimizers must preserve discovery logic and never replace it with hardcoded assumptions
 
 ## Workflow Instructions
 
@@ -168,7 +180,7 @@ Rather than trying to have Tasks request new Tasks, commands should anticipate t
    ---
    name: agent-name
    description: Clear, action-oriented description for automatic delegation
-   proactive: true/false  # Optional: whether agent should be used proactively
+   # Note: Use "MUST BE USED PROACTIVELY" in description for automatic invocation
    tools: Read, LS, Glob, Grep  # NO Task tool for subagents!
    ---
    ```
@@ -377,7 +389,7 @@ The knowledge base manifest (`resources/knowledge-base-manifest.json`) tracks al
 ### Circular Dependency Prevention
 **Critical Pattern**: Commands must never reference their own optimization agents to prevent infinite loops.
 - **Problem**: Using `@command-optimizer` pattern creates recursive invocation chains
-- **Solution**: Create dedicated `cmd-*` validation subagents with `proactive: false`
+- **Solution**: Create dedicated `cmd-*` validation subagents without automatic invocation
 - **Implementation**: These subagents perform focused validation without triggering optimization loops
 
 ### Namespaced Command Structure
@@ -464,16 +476,16 @@ When working with VS Code workspace customization commands (like `/vs:tint-works
 | Component | Convention | Example |
 |-----------|-----------|---------|
 | Agents | lowercase-hyphenated.md | `memory-keeper.md` |
-| Command-Specific Agents | cmd-{command}-{purpose}.md | `cmd-commit-and-push-analyzer.md` |
+| Task Templates | {command}-{purpose}.md | `commit-and-push-analyzer.md` (in tasks/ directory) |
 | Commands | lowercase-hyphenated.md | `commit-and-push.md` |
 | Directives | descriptive_names.md | `important_instruction_reminders.md` |
 
-### Command-Specific Agent Pattern (cmd-*)
-The repository uses specialized `cmd-*` agents for command-specific processing:
+### Task Template Pattern
+The repository uses task templates in the `tasks/` directory for command-specific parallel processing:
 - **Purpose**: Focused, specialized processing for specific commands
 - **Execution**: Designed for parallel execution to improve performance
-- **Model Selection**: Often use `haiku` for speed in parallel operations
-- **Integration**: Called by main commands to handle specific analysis tasks
+- **No YAML frontmatter**: Task templates are pure prompts
+- **Integration**: Loaded via Read() and executed with Task(subagent_type: 'general-purpose')
 
 ### Parallel Execution Patterns
 Some commands leverage parallel execution for improved performance:

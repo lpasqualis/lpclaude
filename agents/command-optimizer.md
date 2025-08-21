@@ -1,9 +1,8 @@
 ---
 name: command-optimizer
-description: Expert slash command auditor that MUST BE USED proactively to optimize command definition files. Invoke when users need to optimize, audit, review, or refactor slash commands, or when commands could benefit from parallelization using subagents. Analyzes YAML frontmatter, system prompts, tool permissions, and identifies opportunities to create companion worker subagents for parallel execution. Tracks optimizations with HTML comment timestamps (<!-- OPTIMIZATION_TIMESTAMP -->) to prevent redundant re-optimization. Use when commands are failing, need performance improvements, or require best practices enforcement.
+description: Expert slash command auditor that MUST BE USED PROACTIVELY to optimize command definition files. Invoke when users need to optimize, audit, review, or refactor slash commands, or when commands could benefit from parallelization using subagents. Analyzes YAML frontmatter, system prompts, tool permissions, and identifies opportunities to create companion worker subagents for parallel execution. Tracks optimizations with HTML comment timestamps (<!-- OPTIMIZATION_TIMESTAMP -->) to prevent redundant re-optimization. Use when commands are failing, need performance improvements, or require best practices enforcement.
 tools: Read, Edit, Write, LS, Glob, Grep, Bash, WebFetch
 color: Blue
-proactive: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-21 11:44:54 -->
 
