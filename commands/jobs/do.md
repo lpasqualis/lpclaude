@@ -111,7 +111,33 @@ Follow the instructions EXACTLY as written in the working file:
 - Do NOT stop to ask unimportant things to the user; make decisions and proceed unless the file itself specifies to ask the user
 - Note any new or updated stop condition that might be specified in the working file
 
-### 4. Enhanced Error Handling and Recovery
+### 4. Completion Verification
+
+**After job execution appears successful:**
+
+Before marking a job as done, optionally verify it actually accomplished its goals:
+
+1. **Determine if verification is needed**:
+   - Skip for simple, deterministic jobs (e.g., "run tests", "commit changes")
+   - Skip if job explicitly says "no verification needed"
+   - Verify for complex jobs with specific outcomes (e.g., "refactor", "optimize", "fix bug")
+   - Verify if job mentions expected results or success criteria
+
+2. **Extract expected outcomes from job description** (if verifying):
+   - Parse the job file for success criteria, goals, or expected results
+   - Identify specific files, changes, or outcomes mentioned
+
+3. **Use completion-verifier agent** (if verifying):
+   - Invoke via Task tool: `Task(subagent_type: 'completion-verifier', prompt: 'Verify job completion: [job description and expected outcomes]')`
+   - Provide the job's original instructions and what was supposedly done
+   - Let the verifier check if the actual results match expectations
+
+4. **Handle verification results**:
+   - **If verified complete**: Proceed to mark as `.done`
+   - **If verification fails**: Mark as `.needs-verification` with details
+   - **If partially complete**: Create follow-up job for remaining work
+
+### 5. Error Handling and Recovery
 
 **Robust Error Recovery System**:
 - **Context Detection**: Workers detecting context needs return jobs for sequential processing
@@ -122,17 +148,27 @@ Follow the instructions EXACTLY as written in the working file:
 
 **Job Completion Handling**:
 
-**If execution succeeded:**
+**If execution succeeded AND verification passed:**
 - Rename from `{name}.md.working` to `{name}.md.done` using Bash `mv`
 - Create comprehensive `{name}.md.done_log` with:
   - Execution timestamps (start/end duration)
   - Processing mode (sequential/parallel)
+  - Verification status: "✓ Verified complete by completion-verifier"
   - Detailed accomplishments and outcomes
   - Performance metrics (execution time, resources used)
   - Key learnings and insights from job execution
   - Any warnings or recommendations for future jobs
-- Log "✓ Completed job: {name} (duration: Xs)"
+- Log "✓ Completed and verified job: {name} (duration: Xs)"
 - Update TodoWrite with completion status and metrics
+
+**If execution succeeded but verification failed:**
+- Rename to `{name}.md.needs-verification`
+- Create `{name}.md.verification_log` with:
+  - What was expected vs what was found
+  - Specific gaps or issues identified
+  - Suggestions for completion
+- Log "⚠️ Job executed but verification failed: {name}"
+- Optionally create follow-up job for remaining work
 
 **If execution encountered errors:**
 - Implement retry logic for recoverable errors (network timeouts, temporary file locks)
@@ -147,16 +183,17 @@ Follow the instructions EXACTLY as written in the working file:
 - Log "✗ Failed job: {name} - {error_type} - see log for details"
 - Update TodoWrite with failure analysis and next steps
 
-### 5. Check Stop Condition
+### 6. Check Stop Condition
 Evaluate the stop condition if provided:
 - "N files" - stop after processing N files (count both completed and failed)
 - "N minutes" - calculate elapsed time since start, stop if exceeded
 - "until empty" - stop when no more unprocessed .md files found
-- "until error" - stop when there was some error and a job coudn't complete
+- "until error" - stop when there was some error and a job couldn't complete
+- "until verification fails" - stop when a job fails verification
 - Any other condition specified when /jobs:do was invoked OR in the latest working file itself - respect exactly as specified
 - No condition - continue indefinitely until user interrupts
 
-### 6. Continue Loop
+### 7. Continue Loop
 Return to step 1 to find the next job file.
 
 ## Implementation Details
