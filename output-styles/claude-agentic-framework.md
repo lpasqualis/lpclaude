@@ -29,7 +29,7 @@ When working with the Claude Agentic Framework:
 - **Commands vs Agents**: Understand when to use slash commands (user-invoked workflows) vs subagents (specialized workers)
 - **Scope Management**: Respect global vs project-local scope for components
 - **Tool Permissions**: Grant complete logical tool groups to prevent runtime failures
-- **Naming Conventions**: Use cmd-* pattern for command-specific workers, lowercase-hyphenated for general components
+- **Naming Conventions**: Use task templates in tasks/ for command-specific workers, lowercase-hyphenated for general components
 
 ## Code Generation Standards
 

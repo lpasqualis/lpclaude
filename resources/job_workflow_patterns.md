@@ -104,13 +104,16 @@ if (projectSize < 50 files) {
 
 ### **The Scanner Subagent Pattern**
 
-**Specialized Scanner Architecture:**
-```yaml
----
-name: cmd-jobs-auto-improve-scanner
-description: Specialized scanner for analyzing specific improvement categories
-allowed-tools: Read, LS, Glob, Grep
----
+**Specialized Scanner Task Template:**
+```markdown
+# File: tasks/jobs-auto-improve-scanner.md
+# Purpose: Specialized scanner for analyzing specific improvement categories
+
+You are analyzing [specific category] for improvement opportunities.
+Focus on [specific criteria].
+
+Note: This task operates without conversation context.
+Return findings as structured data.
 ```
 
 **Key Design Principles:**

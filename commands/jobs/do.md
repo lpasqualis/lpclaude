@@ -23,7 +23,7 @@ Parse the arguments:
    - Can interact with user if needed
 
 2. **Parallel Jobs (`.parallel.md` files)**:
-   - Execute in parallel via `cmd-jobs-do-worker` subagents
+   - Execute in parallel via task templates
    - Run in isolated contexts (no conversation history)
    - Cannot invoke other subagents
    - Must be self-contained tasks
@@ -74,7 +74,8 @@ If no `.md` files are found:
 **For Parallel Jobs (`.parallel.md` files)**:
 - Only process if no `.md` files precede them alphabetically
 - Batch up to 8 consecutive `.parallel.md` files
-- Use Task tool to distribute to `cmd-jobs-do-worker` subagents
+- Load task template from `tasks/jobs-do-worker.md` if it exists
+- Use Task tool with subagent_type: 'general-purpose' and the template
 - Each worker:
   - Attempts to lock by renaming to `.parallel.md.working`
   - Pre-scans content for context requirements (subagent usage, user interaction)
