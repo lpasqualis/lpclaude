@@ -19,13 +19,16 @@ Extract from user input:
 - **Research needs**: Keywords indicating need for current best practices
 - **Execution params**: Number of improvements (default: 3-5), continuous mode, iteration limits
 
-Initialize state:
-- Check `.claude/improvement-history.json`
+Initialize iteration tracking:
+- Check `jobs/` directory for existing `NNNN-auto-improve-session-*.md` files to count iterations
 - Validate iteration limits (max 10 unless specified)
-- Load previous improvements to avoid duplicates
+- Let addjob utility handle proper job numbering automatically
 
-## Step 2: Verify Previous Completions
-Use completion-verifier agent to validate previous improvements from history.
+## Step 2: Check Previous Improvements
+Scan jobs/ folder for previous auto-improve jobs:
+- Look for `NNNN-auto-improve-*.md.done` files to avoid duplicate improvements
+- Check `NNNN-auto-improve-*.md.error` files for failed attempts that shouldn't be retried
+- Use completion-verifier agent if needed to validate suspicious completions
 
 ## Step 3: Context-Aware Research and Scanning
 
@@ -63,23 +66,29 @@ Create contextual improvement jobs including:
 - Reference to specific parts of original request
 - Implementation details with constraint compliance
 
-## Step 5: Update State and Continue
+## Step 5: Create Jobs and Continue
 
-Update improvement history with new jobs.
+Create improvement jobs using the addjob utility:
+- Use Bash tool with stdin: `echo "job content" | addjob --stdin "auto-improve-{description}"`
+- The utility handles proper numbering and creates files in jobs/ directory  
+- Include original request context and specific improvement instructions in job content
 
-Context-aware continuation:
+Context-aware continuation decision:
 - Stop if all specifically requested improvements are complete
-- Stop if research shows no better alternatives exist
+- Stop if research shows no better alternatives exist  
 - Stop if constraints prevent further improvements
-- Otherwise continue with standard iteration limits
+- Stop if iteration limit reached (default: 10)
+- Otherwise create continuation job: `echo "Continue auto-improve session..." | addjob --stdin "auto-improve-session-{next-iteration}"`
 
 ## Step 6: Session Reporting
 
 Provide summary relating to original request:
 - **Request fulfillment**: How well improvements match original intent
-- **Specific progress**: Status on requested changes
+- **Jobs created**: Number and types of improvement jobs queued
 - **Research findings**: Key discoveries if research was performed
 - **Constraint compliance**: Confirmation constraints were respected
+- **Iteration status**: Current iteration and whether continuing
+- **Next steps**: Jobs queued for processing or session complete
 
 ## Example Usage
 
