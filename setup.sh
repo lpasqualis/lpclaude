@@ -151,6 +151,7 @@ create_symlink "$REPO_PATH/hooks/" "hooks" "hooks"
 create_symlink "$REPO_PATH/tasks/" "tasks" "tasks"
 create_symlink "$REPO_PATH/directives/CLAUDE_global_directives.md" "CLAUDE.md" "CLAUDE.md"
 create_symlink "$REPO_PATH/settings/settings.json" "settings.json" "settings.json"
+create_symlink "$REPO_PATH/statusline/statusline.sh" "statusline.sh" "statusline.sh"
 create_symlink "$REPO_PATH/mcp/" "mcp" "mcp"
 
 echo

@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code when working in the **Claude Framework Development Workspace**.
 
+## Table of Contents
+- [Project Purpose](#project-purpose)
+- [Critical Architecture](#critical-architecture)
+- [Essential Commands](#essential-commands)
+- [Framework Execution Rules](#framework-execution-rules)
+- [Framework Design Principles](#framework-design-principles)
+- [Quick Reference](#quick-reference)
+- [Documentation](#documentation)
+- [Project-Specific Notes](#project-specific-notes)
+
 ## Project Purpose
 Central repository where custom agents, commands, directives, and output styles are developed and maintained for global use across all projects.
 
@@ -76,21 +86,23 @@ Main Claude → Can use Task → Invoke any subagent
 
 ## Documentation
 
-### Quick References
-- **Getting Started** (`docs/QUICK_START.md`): 2-minute setup and basic usage
-- **Component Reference** (`docs/REFERENCE.md`): Complete inventory of all components
-- **Troubleshooting** (`docs/TROUBLESHOOTING.md`): Common issues and solutions
+> **Note**: Detailed documentation is maintained separately. Consult these when needed:
 
-### Advanced Topics
-- **Development Guide** (`docs/DEVELOPMENT.md`): Creating and optimizing components
-- **Architecture** (`docs/ARCHITECTURE.md`): System design and structure
-- **Advanced Patterns** (`docs/ADVANCED_PATTERNS.md`): Parallel processing and complex workflows
-- **Migration Guide** (`docs/MIGRATION_GUIDE.md`): Upgrading from legacy patterns
+### Quick References
+- **Getting Started** (`docs/QUICK_START.md`): When setting up new environments
+- **Component Reference** (`docs/REFERENCE.md`): When looking for existing components
+- **Troubleshooting** (`docs/TROUBLESHOOTING.md`): When encountering framework issues
+
+### Development Resources
+- **Development Guide** (`docs/DEVELOPMENT.md`): When creating new components
+- **Architecture** (`docs/ARCHITECTURE.md`): When designing complex workflows
+- **Advanced Patterns** (`docs/ADVANCED_PATTERNS.md`): When implementing parallel processing
+- **Migration Guide** (`docs/MIGRATION_GUIDE.md`): When upgrading from legacy patterns
 
 ### Research & Best Practices (`resources/`)
-- `slash_commands_best_practices_research.md`: Command design patterns
-- `subagent_invocation_research.md`: Agent architecture
-- `commands_and_agents.md`: Technical implementation
+- `slash_commands_best_practices_research.md`: When designing commands
+- `subagent_invocation_research.md`: When creating agents
+- `commands_and_agents.md`: When understanding framework internals
 
 ## Project-Specific Notes
 

@@ -37,7 +37,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "input=$(cat); model_name=$(echo \"$input\" | jq -r '.model.display_name'); output_style=$(echo \"$input\" | jq -r '.output_style.name // \"default\"'); current_dir=$(echo \"$input\" | jq -r '.workspace.current_dir'); printf \"\\033[42;37m %s \\033[0m \\033[44;97m %s \\033[0m \\033[92m%s\\033[0m\" \"$model_name\" \"$output_style\" \"$current_dir\""
+    "command": "~/.claude/statusline.sh"
   },
   "feedbackSurveyState": {
     "lastShownTime": 1754086523198
