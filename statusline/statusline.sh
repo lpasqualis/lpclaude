@@ -10,27 +10,38 @@ exceeds_200k=$(echo "$input" | jq -r '.exceeds_200k_tokens // false')
 lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
 lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
 
-# Format lines added/removed with appropriate colors
-# Green for added (bright green text on dark background)
-lines_added_display=$(printf "\033[92m[+%s]\033[0m" "$lines_added")
-# Red for removed (bright red text on dark background)
-lines_removed_display=$(printf "\033[91m[-%s]\033[0m" "$lines_removed")
+# Black separator between segments
+SEP=" "
 
-# Determine context display based on the exceeds_200k flag
+# Format lines added/removed as segments with black separators
+# Green segment for added lines
+lines_added_segment=$(printf "\033[42;30m +%s \033[0m%s" "$lines_added" "$SEP")
+# Red segment for removed lines  
+lines_removed_segment=$(printf "\033[41;97m -%s \033[0m%s" "$lines_removed" "$SEP")
+
+# Model segment (cyan background)
+model_segment=$(printf "\033[46;30m %s \033[0m%s" "$model_name" "$SEP")
+
+# Context segment based on the exceeds_200k flag
 if [ "$exceeds_200k" = "true" ]; then
     # Red background when context exceeds 200k
-    context_display=$(printf "\033[41;97m >200k \033[0m")
+    context_segment=$(printf "\033[41;97m >200k \033[0m%s" "$SEP")
 else
     # Green background when under 200k (safe zone)
-    context_display=$(printf "\033[42;30m <200k \033[0m")
+    context_segment=$(printf "\033[42;30m <200k \033[0m%s" "$SEP")
 fi
 
-# Format the status line with consistent coloring
-# Lines (green/red) | Model (green bg) | Context (green/red based on size) | Output Style (blue bg) | Path (green text)
-printf "%s %s \033[42;37m %s \033[0m %s \033[44;97m %s \033[0m \033[92m%s\033[0m" \
-    "$lines_added_display" \
-    "$lines_removed_display" \
-    "$model_name" \
-    "$context_display" \
-    "$output_style" \
-    "$current_dir"
+# Output style segment (blue background)
+output_style_segment=$(printf "\033[44;97m %s \033[0m%s" "$output_style" "$SEP")
+
+# Path segment (magenta background)
+path_segment=$(printf "\033[45;97m %s \033[0m" "$current_dir")
+
+# Format the complete status line with segments
+printf "%s%s%s%s%s%s" \
+    "$lines_added_segment" \
+    "$lines_removed_segment" \
+    "$model_segment" \
+    "$context_segment" \
+    "$output_style_segment" \
+    "$path_segment"
