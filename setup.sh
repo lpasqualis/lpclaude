@@ -2,27 +2,35 @@
 
 # setup.sh - Claude Framework Symlink Setup Script
 # 
-# This script creates symbolic links from the Claude home directory to the
-# repository's component folders (agents, commands, resources, directives, utils, output-styles, hooks).
+# This script sets up the Claude framework by creating symbolic links from the 
+# Claude home directory to the repository's component folders and configuration files.
 # 
 # What it does:
-# 1. Creates symlinks in $CLAUDE_HOME (default: ~/.claude) pointing to:
+# 1. Runs rebuild_claude_md.sh to compile global directives
+# 
+# 2. Creates symlinks in $CLAUDE_HOME (default: ~/.claude) pointing to:
 #    - agents/        -> Repository's agents folder
-#    - commands/      -> Repository's commands folder
+#    - commands/      -> Repository's commands folder  
 #    - resources/     -> Repository's resources folder
 #    - directives/    -> Repository's directives folder
 #    - utils/         -> Repository's utils folder
 #    - output-styles/ -> Repository's output-styles folder
 #    - hooks/         -> Repository's hooks folder
-#    - CLAUDE.md      -> Repository's global directives file
+#    - tasks/         -> Repository's tasks folder
+#    - mcp/           -> Repository's MCP folder
+#    - CLAUDE.md      -> directives/CLAUDE_global_directives.md (compiled global directives)
+#    - settings.json  -> Repository's settings file
+#    - statusline.sh  -> Repository's statusline script
 # 
-# 2. Performs non-destructive operations - skips existing files/symlinks (default)
-# 3. With --force option: updates symlinks that point to different locations
-# 4. Reports which symlinks were created successfully and which were skipped
+# 3. Performs non-destructive operations - skips existing files/symlinks (default)
+# 4. With --force option: updates symlinks that point to different locations
+# 5. Reports which symlinks were created successfully and which were skipped
+# 6. Provides tip for setting up the addjob alias if not already configured
 # 
 # Usage: 
 #   ./setup.sh           - Normal mode (non-destructive)
 #   ./setup.sh --force   - Force mode (updates mismatched symlinks)
+#   ./setup.sh --help    - Display help message
 # 
 # To change the Claude home directory, modify the CLAUDE_HOME variable below.
 
