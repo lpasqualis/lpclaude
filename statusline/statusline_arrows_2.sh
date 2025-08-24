@@ -15,13 +15,13 @@ SEP_R=$'\ue0b0'   #  between segments (right hard)
 SEP_END=$'\ue0b4' #  closing cap into background
 
 # ── colors ─────────────────────────────────────────────────────────────────────
-# Backgrounds: keep 8/16-color (fast). Foregrounds: force truecolor to avoid gray.
-BG_RED='41'; BG_GREEN='42'; BG_BLUE='44'; BG_MAGENTA='45'; BG_CYAN='46'
-BG_DEFAULT='49'
+# Backgrounds: keep 8/16-color (fast). Foregrounds: standard colors for Claude Code
+BG_RED=41; BG_GREEN=42; BG_BLUE=44; BG_MAGENTA=45; BG_CYAN=46
+BG_DEFAULT=49
 
 # Use standard colors instead of truecolor for Claude Code compatibility
-FG_BLACK='30'
-FG_WHITE='97'
+FG_BLACK=30
+FG_WHITE=97
 
 # Boxes: 1,3,4,6 → black fg ; 2,5 → white fg
 FG1="$FG_BLACK"; FG2="$FG_WHITE"; FG3="$FG_BLACK"
@@ -57,6 +57,8 @@ else
 fi
 
 # ── render ─────────────────────────────────────────────────────────────────────
+# Starting arrow - black arrow (matches terminal bg) on green bg
+printf '\e[%d;%dm%s' "$BG_GREEN" "$FG_BLACK" "$SEP_R"
 # 1: green box (bold, black fg)
 seg "$BG_GREEN"   "$FG1" "+$lines_added"     "$BG_RED"     1
 # 2: red box (normal, white fg)
