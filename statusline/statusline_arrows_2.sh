@@ -57,8 +57,6 @@ else
 fi
 
 # ── render ─────────────────────────────────────────────────────────────────────
-# Starting arrow - black arrow (matches terminal bg) on green bg
-printf '\e[%d;%dm%s' "$BG_GREEN" "$FG_BLACK" "$SEP_R"
 # 1: green box (bold, black fg)
 seg "$BG_GREEN"   "$FG1" "+$lines_added"     "$BG_RED"     1
 # 2: red box (normal, white fg)
