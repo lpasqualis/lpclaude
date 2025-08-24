@@ -68,43 +68,29 @@ Create initial batch of improvement jobs using addjob:
 - Implementation details with constraint compliance
 - These seed the continuous improvement loop in Step 6
 
-## Step 5: Initialize Continuous Improvement Engine
+## Step 5: Read and Follow the /jobs:do Command Instructions
 
-### Load Job Processing Infrastructure
-1. **Read /jobs:do methodology**:
-   - Use Glob to locate `/jobs:do` command: check `.claude/commands/jobs/do.md`, then `~/.claude/commands/jobs/do.md`
-   - Read the complete command definition to access job execution infrastructure
-   - This provides the processing loop, locking, error handling, and verification systems
+1. **Locate and read the /jobs:do slash command file**:
+   - /jobs:do is a slash command stored as a markdown file at `~/.claude/commands/jobs/do.md`
+   - Use Read tool to read this instruction file: `Read('~/.claude/commands/jobs/do.md')`
+   - This is NOT a bash command - it's a markdown file containing step-by-step instructions
 
-2. **Initialize tracking**:
-   - Create TodoWrite list for improvement progress tracking
-   - Set up iteration counter and quality metrics
-   - Define stop conditions based on parsed user intent
-   - Initialize job metrics:
-     - Start timestamp for duration tracking
-     - Job counters: created=0, executed=0, succeeded=0, failed=0
-     - File modification tracker (Set to avoid duplicates)
-     - Job genealogy tracker for parent-child relationships
-     - Performance metrics: job_times=[]
+2. **Follow the instructions from the /jobs:do file exactly**:
+   - Start implementing from the "Execution Process" section of that file
+   - Follow ALL the job processing steps as written in the file
+   - This includes: finding jobs, locking, processing, error handling, etc.
 
-## Step 6: Continuous Improvement Loop
+3. **Initialize auto-improve tracking**:
+   - TodoWrite list for improvement progress
+   - Iteration counter and quality metrics
+   - Stop conditions based on parsed user intent
+   - Job metrics: counters, timestamps, file modifications, job genealogy
 
-### Main Processing Loop
-Follow the `/jobs:do` job processing loop structure exactly, with auto-improve enhancements:
+## Step 6: Auto-Improve Enhancements to Job Processing
 
-1. **Find and Process Jobs** (from /jobs:do methodology):
-   - Use Glob to find `*.md` files in `jobs/` folder
-   - Filter out `.working`, `.done`, `.error` files
-   - Process in alphabetical order with proper locking
-   - Execute job instructions exactly as written
-   - Track metrics for each job:
-     - Record start/end time → add to job_times
-     - Update counters: executed++, succeeded/failed based on outcome
-     - Track files modified by reading git diff after job
-     - Note if job created child jobs (check jobs/ for new files)
-   - Cleanup any temporary files or folders created in the process
+While following the job processing instructions from the /jobs:do markdown file, add these auto-improve specific behaviors:
 
-2. **Dynamic Improvement Discovery** (auto-improve addition):
+1. **Dynamic Improvement Discovery**:
    After each job completes successfully:
    - **Assess progress**: Evaluate how well the improvement addressed the intent
    - **Quality check**: If user specified quality criteria, invoke one or more parallel Task tools with independent verification agent(s)
@@ -113,11 +99,13 @@ Follow the `/jobs:do` job processing loop structure exactly, with auto-improve e
      - Use `echo "improvement instructions" | addjob --stdin "auto-improve-{specific-task}"`
      - These new jobs immediately join the queue for processing
    - **Learn and adapt**: Each new job incorporates learnings from previous iterations
-   - **Jobs creating jobs**: Individual improvement jobs can themselves create follow-up jobs:
-     - A job fixing tests might create jobs to fix newly discovered test failures
-     - A refactoring job might create cleanup jobs for deprecated code it found
-     - A performance job might create optimization jobs for specific bottlenecks
-     - Track these as "child jobs" in metrics (job chain depth)
+
+2. **Jobs Creating Jobs**:
+   Individual improvement jobs can themselves create follow-up jobs:
+   - A job fixing tests might create jobs to fix newly discovered test failures
+   - A refactoring job might create cleanup jobs for deprecated code it found
+   - A performance job might create optimization jobs for specific bottlenecks
+   - Track these as "child jobs" in metrics (job chain depth)
 
 3. **Stop Condition Evaluation**:
    Continue loop until ANY condition is met:
