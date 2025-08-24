@@ -71,6 +71,6 @@ seg "$BG_BLUE"    "$FG5" "$output_style"     "$BG_MAGENTA" 0
 # 6: magenta box (bold, black fg) — last with separator
 printf '\e[1;%d;%dm %s ' "$BG_MAGENTA" "$FG6" "$current_dir"
 # Separator arrow into terminal background
-local sep_fg; sep_fg=$(bg_to_fg "$BG_MAGENTA")
+sep_fg=$(bg_to_fg "$BG_MAGENTA")
 printf '\e[22;%d;%dm%s' "$sep_fg" "$BG_DEFAULT" "$SEP_R"
 printf '\e[0m\n'

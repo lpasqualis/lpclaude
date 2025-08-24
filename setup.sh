@@ -188,3 +188,11 @@ if ! command -v addjob &> /dev/null && ! alias addjob &> /dev/null 2>&1; then
     echo "Add it to ~/.bashrc, ~/.zshrc, or ~/.bash_profile, then reload your shell."
     echo "This will allow you to create job files easily: addjob my-task"
 fi
+
+
+# For the statusline
+
+brew update
+brew install --cask font-jetbrains-mono-nerd-font
+# optional: just the symbols pack (works as a fallback in some terminals)
+brew install --cask font-symbols-only-nerd-font
