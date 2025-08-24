@@ -3,15 +3,32 @@
 This file provides guidance to Claude Code when working in the **Claude Framework Development Workspace**.
 
 ## Table of Contents
-- [Project Purpose](#project-purpose)
-- [Critical Architecture](#critical-architecture)
-- [Essential Commands](#essential-commands)
-- [Framework Execution Rules](#framework-execution-rules)
-- [Framework Design Principles](#framework-design-principles)
-- [Quick Reference](#quick-reference)
-- [Documentation](#documentation)
-- [Claude Code Terminal Color Handling](#claude-code-terminal-color-handling)
-- [Project-Specific Notes](#project-specific-notes)
+- [CLAUDE.md](#claudemd)
+  - [Table of Contents](#table-of-contents)
+  - [Project Purpose](#project-purpose)
+  - [Critical Architecture](#critical-architecture)
+    - [Dual .claude Folder System](#dual-claude-folder-system)
+    - [Scope Rules](#scope-rules)
+  - [Essential Commands](#essential-commands)
+  - [Framework Execution Rules](#framework-execution-rules)
+    - [Hierarchy](#hierarchy)
+    - [Key Constraints](#key-constraints)
+    - [Task Template Pattern](#task-template-pattern)
+    - [Slash Command Clarity](#slash-command-clarity)
+  - [Framework Design Principles](#framework-design-principles)
+  - [Quick Reference](#quick-reference)
+    - [Creating Components](#creating-components)
+    - [Tool Permission Groups](#tool-permission-groups)
+    - [Naming Conventions](#naming-conventions)
+  - [Documentation](#documentation)
+    - [Quick References](#quick-references)
+    - [Development Resources](#development-resources)
+    - [Research \& Best Practices (`resources/`)](#research--best-practices-resources)
+  - [Claude Code Terminal Color Handling](#claude-code-terminal-color-handling)
+    - [Working Color Escape Sequences](#working-color-escape-sequences)
+    - [Non-Working Patterns](#non-working-patterns)
+    - [Best Practices for Statusline Scripts](#best-practices-for-statusline-scripts)
+  - [Project-Specific Notes](#project-specific-notes)
 
 ## Project Purpose
 Central repository where custom agents, commands, directives, and output styles are developed and maintained for global use across all projects.
@@ -60,6 +77,14 @@ Main Claude → Can use Task → Invoke any subagent
 - Create templates in `tasks/` directory (pure prompts, no YAML)
 - Load: `Read('tasks/template.md')`
 - Execute: `Task(subagent_type: 'general-purpose', prompt: template + context)`
+
+### Slash Command Clarity
+**Slash Command Clarity**: Slash commands like /doublecheck or /jobs:do are NOT bash commands - they are markdown files containing instructions and they can have an optional namespace (for example, /doublecheck doesn't have a namespace, and /jobs:do name space is "jobs")
+- Location with namespace: `.claude/commands/[namespace]/[name].md` or `~/.claude/commands/[namespace]/[name].md`  
+- Location without namespace: `.claude/commands/[name].md` or `~/.claude/commands/[name].md`  
+
+- Usage: First READ the .md file with Read tool, then FOLLOW its written instructions exactly
+- NEVER write "execute /command" - instead write "Read the instructions from ~/.claude/commands/[path]/[name].md and follow them"
 
 ## Framework Design Principles
 - **Discover, don't hardcode** - Find project structure dynamically
