@@ -22,7 +22,7 @@ Extract from user input:
 Initialize iteration tracking:
 - Check `jobs/` directory for existing `NNNN-auto-improve-session-*.md` files to count iterations
 - Validate iteration limits (max 10 unless specified)
-- Let addjob utility handle proper job numbering automatically
+- Let @addjob subagent handle proper job numbering automatically
 
 ## Step 2: Check Previous Improvements
 Scan jobs/ folder for previous auto-improve jobs:
@@ -61,8 +61,7 @@ Filter improvements by relevance to original request:
 - **Medium**: Related to intent or mentioned areas  
 - **Low**: General improvements found incidentally
 
-Create initial batch of improvement jobs using addjob:
-- Use Bash: `echo "job content" | addjob --stdin "auto-improve-{description}"`
+Create initial batch of improvement jobs using the @addjob subagent:
 - Include WHY this improvement matches the request
 - Reference specific parts of original request
 - Implementation details with constraint compliance
@@ -96,7 +95,7 @@ While following the job processing instructions from the /jobs:do markdown file,
    - **Quality check**: If user specified quality criteria, invoke one or more parallel Task tools with independent verification agent(s)
    - **Identify gaps**: Analyze what still needs improvement
    - **Create new jobs**: If intent not reached and improvements possible:
-     - Use `echo "improvement instructions" | addjob --stdin "auto-improve-{specific-task}"`
+     - Use @addjob subagent to create new jobs
      - These new jobs immediately join the queue for processing
    - **Learn and adapt**: Each new job incorporates learnings from previous iterations
 
