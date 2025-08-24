@@ -10,6 +10,11 @@ exceeds_200k=$(echo "$input" | jq -r '.exceeds_200k_tokens // false')
 lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
 lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
 
+# Convert absolute path to ~ if it's in user's home directory
+if [[ "$current_dir" == "$HOME"* ]]; then
+    current_dir="~${current_dir#$HOME}"
+fi
+
 # ── glyphs (Nerd Font *Mono* required) ──────────────────────────────────────────
 SEP_R=$'\ue0b0'   #  between segments (right hard)
 SEP_END=$'\ue0b4' #  closing cap into background
