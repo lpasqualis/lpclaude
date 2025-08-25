@@ -101,6 +101,11 @@ When given the name of a slash command, you will perform the following audit and
     * For Workflow Commands: Consider adding prompt chaining patterns (see below)
 
 **4. Audit and Refactor the Prompt Body (If Necessary):**
+* **CRITICAL UNDERSTANDING: Command prompts are USER INPUT TEMPLATES**
+    - Commands contain instructions written in **second person** ("You should...", "Analyze this...")
+    - They are injected into the current conversation as if the user typed them
+    - They are NOT system prompts that define agent identity
+    - Write as instructions TO Claude, not AS Claude
 * **First, audit the prompt in the main body of the file.**
 * **PRESERVATION RULE: Never remove or replace dynamic operations (WebFetch, WebSearch, API calls)**
 * **Only if the prompt can be improved WITHOUT removing functionality**, perform the following actions:

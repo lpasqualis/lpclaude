@@ -11,3 +11,4 @@ commands/lpct
 agents/lpct-*
 commands/docs.md
 statusline/*.backup
+.simplify/

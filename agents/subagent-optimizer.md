@@ -117,9 +117,15 @@ The ONLY valid YAML frontmatter fields for agents are:
     * **B. Semantic-First Analysis:** If the `Red` override is not triggered, determine the agent's primary function from its prompt and ensure the color matches the schema.
 
 **7. Check for Verbosity in System Prompt:**
+* **CRITICAL UNDERSTANDING: Subagent prompts are SYSTEM IDENTITY DEFINITIONS**
+    - Subagents contain system prompts written as **identity/role definitions** ("You are a...")
+    - They define HOW the agent should behave, not what task to do
+    - They become the system prompt of a new Claude instance
+    - Write as role definition and behavioral guidelines, not task instructions
 * Remove tutorial-style explanations, redundancy, and obvious content
 * Convert verbose paragraphs to concise bullet points
-* Keep instructions focused on the task
+* Keep instructions focused on the agent's identity and approach
+* Ensure prompt starts with role definition: "You are a [specialist/expert]..."
 * Example: "carefully review each file to understand its purpose and then analyze..." → "Review and analyze each file"
 
 **8. Check for Slash Command References and Agent Invocation Issues:**
