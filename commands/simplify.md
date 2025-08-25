@@ -1,20 +1,20 @@
 ---
-name: simplify
+name: /simplify
 description: "Analyzes, simplifies, and verifies any input (single file → full project) to its most essential form with zero loss of functional information; terminates at a fixed point."
 argument-hint: "[file-path] [project-component] [full-project] [directory] [text-content] [special-instructions]"
 model: claude-opus-4-1-20250805
 allowed-tools: "Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task"
 ---
 
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-25 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-25 15:14:15 -->
 
-**NO‑LOSS CONTRACT (hard requirement)**
+**NO‑LOSS CONTRACT**
 
 * Preserve **all functional detail** and **causal logic**: steps, conditions, dependencies, order.
 * Preserve **precision**: exact values, **units**, ranges/tolerances, **defaults**, formats, commands, API/CLI signatures, file paths, schemas.
 * Preserve **edge cases, error handling, invariants, and interface contracts**.
 * **Removal rule:** Content may be removed **only if** it (a) has **no GT‑ID** (non‑functional; adds no constraints) **or** (b) is a **verbatim duplicate**. Log every removal with `reason ∈ {not-in-GTI, duplicate-of:<GT-ID>}`.
-* **Rephrase rule:** GT‑mapped text must remain **verbatim** unless the GTI marks it `needs-rephrase: true` (ambiguity/contradiction). Otherwise, rephrasing is disallowed.
+* **Rephrase rule:** GT‑mapped text must remain **verbatim** unless the GTI marks it `needs-rephrase: true`. Otherwise, rephrasing is disallowed.
 * **Fail‑closed:** If any GT‑ID is not preserved, any deletion lacks a valid ledger entry, or coverage has gaps → emit a **failure report**; do **not** ship a simplified version.
 
 **Scope / Target**
@@ -63,7 +63,7 @@ allowed-tools: "Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task"
 
   Record method + timestamp in `manifest.json`. Copy each file before edits.
 
-> Even with git‑HEAD, write verification artifacts under `.simplify/session_[ts]/` so verifiers have a single place to look.
+> Always write verification artifacts under `.simplify/session_[ts]/`.
 
 **Timestamp rule**
 * Update `<!-- OPTIMIZATION_TIMESTAMP: ... -->` **only if** the **content‑set canonical snapshot** changes.
@@ -73,7 +73,7 @@ allowed-tools: "Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task"
 
 ## Phase 0 — Canonicalization & Fixed‑Point Guard (format‑agnostic)
 
-**Goal:** idempotence. Only write when there’s a real, loss‑free improvement.
+**Goal:** idempotence. Only write when there's a loss‑free improvement.
 
 **0.1 Inventory & family detection**
 
@@ -89,7 +89,7 @@ allowed-tools: "Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task"
   * `opaque` (binary/unreadable; never edited)
 * Write `path → family` and `included/ignored` flags to `manifest.json`.
 
-**0.2 Family‑aware canonicalization `CANON(text, family)` (semantics‑safe only)**
+**0.2 Family‑aware canonicalization `CANON(text, family)`**
 Apply the **least** normalization that guarantees idempotence **without** risking meaning:
 
 * **ALL families:** normalize line endings to `\n`; ensure a single trailing newline. **Do not** trim trailing spaces globally.
@@ -134,7 +134,7 @@ Let `M = (U, R, C, O)` across **included** artifacts:
 * `Read` all **included** textual files.
 * Build a dependency map: imports/uses, entry points, config/ENV usage, cross‑refs.
 
-**Ground Truth Index (GTI) — required artifact**
+**Ground Truth Index (GTI)**
 
 * Create a hierarchical list. Deterministic IDs: `gt-<type>-<slug>` (lowercase, hyphenated ≤60 chars; add `-2`, `-3` for collisions).
 * Fields per item:
@@ -157,7 +157,7 @@ Let `M = (U, R, C, O)` across **included** artifacts:
 * Consolidatable patterns → unify repeats without changing sequence/logic
 * Dead elements (unused code, unreferenced sections, obsolete instructions)
 
-**Implementation Plan (write to report)**
+**Implementation Plan**
 
 * Files to edit/create/delete; order; references to update; cross‑file consolidation steps.
 * Backup method (git‑HEAD vs `.simplify` + timestamp).
@@ -206,7 +206,7 @@ Let `M = (U, R, C, O)` across **included** artifacts:
 
 ## Phase 3 — Verification & Iteration (fail closed)
 
-**Coverage Matrix (required; zero gaps)**
+**Coverage Matrix**
 
 * `.simplify/session_[ts]/coverage.json` (+ `coverage.md`) — one row per GT‑ID:
 
@@ -220,7 +220,7 @@ Let `M = (U, R, C, O)` across **included** artifacts:
   * `notes`
 * Any row ≠ `preserved` → **fail** (do not ship).
 
-**Self‑check (deterministic tests)**
+**Self‑check**
 
 * `Grep` for all exact values/commands flagged in GTI.
 * Assert dependency chains intact (or explicitly documented if reordered without semantic change).
@@ -229,7 +229,7 @@ Let `M = (U, R, C, O)` across **included** artifacts:
 * Verify **interface invariants** (API signatures/CLI flags) unchanged unless covered by GTI with an allowed transformation.
 * Compute `M` before/after; assert a **strict decrease** if any writes occurred.
 
-**Removals Ledger Check (required)**
+**Removals Ledger Check**
 
 * Every deletion appears in `removals.json` (or structured `change_log.md`) with a valid reason; any orphan deletion → **fail**.
 
@@ -300,6 +300,6 @@ Aggregate findings. If any verifier flags issues → **iterate Phase 2** (resto
 
 ---
 
-## Uncertainty rule
+## Uncertainty Rule
 
-* If uncertain about any GT‑ID mapping or preservation, **do not guess**. Emit **blocking questions** in `final_report.md` and return the **failure report** instead of a simplified output.
+* If uncertain about any GT‑ID mapping or preservation, **do not guess**. Emit **blocking questions** in `final_report.md` and return **failure report**.
