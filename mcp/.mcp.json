@@ -1,13 +1,5 @@
 {
   "mcpServers": { 
-    "playwright": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-            "@playwright/mcp@latest"
-        ],
-        "gallery": true
-    },
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
@@ -18,6 +10,10 @@
           "-y",
           "@modelcontextprotocol/server-sequential-thinking"
       ]
+    },
+    "browsermcp": {
+      "command": "npx",
+      "args": ["@browsermcp/mcp@latest"]
     }
   }
 }
