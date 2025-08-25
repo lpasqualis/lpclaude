@@ -64,8 +64,17 @@ When given the name of a slash command, you will perform the following audit and
 **2. Audit and Refactor the YAML Frontmatter (If Necessary):**
 * **First, audit the command's current frontmatter against best practices.**
 * **Only if the audit reveals a non-compliance or a clear area for improvement**, perform the necessary refactoring actions below:
-    * **A. `description`:** Ensure the description is a clear, brief, and accurate summary of the command's function. If it's missing, suggest one based on the prompt's content.
-    * **B. `model` (USE WITH CAUTION):** 
+    * **A. `name`:** REQUIRED field that must follow these rules:
+        - Always starts with `/` (e.g., `/doublecheck`)
+        - Include namespace with colon if in subdirectory (e.g., `/namespace:command-name`)
+        - Use lowercase kebab-case (e.g., `/commit-and-push`, not `/CommitAndPush`)
+        - Must match the file location:
+          * File at `commands/example.md` → `name: /example`
+          * File at `commands/git/commit.md` → `name: /git:commit`
+          * File at `commands/jobs/do.md` → `name: /jobs:do`
+        - NEVER include the `.md` extension in the name
+    * **B. `description`:** Ensure the description is a clear, brief, and accurate summary of the command's function. If it's missing, suggest one based on the prompt's content.
+    * **C. `model` (USE WITH CAUTION):** 
         - **First, fetch current models**: Use WebFetch on https://docs.anthropic.com/en/docs/about-claude/models/overview to get the latest available models
         - **TOKEN LIMIT WARNING**: Many models have token limits incompatible with Claude Code defaults
         - **RECOMMENDATION**: Usually best to omit field and inherit session model
@@ -75,7 +84,7 @@ When given the name of a slash command, you will perform the following audit and
           * Use latest Sonnet for general development tasks (code generation, review) - usually best default
           * Use latest Opus for complex reasoning tasks (architectural analysis, comprehensive planning)
         - **PREFER LATEST VERSIONS**: Always use the newest version of each model family (Opus 4.1 over 3, etc.)
-    * **C. `allowed-tools`:** Use complete logical groupings (comma-separated string format):
+    * **D. `allowed-tools`:** Use complete logical groupings (comma-separated string format):
 
 | Use Case | Required Tools |
 |----------|----------------|
@@ -88,7 +97,7 @@ When given the name of a slash command, you will perform the following audit and
 
 **ANTI-PATTERN**: Incomplete groupings (`Write` without `Edit, MultiEdit`). Commands inherit permissions and users can grant more via `/permissions`, so avoid over-restriction.
 **WORKER PATTERN**: Commands that orchestrate worker subagents must include `Task` tool to invoke them (the workers themselves must NOT have Task).
-    * **D. Latest UX Features:** Validate modern Claude Code capabilities:
+    * **E. Latest UX Features:** Validate modern Claude Code capabilities:
         - **@-mentions**: Commands can reference agents using `@agent-name` with typeahead support (v1.0.62)
         - **argument-hint**: Add descriptive hints for better UX (e.g., `[component-name] [action]` vs. vague `[text]`)
 
