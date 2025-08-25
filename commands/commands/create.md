@@ -212,8 +212,14 @@ This ensures Claude gives full attention to each sub-task sequentially, dramatic
 
 ## 7. Create and Validate the Command
 
+**CRITICAL: Commands are USER INPUT TEMPLATES**
+- Write prompts in **second person** ("You should...", "Analyze this...", "Please review...")
+- Commands are injected AS IF THE USER TYPED THEM
+- They are NOT system prompts that define agent identity
+- Write as instructions TO Claude, not AS Claude
+
 Generate the command file that:
-- Clearly instructs the AI agent what to do (not what to tell the user)
+- Uses directive language TO the AI agent ("Review this", "Generate a", "Analyze the")
 - Includes any necessary context or constraints
 - Properly handles arguments if applicable
 - Follows the pattern of existing commands in the commands folder
@@ -258,8 +264,9 @@ Only if the user provides feedback after creation:
 ## Important Notes
 
 ### Command Design Principles:
-- Write commands as prompts TO the AI agent, not as messages FROM the agent
-- Keep prompts clear and actionable
+- **Write commands as USER PROMPTS**: Use second-person instructions ("You should", "Please analyze")
+- Commands are injected into conversation AS IF THE USER TYPED THEM
+- Keep prompts clear and actionable with directive language
 - Include specific instructions about output format when relevant
 - Consider edge cases and include appropriate handling
 - **Automate processes, not practices**: Focus on well-defined tasks with objective success criteria
