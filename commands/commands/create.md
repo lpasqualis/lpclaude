@@ -4,22 +4,20 @@ description: Interactive command creator - helps you create new Claude Code comm
 argument-hint: "[description of what the command should do] (command name optional - can be embedded in description or will be generated)"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task, WebFetch, WebSearch
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 08:42:51 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-25 16:30:07 -->
 
-First, reference Claude commands documentation: https://docs.anthropic.com/en/docs/claude-code/slash-commands
+Reference Claude commands documentation: https://docs.anthropic.com/en/docs/claude-code/slash-commands
 
 When model selection is being considered, fetch current models from: https://docs.anthropic.com/en/docs/about-claude/models/overview
 
 ## Core Principle: BE AUTONOMOUS
 
-Create commands WITHOUT asking questions unless the request is genuinely ambiguous. Make reasonable assumptions:
+Create commands WITHOUT asking questions unless genuinely ambiguous. Make reasonable assumptions:
 - **Default to project-local** (`.claude/commands/`)
 - **Default to Tool command type** (not Workflow) 
-- **Extract or generate command name** from the description
+- **Extract or generate command name** from description
 - **Select tools based on functionality**
 - **Create immediately**, refine if needed
-
-Only ask for clarification if you truly cannot determine what the command should do.
 
 ## Input Processing
 
@@ -47,11 +45,10 @@ Don't ask about scope - just proceed with project-local as the default.
 ## 2. Understand Requirements
 
 From the user's description:
-- Extract the core functionality and purpose
-- Identify key operations the command needs to perform
-- Determine if specific tools or capabilities are mentioned
-- Make reasonable assumptions based on the description
-- Only ask follow-up questions if the requirements are genuinely unclear
+- Extract core functionality and purpose
+- Identify key operations needed
+- Determine if specific tools or capabilities mentioned
+- Make reasonable assumptions
 - Proceed with implementation rather than asking for excessive clarification
 
 ## 3. Automatically Classify Command Type
@@ -68,7 +65,7 @@ Based on the requirements, automatically determine and proceed with the appropri
 - **Examples**: `/feature-development`, `/legacy-modernize`
 - **Characteristics**: Multi-agent coordination, complex decision trees
 
-Don't ask the user - make the determination based on complexity and proceed.
+Make the determination based on complexity and proceed.
 
 ## 4. Define Command Details Automatically
 
@@ -208,7 +205,7 @@ Finally, based on your analysis and synthesis, generate [output] formatted as [f
 4. Present final version
 ```
 
-This ensures Claude gives full attention to each sub-task sequentially, dramatically improving accuracy.
+This ensures Claude gives full attention to each sub-task sequentially, improving accuracy.
 
 ## 7. Create and Validate the Command
 
@@ -225,11 +222,11 @@ Generate the command file that:
 - Follows the pattern of existing commands in the commands folder
 - Incorporates parallelization strategy if applicable
 
-### Avoid Verbosity - Keep Commands Concise:
-- **Be direct**: Use imperative statements, not explanatory prose
-- **Skip obvious explanations**: Don't explain WHY to do something unless it's non-obvious
+### Keep Commands Concise:
+- **Be direct**: Use imperative statements
+- **Skip obvious explanations**
 - **Use bullet points**: Replace paragraphs with structured lists
-- **Remove redundancy**: Say each thing once, clearly
+- **Remove redundancy**
 - **Focus on actions**: Commands are instructions, not tutorials
 - **Good**: "1. Read file 2. Extract functions 3. Generate tests"
 - **Bad**: "First, we need to read the file to understand its contents. Then, after we've read it, we should carefully extract all the functions because we need to know what functions exist. Finally, once we have the functions, we can generate tests for them."
@@ -244,7 +241,7 @@ Task(subagent_type: 'general-purpose', prompt: template + draft)
 
 Apply validation feedback automatically to optimize the command.
 
-**Don't show drafts** - proceed directly to creating the final command file.
+Proceed directly to creating the final command file.
 
 ## 8. Save the Command
 
@@ -301,11 +298,9 @@ When creating complex commands with multiple components:
 
 ### Efficiency Guidelines for Complex Commands
 
-When creating commands that perform extensive operations:
-
-1. **Context Management**: Remember that subagents start with fresh context, reducing token usage for parallel tasks
-2. **Task Independence**: Ensure parallel tasks don't depend on each other or modify the same resources
-3. **Smart Batching**: Group related operations that can share context, separate those that can run independently
+1. **Context Management**: Subagents start with fresh context, reducing token usage for parallel tasks
+2. **Task Independence**: Ensure parallel tasks don't depend on each other or modify same resources
+3. **Smart Batching**: Group related operations that can share context, separate those that run independently
 4. **Result Aggregation**: Design clear patterns for combining results from parallel operations
 5. **Performance Metrics**: Consider adding progress indicators for long-running parallel operations
 6. **Validation Integration**: Use Task tool with validation subagents throughout creation, not just at the end
