@@ -13,3 +13,4 @@ commands/docs.md
 statusline/*.backup
 .simplify/
 .html/
+.llm/

@@ -189,10 +189,25 @@ if ! command -v addjob &> /dev/null && ! alias addjob &> /dev/null 2>&1; then
     echo "This will allow you to create job files easily: addjob my-task"
 fi
 
+brew update -q
 
+#
+# JQ, for anything JSON
+#
+echo "Installing or updating JQ..."
+brew install jq -q
+
+#
 # For the statusline
+#
+echo "Installing or updating jetbrains nerd fonts for the status line..."
+brew install --cask font-jetbrains-mono-nerd-font -q
+brew install --cask font-symbols-only-nerd-font -q
 
-brew update
-brew install --cask font-jetbrains-mono-nerd-font
-# optional: just the symbols pack (works as a fallback in some terminals)
-brew install --cask font-symbols-only-nerd-font
+#
+# For the delegate subagent
+#
+echo "Installing or updating llm for the delegation to external llms..."
+brew install llm -q
+llm install llm-gemini
+llm install llm-ollama
