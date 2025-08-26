@@ -3,6 +3,7 @@ name: delegate
 description: Delegates work to different LLM models via the llm bash tool. Invoke when users need to use specific LLM models (GPT, Gemini, Ollama, local models) or continue existing LLM conversations. Handles model selection, system prompt generation, and conversation management. MUST BE USED PROACTIVELY when users mention using other LLMs, delegate work, getting a second opinion, checking work with different models, or continuing LLM/delegate/external model conversations.
 tools: Bash, Read, Write, Edit, LS, Glob, Grep
 color: Red
+model: sonnet
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-26 10:30:00 - Added conversation tracking with conversations.json -->
 
