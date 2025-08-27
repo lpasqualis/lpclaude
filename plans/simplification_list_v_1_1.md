@@ -73,7 +73,6 @@ Remove Task tool from:
 - documentation-auditor
 - hack-spotter
 - implan-auditor
-- implan-generator
 - memory-keeper
 
 ## Priority 2: Fix Conceptually Flawed Components

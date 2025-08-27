@@ -20,7 +20,6 @@ Quick lookup for all framework components.
 ### Development Support
 | Agent | Purpose | Triggers On |
 |-------|---------|------------|
-| `implan-generator` | Create implementation plans | New features, refactoring |
 | `implan-auditor` | Audit implementation plans | "audit implan", completeness check |
 | `hack-spotter` | Find technical debt | Code review, security audit |
 | `addjob` | Create deferred tasks | "add job", "defer", "schedule" |

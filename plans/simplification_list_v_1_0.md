@@ -137,11 +137,7 @@ These agents have Task tool but shouldn't as subagents cannot delegate.
 **Issue**: Has Task tool in allowed tools
 **Fix Required**: Remove Task tool, refactor to not delegate
 
-### 4.4 implan-generator (agents/implan-generator.md)
-**Issue**: Has Task tool in allowed tools
-**Fix Required**: Remove Task tool, refactor to not delegate
-
-### 4.5 memory-keeper (agents/memory-keeper.md)
+### 4.4 memory-keeper (agents/memory-keeper.md)
 **Issue**: Has Task tool in allowed tools
 **Fix Required**: Remove Task tool, refactor to not delegate
 
