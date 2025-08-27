@@ -4,7 +4,7 @@ description: Resume work on an existing implementation plan with flexible execut
 argument-hint: "[plan name] [execution directive] (e.g., 'auth-system for 30 minutes', 'until tests pass', 'phase 2 only')"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-26 20:59:15 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-26 21:23:43 -->
 
 Load and continue work on an implementation plan from the project's `docs/implans/` directory with natural language control over execution scope.
 
@@ -151,5 +151,7 @@ This command supports flexible execution modes while maintaining:
 - Respect for user-specified execution boundaries
 
 **Note**: Implementation plans require focused, contextual work and cannot be effectively parallelized.
+
+$ARGUMENTS
 
 **Start by parsing the execution directive, loading the implementation plan, and showing a summary of the current status and planned execution scope.**
