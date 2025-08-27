@@ -4,7 +4,7 @@ description: Intelligently verify completion claims using parallel completion-ve
 argument-hint: ["[optional: custom verification target instead of last claim]"]
 allowed-tools: Read, LS, Glob, Grep, Task, Bash
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-21 15:30:52 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 10:32:55 -->
 
 # Intelligent Completion Verification System
 
@@ -86,6 +86,8 @@ Provide each verifier:
 ### Required Actions:
 - [Next steps if incomplete]
 ```
+
+$ARGUMENTS
 
 ## Implementation Pattern for Parallel Execution
 
