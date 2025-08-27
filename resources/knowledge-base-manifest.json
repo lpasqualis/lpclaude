@@ -191,17 +191,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/implan-generator.md",
-      "type": "generator",
-      "description": "Generates implementation plans",
-      "knowledge_areas": [
-        "template-structure",
-        "testing-requirements",
-        "project-standards"
-      ],
-      "last_updated": "2025-08-08"
-    },
-    {
       "path": "agents/memory-keeper.md",
       "type": "curator",
       "description": "Manages CLAUDE.md memory storage",

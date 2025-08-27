@@ -11,8 +11,8 @@ Transform Claude Code into your personal AI development assistant by creating cu
 # Automatically spot security issues in your code
 Task(subagent_type="hack-spotter", prompt="Review auth.js")
 
-# Generate comprehensive implementation plans
-Task(subagent_type="implan-generator", prompt="Plan user dashboard feature")
+# Create comprehensive implementation plans from conversations
+/implan:create user dashboard feature
 
 # Optimize your documentation
 Task(subagent_type="documentation-auditor", prompt="Audit API docs")
