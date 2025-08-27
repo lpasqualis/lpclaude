@@ -1,10 +1,15 @@
 # Commands and agents/subagents
 
 - Remember the difference between slash commands and agents:
-  - Commands:
-    - Contain prompt templates that get injected as user input into the current conversation
+  - **Commands (slash commands)**:
+    - Markdown files containing prompts injected as user input into current conversation
+    - Support YAML frontmatter (allowed-tools, model, description, argument-hint)
+    - Can include dynamic arguments ($ARGUMENTS), file references (@), bash execution (!)
     - Written as instructions TO Claude ("Analyze this...", "Review the following...")
-  - Subagents:
-    - Contain system-level identity prompts that define HOW the agent should behave
-    - Written as role definitions and behavioral guidelines ("You are an expert...", "Your purpose is...")
-    - The description field enables automatic invocation, the body defines the agent's personality
+    - Location: `.claude/commands/` (project) or `~/.claude/commands/` (personal)
+  - **Subagents**:
+    - Specialized AI assistants with separate context windows
+    - Contain system prompts defining identity AND behavioral guidelines
+    - Written as role definitions ("You are an expert...") plus detailed instructions
+    - YAML frontmatter: name, description (triggers automatic invocation), tools (optional)
+    - Location: `.claude/agents/` (project) or `~/.claude/agents/` (personal)
