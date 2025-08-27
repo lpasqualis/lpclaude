@@ -32,6 +32,10 @@ Only make changes if they meet ONE of these criteria:
 2. **Functional Improvements**: Adding parallelization capabilities ONLY when truly beneficial (see strict criteria in section 5)
 3. **Security/Performance**: Addressing security vulnerabilities or significant performance issues
 4. **Structural Problems**: Major organizational issues that impact usability
+5. **Measurable Simplification**: 
+   - Removing verbatim duplicates (exact character matches)
+   - Achieving >1% byte reduction through safe simplification
+   - Converting verbose prose to structured format (paragraphs → bullets/tables)
 
 **DO NOT change for:**
 - Minor wording preferences
@@ -40,6 +44,8 @@ Only make changes if they meet ONE of these criteria:
 - Reformatting that doesn't fix actual problems
 - Replacing dynamic operations with static content
 - Hardcoding paths or conventions that were previously adaptive
+- "Similar" content that isn't exactly duplicate
+- Simplifications that would alter constraint-bearing text
 
 When given the name of a slash command, you will perform the following audit and optimization steps:
 
@@ -86,20 +92,66 @@ When given the name of a slash command, you will perform the following audit and
         - **PREFER LATEST VERSIONS**: Always use the newest version of each model family (Opus 4.1 over 3, etc.)
     * **D. `allowed-tools`:** Use complete logical groupings (comma-separated string format):
 
-| Use Case | Required Tools |
-|----------|----------------|
-| File exploration | `Read, LS, Glob, Grep` |
-| File modification | `Read, Write, Edit, MultiEdit, LS, Glob, Grep` |
-| Web operations | `WebFetch, WebSearch` (plus reading tools) |
-| Git operations | `Bash, Read, LS, Glob, Grep` |
-| Worker agent orchestration | `Task` (required for commands to invoke worker subagents) |
-| Complex workflows | `Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task, WebFetch, WebSearch` |
+        | Use Case | Required Tools |
+        |----------|----------------|
+        | File exploration | `Read, LS, Glob, Grep` |
+        | File modification | `Read, Write, Edit, MultiEdit, LS, Glob, Grep` |
+        | Web operations | `WebFetch, WebSearch` (plus reading tools) |
+        | Git operations | `Bash, Read, LS, Glob, Grep` |
+        | Worker agent orchestration | `Task` (required for commands to invoke worker subagents) |
+        | Complex workflows | `Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task, WebFetch, WebSearch` |
 
-**ANTI-PATTERN**: Incomplete groupings (`Write` without `Edit, MultiEdit`). Commands inherit permissions and users can grant more via `/permissions`, so avoid over-restriction.
-**WORKER PATTERN**: Commands that orchestrate worker subagents must include `Task` tool to invoke them (the workers themselves must NOT have Task).
-    * **E. Latest UX Features:** Validate modern Claude Code capabilities:
+        **ANTI-PATTERN**: Incomplete groupings (`Write` without `Edit, MultiEdit`). Commands inherit permissions and users can grant more via `/permissions`, so avoid over-restriction.
+        **WORKER PATTERN**: Commands that orchestrate worker subagents must include `Task` tool to invoke them (the workers themselves must NOT have Task).
+    * **E. `argument-hint`:** Optimize the argument hints for better user experience:
+        - **Purpose**: Provides auto-completion hints showing what arguments the command expects
+        - **Format**: Clear, descriptive text that appears when users tab-complete the command
+        - **Conventions**:
+          * Use brackets `[]` for optional arguments
+          * Use angle brackets `<>` for required arguments
+          * Use pipe `|` to separate different usage patterns
+          * Be specific rather than generic (e.g., `[branch-name]` instead of `[text]`)
+        - **Examples of good hints**:
+          * `<issue-number> [priority]` - Shows required issue and optional priority
+          * `add [tagId] | remove [tagId] | list` - Shows multiple command patterns
+          * `[component-name] [--verbose]` - Shows optional component and flag
+        - **Examples to improve**:
+          * `[text]` → `[search-query]` or `[file-pattern]` (be specific)
+          * `[args]` → `[branch-name] [--force]` (show actual options)
+          * Missing hint → Add one based on command's `$ARGUMENTS` usage
+        - **When to add**: If command uses `$ARGUMENTS` placeholder but lacks hint, add descriptive one
+        - **When to omit**: If command takes no arguments, omit the field entirely
+    * **F. `$ARGUMENTS` for Natural Language Directives (STRONGLY RECOMMENDED):**
+        - **DEFAULT PRACTICE**: Include `$ARGUMENTS` placeholder to accept optional natural language refinements
+        - **Philosophy**: Harness LLM's ability to interpret context and adapt behavior dynamically
+        - **Benefits**: Reduces command proliferation, future-proofs commands, empowers users
+        - **Standard implementation pattern**:
+          ```markdown
+          [Main command instructions here]
+          
+          $ARGUMENTS
+          
+          [Any closing instructions or constraints]
+          ```
+        - **Placement**: After core instructions but before final constraints/output format
+        - **argument-hint requirements when using `$ARGUMENTS`**:
+          * MUST be descriptive: `[additional-focus-areas or specific-requirements]`
+          * AVOID vague hints: `[optional]`, `[text]`, `[args]`
+          * Should guide users on what customizations are possible
+        - **When to REQUIRE `$ARGUMENTS`**:
+          * Analysis/review commands (code review, security audit, performance analysis)
+          * Generation commands (tests, documentation, code scaffolding)
+          * Refactoring/transformation commands
+          * Search/exploration commands
+          * Any command that benefits from user refinement
+        - **When `$ARGUMENTS` may be omitted** (rare exceptions):
+          * Pure binary operations (`/clear`, `/login`, `/logout`)
+          * Mechanical formatters that just run tools
+          * Objective status displays (`/status`, `/cost`)
+          * Commands with required structured arguments that aren't optional
+        - **If command lacks `$ARGUMENTS` and it's not an exception**: ADD IT with appropriate hint
+    * **G. Latest UX Features:** Validate modern Claude Code capabilities:
         - **@-mentions**: Commands can reference agents using `@agent-name` with typeahead support (v1.0.62)
-        - **argument-hint**: Add descriptive hints for better UX (e.g., `[component-name] [action]` vs. vague `[text]`)
 
 **3. Detect Command Type and Suggest Improvements:**
 * **Classify the command as Tool or Workflow:**
@@ -123,7 +175,18 @@ When given the name of a slash command, you will perform the following audit and
         - **Eliminate redundant instructions**: If something is said twice, keep only the clearest version
         - **Condense verbose sections**: Replace multi-paragraph explanations with concise bullet points
         - **Keep only essential context**: Commands should be instructions, not tutorials
-        - **Example of over-explanation to remove**: "Now we need to carefully analyze the file structure because understanding the organization is important for making good decisions" → Just say "Analyze the file structure"
+        - **Specific Safe Removals**:
+          * "Now we need to carefully analyze..." → "Analyze..."
+          * "It's important to remember that..." → [just state the fact]
+          * "The next step is to..." → [just give the instruction]
+          * "Make sure to carefully..." → "Ensure..." or just the action
+          * Duplicate phrases like "as mentioned above" or "as stated earlier"
+        - **DO NOT Remove** (even if verbose):
+          * Specific parameter names or values
+          * Conditions that affect behavior ("only if", "except when")
+          * Examples showing exact usage
+          * Warnings about common mistakes or edge cases
+          * Order dependencies ("must do X before Y")
     * **B. Improve Clarity:** If the prompt is vague or poorly structured, rewrite it to be more specific, unambiguous, and well-organized, using markdown headers and lists where appropriate.
     * **C. Preserve Dynamic Operations:** If the command uses WebFetch to load current documentation, best practices, or other dynamic content, this is INTENTIONAL. Do not replace with static content.
     * **D. Ensure Correct Placeholder Usage:** Analyze the prompt's intent. If its purpose relies on context (e.g., "refactor the selected code"), ensure it correctly uses placeholders like `{{selected_text}}` or `{{last_output}}`. If it's missing a necessary placeholder, add it and explain the benefit.
@@ -138,6 +201,35 @@ When given the name of a slash command, you will perform the following audit and
         ## Step 3: Action
         Finally, based on analysis, perform [action] and format as [format].
         ```
+    * **F. Apply Simplification Principles (from /simplify methodology):**
+        - **Idempotence Test**: After proposing edits, mentally apply them and check if running the optimizer again would suggest more changes. If yes, refine or abort.
+        - **Constraint-Bearing Text**: NEVER edit text that carries functional constraints:
+          * Steps, conditions, dependencies, order of operations
+          * Exact values, units, ranges, tolerances, defaults
+          * API/CLI signatures, commands, paths, formats
+          * Error handling, edge cases, interface definitions
+        - **Duplicate Removal Rules**:
+          * Only remove **verbatim duplicates** (exact character-for-character matches)
+          * For paragraphs: must be separated by blank lines and match exactly
+          * For bullet points: must be identical including punctuation
+          * Never remove "similar but different" content - subtle differences matter
+        - **Structured Formatting**:
+          * Convert verbose paragraphs to bullet points when listing items
+          * Use headers to organize sections instead of long introductions
+          * Tables for comparisons instead of prose descriptions
+        - **Safe Removals** (only if no constraints):
+          * Redundant adjectives that add no meaning ("very important" → "important")
+          * Meta-commentary about the process ("Now we need to..." → direct instruction)
+          * Repeated high-level statements with no specific details
+        - **NEVER Touch**:
+          * Contract/Requirements sections that define hard rules
+          * Inline code or fenced code blocks
+          * Specific examples that illustrate usage
+          * Warnings or gotchas about edge cases
+        - **Measurable Impact**: Only apply simplification if:
+          * Byte reduction would be >1% OR
+          * At least one verbatim duplicate is removed OR
+          * Structure is significantly clarified (paragraphs → bullets)
 
 **5. Analyze Parallelization Opportunities:**
 **IMPORTANT**: Most commands do NOT need parallel execution. Only consider parallelization for specific scenarios.
