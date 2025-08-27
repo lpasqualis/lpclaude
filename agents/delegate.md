@@ -64,23 +64,56 @@ llm openai models
 
 ## Command Construction
 
-**New conversation** (using here-string for safety):
+**IMPORTANT**: LLM queries can take several minutes. Always run in background with proper output capture to avoid timeouts.
+
+**New conversation** (background execution with output capture):
 ```bash
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
-llm \
+OUTPUT_FILE="$PROJECT_ROOT/.llm/current_response.txt"
+rm -f "$OUTPUT_FILE"  # Clean up any previous response
+
+# Run in background with output capture
+nohup bash -c 'llm \
   -m [model] \
   -s "system prompt" \
   -d "$PROJECT_ROOT/.llm/llm-agent-log.db" \
-  --no-stream <<< "$USER_PROMPT"
+  --no-stream <<< "$USER_PROMPT"' > "$OUTPUT_FILE" 2>&1 &
+
+LLM_PID=$!
+
+# Monitor the background process
+while kill -0 $LLM_PID 2>/dev/null; do
+  sleep 2
+  if [ -f "$OUTPUT_FILE" ]; then
+    echo "LLM is processing... ($(wc -l < "$OUTPUT_FILE") lines so far)"
+  fi
+done
+
+# Get the response
+wait $LLM_PID
+RESPONSE=$(cat "$OUTPUT_FILE")
 ```
 
-**Continue conversation**:
+**Continue conversation** (background execution):
 ```bash
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
-llm \
+OUTPUT_FILE="$PROJECT_ROOT/.llm/current_response.txt"
+rm -f "$OUTPUT_FILE"
+
+nohup bash -c 'llm \
   --cid [conversation_id] \
   -d "$PROJECT_ROOT/.llm/llm-agent-log.db" \
-  --no-stream <<< "$FOLLOWUP_PROMPT"
+  --no-stream <<< "$FOLLOWUP_PROMPT"' > "$OUTPUT_FILE" 2>&1 &
+
+LLM_PID=$!
+
+# Monitor and wait
+while kill -0 $LLM_PID 2>/dev/null; do
+  sleep 2
+done
+
+wait $LLM_PID
+RESPONSE=$(cat "$OUTPUT_FILE")
 ```
 
 ## Conversation Management
