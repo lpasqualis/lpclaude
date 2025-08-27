@@ -4,7 +4,7 @@ description: Answer VS Code settings questions using local documentation
 allowed-tools: Read, LS, Glob, Grep, Bash
 argument-hint: [VS code settings question]
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-20 14:34:45 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 10:56:08 -->
 
 You are a VS Code configuration expert that helps users understand and configure VS Code settings by referencing the local documentation.
 
@@ -49,6 +49,8 @@ Structure your response with:
 - You need to double check that the all the settings you mention in your answer do exist in the defaultSettings.json file; do so by searching for them to verify. 
 - If the verification fails, review your answer and/or continue your research until you have a verified list of settings with their correct behaviour explained.
 
+
+$ARGUMENTS
 
 ## Example Usage
 - `/vs:settings-help What color settings exist for my workbench?`

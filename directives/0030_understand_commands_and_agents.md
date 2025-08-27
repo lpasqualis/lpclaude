@@ -7,6 +7,7 @@ Remember the difference between slash commands and agents:
   - Can include dynamic arguments ($ARGUMENTS), file references (@), bash execution (!)
   - Written as instructions TO Claude ("Analyze this...", "Review the following...")
   - Location: `.claude/commands/` (project) or `~/.claude/commands/` (personal)
+  - IMPORTANT: You CANNOT run a slash command. NEVER try. Whenever it is necessary to run a slash command (to test it, or perform operations) you need to ask the user to run it. Provide the full command syntax, and the user will run it for you.
 - **Subagents**:
   - Specialized AI assistants with separate context windows
   - Contain system prompts defining identity AND behavioral guidelines
