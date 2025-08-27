@@ -62,4 +62,4 @@ Numbered list of specific changes with justification:
 1. **Agent(s)**: [names] **Change**: [specific modification] **Benefit**: [improvement rationale]
 
 ### Implementation Guidance
-Recommend using `@subagent-optimizer` for implementing optimizations, with specific focus areas for each agent requiring changes.
+Recommend using `/subagents:optimize` command for implementing optimizations, with specific focus areas for each agent requiring changes.
