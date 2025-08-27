@@ -1,5 +1,4 @@
 # Error Handling Principles
-
 - Always provide actionable error messages with context
 - Fail fast with clear explanations rather than silent failures
 - Include recovery suggestions when operations fail

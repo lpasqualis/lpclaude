@@ -1,5 +1,4 @@
 # Git Commit Practices
-
 - Use semantic commit messages (feat, fix, docs, refactor, test, chore, style, perf)
 - Keep commits atomic - one logical change per commit
 - Write commit messages that explain WHY, not just WHAT
@@ -8,4 +7,3 @@
 - Keep commit history clean - squash fixup commits when appropriate
 - Reference issue numbers in commits when applicable
 - Ensure all tests pass before committing feature changes
-- 
