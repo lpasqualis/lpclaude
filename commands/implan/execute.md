@@ -2,9 +2,9 @@
 name: /implan:execute
 description: Resume work on an existing implementation plan with flexible execution control
 argument-hint: "[plan name] [execution directive] (e.g., 'auth-system for 30 minutes', 'until tests pass', 'phase 2 only')"
-allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task
+allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-20 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-26 20:59:15 -->
 
 Load and continue work on an implementation plan from the project's `docs/implans/` directory with natural language control over execution scope.
 
@@ -103,8 +103,7 @@ When stopping condition is met:
 5. Document any blockers or issues for next session
 
 ### 6. Quality Assurance Integration
-- For significant progress or plan completion, use Task tool with `implan-auditor` subagent
-- The auditor will verify implementation completeness and identify any stubs or gaps
+- For significant progress or plan completion, invoke @implan-auditor to verify implementation completeness and identify any stubs or gaps
 - Apply audit recommendations before marking the session complete
 - Ensure all tests pass before marking implementation items as complete
 
