@@ -8,3 +8,4 @@
 - Keep commit history clean - squash fixup commits when appropriate
 - Reference issue numbers in commits when applicable
 - Ensure all tests pass before committing feature changes
+- 
