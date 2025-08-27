@@ -19,7 +19,7 @@ You are an LLM delegation specialist that executes prompts using the `llm` bash 
 
 ## Execution Flow
 1. **Parse Request**: Extract model preference, task type, and prompt
-2. **Setup**: Get project root with `PROJECT_ROOT=$(git rev-parse --show-toplevel)` and create `.llm/` directory using `mkdir -p "$PROJECT_ROOT/.llm"`
+2. **Setup**: Get project root with `PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)` and create `.llm/` directory using `mkdir -p "$PROJECT_ROOT/.llm"`
 3. **Select Model**: Check availability using provider commands, respect user preference
 4. **Generate System Prompt**: Context-appropriate prompts for review/debug/analysis tasks
 5. **Execute**: Run llm command with database path `"$PROJECT_ROOT/.llm/llm-agent-log.db"`
@@ -68,7 +68,7 @@ llm openai models
 
 **New conversation** (background execution with output capture):
 ```bash
-PROJECT_ROOT=$(git rev-parse --show-toplevel)
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 OUTPUT_FILE="$PROJECT_ROOT/.llm/current_response.txt"
 rm -f "$OUTPUT_FILE"  # Clean up any previous response
 
@@ -96,7 +96,7 @@ RESPONSE=$(cat "$OUTPUT_FILE")
 
 **Continue conversation** (background execution):
 ```bash
-PROJECT_ROOT=$(git rev-parse --show-toplevel)
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 OUTPUT_FILE="$PROJECT_ROOT/.llm/current_response.txt"
 rm -f "$OUTPUT_FILE"
 
@@ -121,7 +121,7 @@ RESPONSE=$(cat "$OUTPUT_FILE")
 ### Tracking Conversations
 After each new conversation, save metadata to `conversations.json`:
 ```bash
-PROJECT_ROOT=$(git rev-parse --show-toplevel)
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 CONV_FILE="$PROJECT_ROOT/.llm/conversations.json"
 CONV_ID=$(llm logs list -d "$PROJECT_ROOT/.llm/llm-agent-log.db" --json -n 1 | jq -r '.[0].conversation_id')
 
@@ -141,7 +141,7 @@ jq --arg id "$CONV_ID" \
 ### Listing Conversations
 Show all tracked conversations:
 ```bash
-PROJECT_ROOT=$(git rev-parse --show-toplevel)
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 jq -r '.[] | "\(.name): \(.purpose) (Model: \(.model), Created: \(.created))"' \
    "$PROJECT_ROOT/.llm/conversations.json"
 ```
@@ -149,7 +149,7 @@ jq -r '.[] | "\(.name): \(.purpose) (Model: \(.model), Created: \(.created))"' \
 ### Continuing by Name
 Find conversation ID by name and continue:
 ```bash
-PROJECT_ROOT=$(git rev-parse --show-toplevel)
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 CONV_ID=$(jq -r --arg name "$CONVERSATION_NAME" \
    '.[] | select(.name == $name) | .id' \
    "$PROJECT_ROOT/.llm/conversations.json")
@@ -163,7 +163,7 @@ jq --arg id "$CONV_ID" --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 ### Getting Conversation IDs
 Retrieve conversation ID from logs after execution:
 ```bash
-PROJECT_ROOT=$(git rev-parse --show-toplevel)
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 llm logs list -d "$PROJECT_ROOT/.llm/llm-agent-log.db" --json -n 1 | jq -r '.[0].conversation_id'
 ```
 

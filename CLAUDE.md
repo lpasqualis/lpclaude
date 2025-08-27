@@ -96,9 +96,15 @@ Main Claude → Can use Task → Invoke any subagent
 
 ### Creating Components
 - **Agents**: `agents/name.md` with YAML (name, description, tools)
+  - **IMPORTANT**: Agent changes require Claude Code restart - agents are loaded at launch, not dynamically reloaded
 - **Commands**: `commands/namespace/name.md` with YAML (name, description, allowed-tools)
 - **Task Templates**: `tasks/name.md` (pure prompt, no YAML)
 - **Output Styles**: `output-styles/name.md` with YAML
+
+### Agent Development Workflow
+- **Testing agent changes**: After modifying an agent file, you MUST exit and restart Claude Code for changes to take effect
+- **Agent loading**: Agents are loaded once at Claude Code startup, not on-demand
+- **Verification**: Use `/agents` command after restart to confirm agent is loaded with new changes
 
 ### Tool Permission Groups
 - **Read-only**: `Read, LS, Glob, Grep`
