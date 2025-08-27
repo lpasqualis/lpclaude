@@ -78,30 +78,81 @@ if [ "$CACHE_VALID" = "no" ]; then
     # Use temp file for atomic cache creation
     TEMP_CACHE="$PROJECT_ROOT/.llm/tmp/cache_build_$$.json"
     
-    # Build comprehensive cache
+    # Build comprehensive cache - dynamically detect all providers
     {
         echo '{"created":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",'
         echo '"models":{'
         
-        # OpenAI (always available)
-        echo '"openai":'
-        llm openai models --json 2>/dev/null || echo '[]'
-        echo ','
+        # Dynamically build model list from all providers
+        FIRST_PROVIDER=true
         
-        # Check for other providers
-        if llm plugins 2>/dev/null | jq -e '.[] | select(.name=="llm-gemini")' >/dev/null 2>&1; then
-            echo '"gemini":'
-            llm gemini models --json 2>/dev/null || echo '[]'
-            echo ','
+        # Check for OpenAI models
+        if llm models 2>/dev/null | grep -q "^OpenAI"; then
+            if [ "$FIRST_PROVIDER" = false ]; then echo ','; fi
+            FIRST_PROVIDER=false
+            
+            # OpenAI models - use JSON if available
+            echo '"openai":['
+            if llm openai models --json 2>/dev/null | jq -e '.' >/dev/null 2>&1; then
+                llm openai models --json 2>/dev/null | jq -c '.[]' | while read -r model; do
+                    echo "$model,"
+                done | sed '$ s/,$//'
+            else
+                llm models 2>/dev/null | grep "^OpenAI" | while IFS=': ' read -r _ model_info; do
+                    model_id=$(echo "$model_info" | cut -d' ' -f1)
+                    echo '{"id":"'"$model_id"'","object":"model","created":0,"owned_by":"openai"},'
+                done | sed '$ s/,$//'
+            fi
+            echo ']'
         fi
         
-        if llm plugins 2>/dev/null | jq -e '.[] | select(.name=="llm-ollama")' >/dev/null 2>&1; then
-            echo '"ollama":'
-            llm ollama models --json 2>/dev/null || echo '[]'
-            echo ','
+        # Check for Gemini models
+        if llm models 2>/dev/null | grep -q "^GeminiPro"; then
+            if [ "$FIRST_PROVIDER" = false ]; then echo ','; fi
+            FIRST_PROVIDER=false
+            
+            echo '"gemini":['
+            llm models 2>/dev/null | grep "^GeminiPro:" | while IFS=': ' read -r _ model_info; do
+                model_id=$(echo "$model_info" | cut -d' ' -f1)
+                echo '{"id":"'"$model_id"'","object":"model","created":0,"owned_by":"gemini"},'
+            done | sed '$ s/,$//'
+            echo ']'
         fi
         
-        echo '"_end":[]'
+        # Check for Ollama models
+        if llm models 2>/dev/null | grep -q "^Ollama"; then
+            if [ "$FIRST_PROVIDER" = false ]; then echo ','; fi
+            FIRST_PROVIDER=false
+            
+            echo '"ollama":['
+            llm models 2>/dev/null | grep "^Ollama:" | while IFS=': ' read -r _ model_info; do
+                model_id=$(echo "$model_info" | cut -d' ' -f1)
+                echo '{"id":"'"$model_id"'","object":"model","created":0,"owned_by":"ollama"},'
+            done | sed '$ s/,$//'
+            echo ']'
+        fi
+        
+        # Check for any other provider types dynamically
+        # Get provider prefixes we haven't handled yet
+        OTHER_PROVIDERS=$(llm models 2>/dev/null | awk -F': ' '{print $1}' | grep -v "^Default$\|^OpenAI\|^GeminiPro\|^Ollama" | sort -u)
+        
+        for PROVIDER in $OTHER_PROVIDERS; do
+            if [ -n "$PROVIDER" ]; then
+                if [ "$FIRST_PROVIDER" = false ]; then echo ','; fi
+                FIRST_PROVIDER=false
+                
+                # Create safe JSON key from provider name (lowercase, no spaces)
+                PROVIDER_KEY=$(echo "$PROVIDER" | tr '[:upper:]' '[:lower:]' | tr ' ' '_')
+                
+                echo "\"$PROVIDER_KEY\":["
+                llm models 2>/dev/null | grep "^$PROVIDER:" | while IFS=': ' read -r _ model_info; do
+                    model_id=$(echo "$model_info" | cut -d' ' -f1)
+                    echo '{"id":"'"$model_id"'","object":"model","created":0,"owned_by":"'"$PROVIDER_KEY"'"},'
+                done | sed '$ s/,$//'
+                echo ']'
+            fi
+        done
+        
         echo '},'
         
         # Store aliases
