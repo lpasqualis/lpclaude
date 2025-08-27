@@ -36,6 +36,10 @@ Only make changes if they meet ONE of these criteria:
    - Removing verbatim duplicates (exact character matches)
    - Achieving >1% byte reduction through safe simplification
    - Converting verbose prose to structured format (paragraphs → bullets/tables)
+6. **Size Violations**:
+   - Commands exceeding 300 lines (requires decomposition recommendations)
+   - Commands 200-300 lines with clear verbosity issues
+   - Any command where size reduction would improve maintainability
 
 **DO NOT change for:**
 - Minor wording preferences
@@ -46,6 +50,9 @@ Only make changes if they meet ONE of these criteria:
 - Hardcoding paths or conventions that were previously adaptive
 - "Similar" content that isn't exactly duplicate
 - Simplifications that would alter constraint-bearing text
+- **Removing educational content** - reorganize/compact instead
+- **Deleting examples** - consolidate into comprehensive examples instead
+- **Stripping security patterns** - organize into dedicated section instead
 
 When given the name of a slash command, you will perform the following audit and optimization steps:
 
@@ -66,6 +73,7 @@ When given the name of a slash command, you will perform the following audit and
 * If file not found, report error and stop
 * If found, read the file and note its location (will be important for companion agent creation)
 * Parse its YAML frontmatter (if present) and the main prompt body
+* **Calculate size metrics**: Use Bash to get `wc -l` (line count) and `wc -c` (byte count)
 
 **2. Audit and Refactor the YAML Frontmatter (If Necessary):**
 * **First, audit the command's current frontmatter against best practices.**
@@ -171,22 +179,30 @@ When given the name of a slash command, you will perform the following audit and
 * **PRESERVATION RULE: Never remove or replace dynamic operations (WebFetch, WebSearch, API calls)**
 * **Only if the prompt can be improved WITHOUT removing functionality**, perform the following actions:
     * **A. Check for Verbosity and Over-Explanation:**
-        - **Remove excessive commentary**: Delete explanations of WHY to do something if the action is obvious
-        - **Eliminate redundant instructions**: If something is said twice, keep only the clearest version
-        - **Condense verbose sections**: Replace multi-paragraph explanations with concise bullet points
-        - **Keep only essential context**: Commands should be instructions, not tutorials
-        - **Specific Safe Removals**:
+        - **Preserve Educational Content**: Examples, security patterns, and explanations have value
+        - **Reorganize for Clarity**: Convert verbose prose to structured formats when beneficial:
+          * Multi-paragraph explanations → Organized sections with headers
+          * Long prose examples → Formatted code blocks or tables
+          * Repetitive patterns → Consolidated lists with clear labels
+          * Scattered security advice → Dedicated "Security Considerations" section
+        - **Safe Compaction Techniques**:
           * "Now we need to carefully analyze..." → "Analyze..."
           * "It's important to remember that..." → [just state the fact]
           * "The next step is to..." → [just give the instruction]
-          * "Make sure to carefully..." → "Ensure..." or just the action
-          * Duplicate phrases like "as mentioned above" or "as stated earlier"
-        - **DO NOT Remove** (even if verbose):
+          * Combine similar examples into one comprehensive example
+          * Group related concepts under clear headings
+        - **PRESERVE These Educational Elements**:
+          * Examples showing different use cases (compact if repetitive)
+          * Security patterns and anti-patterns
+          * Common pitfalls and how to avoid them
+          * Best practices and rationale
+          * Model selection guidelines with reasoning
+        - **DO NOT Remove** (critical for functionality):
           * Specific parameter names or values
           * Conditions that affect behavior ("only if", "except when")
-          * Examples showing exact usage
-          * Warnings about common mistakes or edge cases
+          * Warnings about edge cases or limitations
           * Order dependencies ("must do X before Y")
+          * Architectural constraints or requirements
     * **B. Improve Clarity:** If the prompt is vague or poorly structured, rewrite it to be more specific, unambiguous, and well-organized, using markdown headers and lists where appropriate.
     * **C. Preserve Dynamic Operations:** If the command uses WebFetch to load current documentation, best practices, or other dynamic content, this is INTENTIONAL. Do not replace with static content.
     * **D. Ensure Correct Placeholder Usage:** Analyze the prompt's intent. If its purpose relies on context (e.g., "refactor the selected code"), ensure it correctly uses placeholders like `{{selected_text}}` or `{{last_output}}`. If it's missing a necessary placeholder, add it and explain the benefit.
@@ -203,6 +219,11 @@ When given the name of a slash command, you will perform the following audit and
         ```
     * **F. Apply Simplification Principles (from /simplify methodology):**
         - **Idempotence Test**: After proposing edits, mentally apply them and check if running the optimizer again would suggest more changes. If yes, refine or abort.
+        - **Educational Content Preservation**: Transform rather than remove:
+          * Verbose tutorials → Concise reference sections with examples
+          * Scattered tips → Organized "Best Practices" or "Tips" section
+          * Multiple similar examples → One comprehensive example with variations noted
+          * Long explanations → Structured documentation with clear headers
         - **Constraint-Bearing Text**: NEVER edit text that carries functional constraints:
           * Steps, conditions, dependencies, order of operations
           * Exact values, units, ranges, tolerances, defaults
@@ -210,26 +231,66 @@ When given the name of a slash command, you will perform the following audit and
           * Error handling, edge cases, interface definitions
         - **Duplicate Removal Rules**:
           * Only remove **verbatim duplicates** (exact character-for-character matches)
-          * For paragraphs: must be separated by blank lines and match exactly
-          * For bullet points: must be identical including punctuation
-          * Never remove "similar but different" content - subtle differences matter
-        - **Structured Formatting**:
+          * Consolidate similar examples into comprehensive ones (don't just delete)
+          * Merge related security patterns into unified section
+          * Combine scattered best practices into organized list
+        - **Structured Formatting** (preferred over deletion):
           * Convert verbose paragraphs to bullet points when listing items
           * Use headers to organize sections instead of long introductions
           * Tables for comparisons instead of prose descriptions
-        - **Safe Removals** (only if no constraints):
+          * Code blocks for examples instead of inline descriptions
+        - **Safe Compaction** (preserve meaning):
           * Redundant adjectives that add no meaning ("very important" → "important")
           * Meta-commentary about the process ("Now we need to..." → direct instruction)
-          * Repeated high-level statements with no specific details
-        - **NEVER Touch**:
-          * Contract/Requirements sections that define hard rules
-          * Inline code or fenced code blocks
-          * Specific examples that illustrate usage
-          * Warnings or gotchas about edge cases
+          * Combine related points into consolidated sections
+        - **NEVER Remove Without Replacement**:
+          * Examples (consolidate instead)
+          * Security guidance (organize instead)
+          * Best practices (structure instead)
+          * Common pitfalls (group instead)
+          * Model selection advice (summarize instead)
         - **Measurable Impact**: Only apply simplification if:
           * Byte reduction would be >1% OR
           * At least one verbatim duplicate is removed OR
           * Structure is significantly clarified (paragraphs → bullets)
+
+**4B. Command Size Analysis and Optimization:**
+**Size Thresholds and Recommendations:**
+- **Optimal**: <100 lines (concise, focused, single responsibility)
+- **Acceptable**: 100-200 lines (reasonable for complex workflows)
+- **Review Needed**: 200-300 lines (consider decomposition)
+- **Too Large**: >300 lines (requires splitting into separate commands)
+
+**Analyze command size:**
+* Use Bash tool to calculate: `wc -l [file_path]` for line count and `wc -c [file_path]` for byte size
+* Assess against thresholds above
+* If command exceeds 200 lines, flag for potential optimization
+* If command exceeds 300 lines, strongly recommend decomposition
+
+**Size Reduction Strategies (when oversized):**
+* **IMPORTANT: Only SUGGEST decomposition, do NOT execute it**:
+  - The optimizer should RECOMMEND splitting but NOT create new commands
+  - Provide specific decomposition suggestions in the report
+  - Let the user decide whether to implement the split
+* **Suggest Decomposing Monolithic Commands** (DO NOT IMPLEMENT): 
+  - Identify distinct responsibilities within the command
+  - Suggest creating separate, focused commands for each responsibility
+  - Example: "Consider splitting this `/deploy` into: `/test`, `/build`, `/deploy-only`"
+  - NOTE: These would become independent user-invokable commands, NOT a chain
+* **In-Command Optimizations** (CAN BE APPLIED):
+  - Apply aggressive verbosity removal (especially when >200 lines)
+  - Convert prose paragraphs to bullet points or tables
+  - Remove duplicate instructions and redundant explanations
+  - Use XML-tagged prompt chaining for multi-step logic
+  - These changes CAN be made directly to optimize the existing command
+* **Suggest Delegating to Subagents**:
+  - For complex analysis, suggest using `@subagent-name` mentions
+  - This is architecturally valid since commands work through the main Claude agent
+* **What NOT to Do**:
+  - NEVER automatically create new split commands
+  - NEVER suggest one command should "call" another (impossible)
+  - NEVER create Task templates just for size reduction
+  - NEVER violate the execution hierarchy constraints
 
 **5. Analyze and Fix Parallelization:**
 **CRITICAL**: Parallelization is RARELY needed. Most commands work perfectly fine without it. ACTIVELY REMOVE unnecessary parallelization when found.
@@ -339,10 +400,14 @@ When given the name of a slash command, you will perform the following audit and
     * **CRITICAL**: Never use absolute paths with usernames - breaks portability
 
 **7. Finalize and Report:**
+* **CRITICAL: Decomposition is a SUGGESTION only - do NOT create new command files**
+    - If a command is too large (>300 lines), RECOMMEND splitting in the report
+    - Do NOT actually create the split commands - let the user decide
+    - Only apply in-file optimizations (verbosity removal, structure improvements)
 * **If SIGNIFICANT changes were made during the audit (per the Significance Threshold criteria):**
     * Assemble the newly optimized YAML frontmatter and prompt
     * **Step 1 - Write optimized content:**
-        - Use the `Edit` or `MultiEdit` tool to apply ALL changes to the command file
+        - Use the `Edit` or `MultiEdit` tool to apply changes to the EXISTING command file only
     * **Step 2 - Add/Update optimization timestamp:** 
         - Use `Bash` tool to get current timestamp: `date "+%Y-%m-%d %H:%M:%S"`
         - Save the timestamp output to use in next step
@@ -370,18 +435,36 @@ When given the name of a slash command, you will perform the following audit and
 **Status**: [Changes applied | Already compliant]
 **Timestamp**: YYYY-MM-DD HH:MM:SS
 
+### Size Analysis:
+- **Line count**: [X] lines
+- **Byte size**: [Y] bytes
+- **Assessment**: [Optimal (<100) | Acceptable (100-200) | Review Needed (200-300) | Too Large (>300)]
+
+### Size Recommendations (if Review Needed or Too Large):
+- [For commands >200 lines: Suggest specific optimizations]
+- [For commands >300 lines: RECOMMEND (not implement) decomposition]
+- **Decomposition Suggestion** (user action required):
+  - "This monolithic command handles X, Y, and Z. Consider manually creating:"
+  - `/namespace:task-x` for [specific functionality from lines A-B]
+  - `/namespace:task-y` for [specific functionality from lines C-D]
+  - `/namespace:task-z` for [specific functionality from lines E-F]
+- [Note: User must decide whether to implement these suggestions]
+- [Note: These would be separate user-invokable commands, not a chain]
+
 ### Changes Applied (if any):
 - [List specific changes, including:]
+  - Size optimizations (verbosity removal, structure improvements)
   - Removed unnecessary parallelization (if applicable)
   - Deleted unused task templates (if applicable)
   - Simplified to sequential processing (if applicable)
 
 ### Task Templates Created/Removed (if any):
-- Created: [List with purposes and file paths]
+- Created: [List with purposes and file paths - ONLY for valid parallelization]
 - Removed: [List deleted templates]
 
 ### Compliance Status:
 - ✅ Best practices compliance
-- ✅ Complete tool permission groupings  
+- ✅ Complete tool permission groupings
+- ✅ Size within recommended limits (or decomposition recommended)
 - ✅ Optimization timestamp added
 ```
