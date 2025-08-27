@@ -23,29 +23,14 @@ test_statusline() {
     echo -e "${BLUE}═══════════════════════════════════════════════${NC}"
     echo ""
     
-    # Test case 1: Default (small context, minimal changes)
-    echo -e "${MAGENTA}1. Default (small context, minimal changes):${NC}"
-    echo '{"model":{"display_name":"Opus 4.1"},"output_style":{"name":"Claude Agentic Framework"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":12,"total_lines_removed":3}}' | "$script"
+    # Test case 1: Default (small context, short session)
+    echo -e "${MAGENTA}1. Default (small context, short session):${NC}"
+    echo '{"version":"1.0.93","model":{"display_name":"Opus 4.1"},"output_style":{"name":"default"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":12,"total_lines_removed":3,"total_duration_ms":45000,"total_api_duration_ms":2300}}' | "$script"
     echo ""
     
-    # Test case 2: Large context warning
-    echo -e "${MAGENTA}2. Large context (>200k tokens):${NC}"
-    echo '{"model":{"display_name":"Opus 4.1"},"output_style":{"name":"Claude Agentic Framework"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":true,"cost":{"total_lines_added":500,"total_lines_removed":250}}' | "$script"
-    echo ""
-    
-    # Test case 3: No changes
-    echo -e "${MAGENTA}3. No code changes:${NC}"
-    echo '{"model":{"display_name":"Opus 4.1"},"output_style":{"name":"Default"},"workspace":{"current_dir":"/Users/lpasqualis/projects"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":0,"total_lines_removed":0}}' | "$script"
-    echo ""
-    
-    # Test case 4: Large refactoring
-    echo -e "${MAGENTA}4. Large refactoring (many changes):${NC}"
-    echo '{"model":{"display_name":"Claude 3.5"},"output_style":{"name":"Code Review"},"workspace":{"current_dir":"/Users/lpasqualis/bigproject"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":1523,"total_lines_removed":892}}' | "$script"
-    echo ""
-    
-    # Test case 5: Different model and style
-    echo -e "${MAGENTA}5. Different model and output style:${NC}"
-    echo '{"model":{"display_name":"Haiku"},"output_style":{"name":"Concise"},"workspace":{"current_dir":"/tmp/test"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":42,"total_lines_removed":17}}' | "$script"
+    # Test case 2: Large context warning (longer session)
+    echo -e "${MAGENTA}2. Large context (>200k tokens, longer session):${NC}"
+    echo '{"version":"1.0.93","model":{"display_name":"Opus 4.1"},"output_style":{"name":"default"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":true,"cost":{"total_lines_added":500,"total_lines_removed":250,"total_duration_ms":325000,"total_api_duration_ms":18500}}' | "$script"
     echo ""
     
     echo -e "${BLUE}═══════════════════════════════════════════════${NC}"
@@ -126,7 +111,7 @@ select_statusline() {
             
             # Show a quick test of the activated statusline
             echo -e "${CYAN}Quick test of activated statusline:${NC}"
-            echo '{"model":{"display_name":"Opus 4.1"},"output_style":{"name":"Claude Agentic Framework"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":12,"total_lines_removed":3}}' | "$STATUSLINE_DIR/statusline.sh"
+            echo '{"version":"1.0.93","model":{"display_name":"Opus 4.1"},"output_style":{"name":"default"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":12,"total_lines_removed":3,"total_duration_ms":125000,"total_api_duration_ms":8500}}' | "$STATUSLINE_DIR/statusline.sh"
             echo ""
             echo ""
             echo -n -e "${GREEN}Press Enter to continue...${NC}"

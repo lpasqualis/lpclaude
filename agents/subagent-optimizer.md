@@ -26,7 +26,7 @@ Only make changes if they meet ONE of these criteria:
 - Reformatting that doesn't fix actual problems
 - Replacing dynamic operations with static content
 
-**CRITICAL PRESERVATION RULE:** Never remove WebFetch/WebSearch operations, external data sources, or dynamic content mechanisms. These are often the agent's core purpose.
+**CRITICAL PRESERVATION RULE:** Never remove WebFetch/WebSearch operations, external data sources, dynamic content mechanisms, or semantic constraints that define agent behavior (examples, thresholds, decision logic).
 
 When given the name of a subagent, you will perform the following audit and optimization steps:
 
@@ -122,11 +122,16 @@ The ONLY valid YAML frontmatter fields for agents are:
     - They define HOW the agent should behave, not what task to do
     - They become the system prompt of a new Claude instance
     - Write as role definition and behavioral guidelines, not task instructions
-* Remove tutorial-style explanations, redundancy, and obvious content
-* Convert verbose paragraphs to concise bullet points
-* Keep instructions focused on the agent's identity and approach
-* Ensure prompt starts with role definition: "You are a [specialist/expert]..."
-* Example: "carefully review each file to understand its purpose and then analyze..." → "Review and analyze each file"
+
+**Simplification Guidelines:**
+* Remove only TRUE redundancy: verbatim duplicates, obvious filler words
+* Preserve semantic content: constraints, examples, thresholds, decision logic
+* Simplify structure without losing meaning:
+    - Convert verbose explanations to concise bullet points
+    - Group related items under clear headers
+    - Use tables for complex decision matrices
+* **Key preservation rule**: If removing text would change behavior, keep it
+* **Size guidance**: Agents over 200 lines may benefit from review, but complexity often justifies length
 
 **8. Check for Slash Command References and Agent Invocation Issues:**
 * **Critical Rule**: Subagents CANNOT execute slash commands or invoke other agents. They have no delegation capabilities.
