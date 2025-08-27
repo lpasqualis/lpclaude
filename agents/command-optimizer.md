@@ -231,26 +231,48 @@ When given the name of a slash command, you will perform the following audit and
           * At least one verbatim duplicate is removed OR
           * Structure is significantly clarified (paragraphs → bullets)
 
-**5. Analyze Parallelization Opportunities:**
-**IMPORTANT**: Most commands do NOT need parallel execution. Only consider parallelization for specific scenarios.
+**5. Analyze and Fix Parallelization:**
+**CRITICAL**: Parallelization is RARELY needed. Most commands work perfectly fine without it. ACTIVELY REMOVE unnecessary parallelization when found.
 
-**When Parallelization is APPROPRIATE** (must meet ALL criteria):
-- **Independent data collection**: Reading/analyzing multiple files, directories, or data sources
-- **Parallel validation**: Checking multiple components against the same criteria  
-- **Batch read-only analysis**: Security scans, code quality checks, documentation reviews
-- **Research aggregation**: Gathering information from multiple independent sources
-- **Scale benefit**: Processing multiple items (typically 3+ for benefit, 10+ for significant benefit)
+**First, CHECK FOR EXISTING PARALLELIZATION to remove**:
+- Look for Task tool usage in the command
+- Look for references to parallel processing, batching, or worker subagents
+- Check for associated task templates in `tasks/` directory
+- **If found and doesn't meet criteria below, REMOVE IT**:
+  * Remove Task tool from allowed-tools
+  * Delete parallel processing instructions from command body
+  * Delete associated task templates from `tasks/` directory
+  * Replace with simpler sequential approach
 
-**When Parallelization is INAPPROPRIATE**:
-- **Implementation/execution workflows**: Building, deploying, installing, or modifying systems
-- **Sequential operations**: Tasks with dependencies where one step must complete before the next
-- **Tasks requiring subagents**: Parallel workers cannot use the Task tool or invoke other subagents
-- **Context-dependent operations**: Tasks that need conversation history or user interaction
-- **File modification workflows**: Risk of conflicts when multiple workers modify the same resources
-- **Single-target operations**: Commands that work on one specific thing at a time
-- **Commands using WebFetch/WebSearch**: These are already async operations
+**When Parallelization MIGHT be Appropriate** (must meet ALL criteria):
+- **Large-scale analysis**: Processing 10+ independent items (files, directories, components)
+- **True independence**: Each item can be analyzed without any knowledge of others
+- **Read-only operations**: No modifications, no side effects, no state changes
+- **Significant time savings**: Parallel execution would save >30 seconds vs sequential
+- **Clear aggregation pattern**: Results can be meaningfully combined
 
-**If parallelization is warranted, create companion task templates:**
+**Examples of VALID parallelization use cases**:
+- Security scanning 50+ source files for vulnerabilities
+- Validating 20+ API endpoints against specifications
+- Analyzing code quality across 30+ modules
+- Gathering metrics from 15+ independent services
+
+**When Parallelization is NEVER Appropriate**:
+- **Single target operations**: Working on one file, component, or feature
+- **Small batches**: Processing <10 items (overhead outweighs benefit)
+- **Implementation/creation tasks**: Building, generating, or modifying anything
+- **Sequential workflows**: Tasks with dependencies or ordering requirements
+- **Context-dependent operations**: Tasks needing conversation history
+- **Planning/design tasks**: Creating implementation plans, architecture docs
+- **Simple iterations**: Operations that complete quickly even when sequential
+
+**BEFORE creating any task template, ask yourself**:
+1. Will this realistically process 10+ independent items?
+2. Is parallel execution actually faster than sequential?
+3. Does the complexity justify the maintenance burden?
+4. Would a simple loop in the command work just as well?
+
+**If (and ONLY if) parallelization provides clear, measurable benefit:**
     * **A. Create Task Template(s):** Generate specialized task template(s) to handle parallel subtasks:
         * Determine the appropriate template name: `[command-name]-analyzer.md` (use descriptive suffixes like -analyzer, -validator, etc.)
         * Create the template file in the SAME SCOPE as the command:
@@ -349,10 +371,14 @@ When given the name of a slash command, you will perform the following audit and
 **Timestamp**: YYYY-MM-DD HH:MM:SS
 
 ### Changes Applied (if any):
-- [List specific changes]
+- [List specific changes, including:]
+  - Removed unnecessary parallelization (if applicable)
+  - Deleted unused task templates (if applicable)
+  - Simplified to sequential processing (if applicable)
 
-### Task Templates Created (if any):
-- [List with purposes and file paths]
+### Task Templates Created/Removed (if any):
+- Created: [List with purposes and file paths]
+- Removed: [List deleted templates]
 
 ### Compliance Status:
 - ✅ Best practices compliance
