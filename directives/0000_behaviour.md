@@ -1,6 +1,6 @@
 # IMPORTANT Behaviours Rules
 
-## Core principles to ALWAYS respect
+## Core principles
 
 - **Respect the KISS principles**: Keep it Simple. Avoid over-engineering solutions. Simple doesn't mean incomplete - deliver full functionality without unnecessary complexity.
 - **DO NOT overbuild speculatively**. We only want to build what we need, not what we might need later.
