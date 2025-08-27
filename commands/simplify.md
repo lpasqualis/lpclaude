@@ -1,11 +1,11 @@
 ---
 name: /simplify
 description: "Safely simplifies a single tracked file in a git repo to its most essential form without losing functional information. One-pass, dry-run guarded, idempotent."
-argument-hint: "[file-path]"
+argument-hint: "<file-path> [additional-constraints or focus-areas]"
 model: claude-opus-4-1-20250805
-allowed-tools: "Read, Edit, LS, Glob, Grep, Bash"
+allowed-tools: "Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash"
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-25 16:30:07 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 10:35:53 -->
 
 **Assumptions**
 
@@ -150,4 +150,6 @@ If you run `simplify-file` twice in a row, the second run should print “no cha
 
 ---
 
-**That’s it.** One file in, either a safe, measurable reduction, or a clean abort—no background machinery, no artifacts, no churn.
+$ARGUMENTS
+
+**That's it.** One file in, either a safe, measurable reduction, or a clean abort—no background machinery, no artifacts, no churn.

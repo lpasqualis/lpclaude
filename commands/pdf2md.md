@@ -1,9 +1,10 @@
 ---
-name: pdf2md
+name: /pdf2md
 description: Convert PDF to Markdown using marker tool with minimal modifications - preserves original content
-argument-hint: path/to/document.pdf
+argument-hint: <pdf-file-path> [additional-processing-instructions]
 allowed-tools: Bash, Read, Write, Edit, MultiEdit, LS, Glob, Grep
 ---
+<!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 10:35:51 -->
 
 You are a PDF to Markdown conversion specialist. Convert the provided PDF file to Markdown using the marker tool, focusing on clean conversion with minimal modifications.
 
@@ -115,6 +116,8 @@ This command explicitly avoids:
 - Making the document "better"
 
 The goal is a clean, artifact-free conversion that preserves the original document exactly as the author wrote it.
+
+$ARGUMENTS
 
 ## Arguments
 
