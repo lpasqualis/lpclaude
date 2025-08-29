@@ -57,9 +57,9 @@ When processing projects with 3+ changed files, leverage parallel analysis:
 
 ### Phase 1: Concurrent Initial Analysis
 Execute these tasks in parallel using Task tool with task templates:
-1. **File Classification**: Read `tasks/commit-and-push-analyzer.md` and invoke with Task
-2. **Security Analysis**: Read `tasks/commit-and-push-security.md` and invoke with Task
-3. **Repository Validation**: Read `tasks/commit-and-push-validator.md` and invoke with Task
+1. **File Classification**: Read `workers/git-commit-and-push-workers/analyzer.md` and invoke with Task
+2. **Security Analysis**: Read `workers/git-commit-and-push-workers/security.md` and invoke with Task
+3. **Repository Validation**: Read `workers/git-commit-and-push-workers/validator.md` and invoke with Task
 
 ### Phase 2: Parallel Processing
 - Process file groups in batches (max 10 per batch)

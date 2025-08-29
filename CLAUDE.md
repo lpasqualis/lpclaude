@@ -73,9 +73,12 @@ Main Claude → Can use Task → Invoke any subagent
 - **Subagents only trigger on user input**, never on Claude's output
 - **No "proactive" field in YAML** - Use "MUST BE USED PROACTIVELY" in description
 
-### Task Template Pattern
-- Create templates in `tasks/` directory (pure prompts, no YAML)
-- Load: `Read('tasks/template.md')`
+### Worker Template Pattern
+- Create templates in `workers/` directory (pure prompts, no YAML)
+- Worker templates organized in subdirectories:
+  - Simple commands: `workers/{command-name}-workers/`
+  - Namespaced commands: `workers/{namespace}-{name}-workers/`
+- Load: `Read('workers/{namespace}-{name}-workers/template.md')`
 - Execute: `Task(subagent_type: 'general-purpose', prompt: template + context)`
 
 ### Slash Command Clarity
@@ -98,7 +101,8 @@ Main Claude → Can use Task → Invoke any subagent
 - **Agents**: `agents/name.md` with YAML (name, description, tools)
   - **IMPORTANT**: Agent changes require Claude Code restart - agents are loaded at launch, not dynamically reloaded
 - **Commands**: `commands/namespace/name.md` with YAML (name, description, allowed-tools)
-- **Task Templates**: `tasks/name.md` (pure prompt, no YAML)
+- **Worker Templates**: `workers/name.md` (pure prompt, no YAML)
+  - **Worker Subdirectories**: `workers/{command-name}-workers/worker-type.md` or `workers/{namespace}-{name}-workers/worker-type.md` for parallel execution
 - **Output Styles**: `output-styles/name.md` with YAML
 
 ### Agent Development Workflow
@@ -114,7 +118,10 @@ Main Claude → Can use Task → Invoke any subagent
 ### Naming Conventions
 - Agents/Commands: `lowercase-hyphenated`
 - Namespaces: `/domain:action-target`
-- Task templates: `{command}-{purpose}.md`
+- Worker templates: `{command}-{purpose}.md`
+- Worker subdirectories:
+  - Simple commands: `workers/{command-name}-workers/`
+  - Namespaced commands: `workers/{namespace}-{name}-workers/`
 
 ## Documentation
 
@@ -129,7 +136,6 @@ Main Claude → Can use Task → Invoke any subagent
 - **Development Guide** (`docs/DEVELOPMENT.md`): When creating new components
 - **Architecture** (`docs/ARCHITECTURE.md`): When designing complex workflows
 - **Advanced Patterns** (`docs/ADVANCED_PATTERNS.md`): When implementing parallel processing
-- **Migration Guide** (`docs/MIGRATION_GUIDE.md`): When upgrading from legacy patterns
 
 ### Research & Best Practices (`resources/`)
 - `slash_commands_best_practices_research.md`: When designing commands

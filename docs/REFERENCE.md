@@ -57,9 +57,9 @@ Quick lookup for all framework components.
 |---------|---------|----------|
 | `/memory:learn` | Extract session learnings | Technical insights |
 
-## Task Templates
+## Worker Templates
 
-Templates for parallel processing (in `tasks/` directory):
+Templates for parallel processing (in `workers/` directory):
 
 | Template | Used By | Purpose |
 |----------|---------|---------|
@@ -85,7 +85,7 @@ Templates for parallel processing (in `tasks/` directory):
 {repo}/
 ├── agents/          # Agent definitions
 ├── commands/        # Command definitions
-├── tasks/           # Task templates
+├── workers/         # Worker templates
 ├── directives/      # Behavior modifiers
 ├── resources/       # Documentation
 ├── .claude/         # Local maintenance

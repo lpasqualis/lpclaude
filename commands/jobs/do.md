@@ -74,7 +74,7 @@ If no `.md` files are found:
 **For Parallel Jobs (`.parallel.md` files)**:
 - Only process if no `.md` files precede them alphabetically
 - Batch up to 8 consecutive `.parallel.md` files
-- Load task template from `tasks/jobs-do-worker.md` if it exists
+- Load task template from `workers/jobs-do-workers/parallel-job-worker.md` if it exists
 - Use Task tool with subagent_type: 'general-purpose' and the template
 - Each worker:
   - Attempts to lock by renaming to `.parallel.md.working`

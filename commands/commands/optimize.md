@@ -91,7 +91,7 @@ For oversized commands, RECOMMEND (don't create) splitting into focused commands
 Check for existing parallelization to remove:
 - Task tool usage in the command
 - References to parallel processing or worker subagents
-- Associated task templates in `tasks/` directory
+- Associated worker templates in `workers/` directory
 
 Parallelization is ONLY appropriate when ALL criteria are met:
 - Processing 10+ independent items

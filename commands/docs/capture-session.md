@@ -1,5 +1,5 @@
 ---
-name: /capture-session
+name: /docs:capture-session
 description: Create comprehensive session documentation for seamless handoff to future agents
 argument-hint: [brief session summary or focus area]
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task, WebFetch, WebSearch, TodoWrite, NotebookEdit
@@ -29,7 +29,7 @@ When analyzing sessions with multiple complex aspects (more than 3 areas):
    - Individual components, modules, or feature areas
    - Multiple files or directories requiring detailed examination
 
-2. **Execute Parallel Analysis**: Launch multiple Task calls simultaneously with Read template: Read('tasks/capture-session-analyzer.md') then use Task with subagent_type: 'general-purpose'
+2. **Execute Parallel Analysis**: Launch multiple Task calls simultaneously with Read template: Read('workers/docs-capture-session-workers/analyzer.md') then use Task with subagent_type: 'general-purpose'
    ```
    # IMPORTANT: Execute these in a single message with multiple tool uses for true parallelism
    Task 1: "Analyze project structure and architecture patterns in /src and /lib directories"

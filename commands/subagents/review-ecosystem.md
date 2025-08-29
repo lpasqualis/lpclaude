@@ -27,7 +27,7 @@ Read and analyze each agent individually, then perform cross-agent comparison.
 ### For 4+ Agents: Parallel Execution
 1. **Identify all agents** from scope determination
 2. **Batch parallel analysis**:
-   - Use Task tool with Read template: Read('tasks/review-subagent-ecosystem-analyzer.md') then use Task with subagent_type: 'general-purpose'
+   - Use Task tool with Read template: Read('workers/subagents-review-ecosystem-workers/analyzer.md') then use Task with subagent_type: 'general-purpose'
    - Process up to 10 agents concurrently (system limit)
    - For >10 agents, process in batches of 10
 3. **Aggregate results** for cross-agent system analysis

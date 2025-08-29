@@ -9,7 +9,7 @@ Replace sequential processing with parallel execution using task templates:
 
 ```markdown
 # In your command
-template = Read('tasks/analyzer.md')
+template = Read('workers/analyzer.md')
 
 # Execute up to 10 parallel tasks
 results = []
@@ -22,7 +22,7 @@ for item in items[:10]:
 ```
 
 ### Creating Task Templates
-1. Create file in `tasks/{command}-{purpose}.md`
+1. Create file in `workers/{command}-{purpose}.md`
 2. Write pure prompt (no YAML frontmatter)
 3. Design for independence (no shared state)
 4. Return structured data (JSON preferred)

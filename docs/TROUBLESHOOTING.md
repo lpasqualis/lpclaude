@@ -51,7 +51,7 @@ Quick solutions to common Claude Framework issues.
 **Symptoms:** Task templates don't run in parallel or fail silently.
 
 **Solutions:**
-1. **Check template location**: Must be in `tasks/` directory
+1. **Check template location**: Must be in `workers/` directory
 2. **Remove YAML**: Templates must be pure prompts
 3. **Limit concurrency**: Max 10 parallel tasks
 4. **Return structured data**: Use JSON for aggregation

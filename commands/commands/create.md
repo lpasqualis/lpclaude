@@ -64,11 +64,22 @@ $ARGUMENTS
 
 For complex commands requiring validation:
 ```markdown
-template = Read('tasks/create-command-validator.md')
+template = Read('workers/commands-create-workers/command-validator.md')
 Task(subagent_type: 'general-purpose', prompt: template + draft_command)
 ```
 
 Apply validation feedback to optimize the command before saving.
+
+## Worker Task Organization
+
+If creating parallel execution workers for a command:
+- Store worker templates in subdirectories based on command format:
+  - Simple commands: `workers/{command-name}-workers/`
+  - Namespaced commands: `workers/{namespace}-{name}-workers/`
+- Examples:
+  - `/optimize` workers go in `workers/optimize-workers/`
+  - `/commands:optimize` workers go in `workers/commands-optimize-workers/`
+- This keeps worker tasks organized by their parent command
 
 ## Best Practices
 

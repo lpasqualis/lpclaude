@@ -40,7 +40,7 @@ When request contains "modern", "best practices", "latest", or explicit research
 ### Parallel Scanning Strategy
 Load context-aware scanner template:
 ```
-template = Read('tasks/jobs-auto-improve-scanner.md')
+template = Read('workers/jobs-auto-improve-workers/scanner.md')
 ```
 
 Execute parallel scanning based on scope:

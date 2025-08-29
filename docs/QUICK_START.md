@@ -42,7 +42,7 @@ Then optimize: `"Please optimize the command I just created"`
 - `commands/` - Your slash commands (global)
 - `directives/` - Behavior modifiers
 - `CLAUDE.md` - Project instructions (this repo)
-- `tasks/` - Parallel processing templates
+- `workers/` - Parallel processing templates
 
 ## Next Steps
 - Read [ADVANCED_PATTERNS.md](ADVANCED_PATTERNS.md) for parallel processing and complex workflows
