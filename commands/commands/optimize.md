@@ -2,7 +2,8 @@
 name: /commands:optimize
 description: Optimize slash command definitions for best practices and performance
 argument-hint: <command-name> [--aggressive]
-allowed-tools: Read, Edit, Write, LS, Glob, Grep, Bash, WebFetch, Task
+allowed-tools: Read, Edit, MultiEdit, Write, LS, Glob, Grep, Bash, WebFetch, Task
+model: claude-opus-4-1
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 -->
 
@@ -44,8 +45,8 @@ If found:
 
 #### Model Selection (if specified)
 - Fetch current models from https://docs.anthropic.com/en/docs/about-claude/models/overview
-- Commands need full model identifiers (e.g., `claude-3-haiku-20240307`)
-- Usually best to omit field and inherit session model
+- Commands need full model alias identifiers (e.g., `claude-opus-4-1)`
+- If omitted the model will be inherited from the session model which, in many cases, might be the right choice.
 
 ### 3. Prompt Body Optimization
 
