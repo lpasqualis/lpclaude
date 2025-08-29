@@ -40,7 +40,7 @@ Your Development Environment
 ```
 ├── agents/          # Global agents (symlinked)
 ├── commands/        # Global commands (symlinked)
-├── tasks/           # Parallel processing templates
+├── workers/         # Parallel processing templates
 ├── directives/      # Behavior modifiers
 ├── resources/       # Framework documentation
 ├── .claude/         # Local maintenance commands

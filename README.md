@@ -205,7 +205,6 @@ Your ~/.claude/                    This Repository
 - **[Architecture Guide](docs/ARCHITECTURE.md)** - Technical design and structure
 - **[Development Guide](docs/DEVELOPMENT.md)** - Create your own extensions
 - **[Advanced Patterns](docs/ADVANCED_PATTERNS.md)** - Parallel processing and complex workflows
-- **[Migration Guide](docs/MIGRATION_GUIDE.md)** - Upgrading from legacy patterns
 - **[Best Practices](resources/)** - Research and patterns
 
 

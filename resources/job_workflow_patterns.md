@@ -106,7 +106,7 @@ if (projectSize < 50 files) {
 
 **Specialized Scanner Task Template:**
 ```markdown
-# File: tasks/jobs-auto-improve-scanner.md
+# File: workers/jobs-auto-improve-scanner.md
 # Purpose: Specialized scanner for analyzing specific improvement categories
 
 You are analyzing [specific category] for improvement opportunities.

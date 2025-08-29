@@ -59,7 +59,7 @@ When creating comprehensive documentation, use parallel processing for efficienc
 
 1. **Identify Analysis Areas**: Break documentation into independent aspects
 2. **Use Parallel Execution**: For complex projects with multiple components:
-   - Use Task tool with Read template: Read('tasks/capture-session-analyzer.md') then use Task with subagent_type: 'general-purpose'
+   - Use Task tool with Read template: Read('workers/docs-capture-strategy-workers/analyzer.md') then use Task with subagent_type: 'general-purpose'
    - Analyze up to 10 aspects in parallel (problem analysis, technical architecture, implementation phases, etc.)
    - Process specific focus areas: codebase analysis, strategic decisions, technical requirements
 3. **Aggregate Results**: Combine parallel analyses into unified strategy document

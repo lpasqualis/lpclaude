@@ -30,12 +30,18 @@ Only add parallelization if the command performs:
 
 If parallelization is appropriate:
 
-1. **Create Task Template**: Generate `tasks/[command-name]-analyzer.md` for worker tasks
-2. **Update Command**: Add parallel execution instructions using Task tool
-3. **Add Batching Logic**: Handle system limit of 10 parallel tasks
-4. **Result Aggregation**: Pattern for combining worker outputs
+1. **Create Worker Subdirectory**: Create directory based on command format:
+   - Simple commands: `workers/[command-name]-workers/`
+   - Namespaced commands: `workers/[namespace]-[name]-workers/`
+2. **Generate Worker Templates**: Create specific worker tasks in the subdirectory
+3. **Update Command**: Add parallel execution instructions using Task tool
+4. **Add Batching Logic**: Handle system limit of 10 parallel tasks
+5. **Result Aggregation**: Pattern for combining worker outputs
 
 ### Task Template Pattern:
+Store in appropriate subdirectory:
+- Simple: `workers/[command-name]-workers/[worker-type].md`
+- Namespaced: `workers/[namespace]-[name]-workers/[worker-type].md`
 ```markdown
 You are a specialized worker for parallel [analysis-type]. 
 
@@ -52,7 +58,8 @@ This task operates without conversation context.
 ### Command Integration Pattern:
 ```markdown
 For multiple [targets]:
-- Read template: Read('tasks/[command-name]-analyzer.md')
+- Read template: Read('workers/[namespace]-[name]-workers/analyzer.md')
+  (or 'workers/[command-name]-workers/analyzer.md' for simple commands)
 - Use Task tool with subagent_type: 'general-purpose'
 - Process up to 10 [targets] in parallel
 - Aggregate results and present unified findings

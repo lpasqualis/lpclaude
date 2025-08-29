@@ -18,7 +18,7 @@ Determine the command file path:
 Use the existing validation task template:
 
 ```markdown
-template = Read('tasks/create-command-validator.md')
+template = Read('workers/commands-validate-workers/command-validator.md')
 command_content = Read('[command-file-path]')
 Task(subagent_type: 'general-purpose', prompt: template + '\n\nCOMMAND TO VALIDATE:\n' + command_content)
 ```
