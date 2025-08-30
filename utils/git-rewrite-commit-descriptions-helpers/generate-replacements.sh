@@ -3,7 +3,9 @@
 # Usage: ./generate-replacements.sh <output_file>
 # Reads bad commits from stdin (format: hash:old_msg:reason)
 
-OUTPUT_FILE=${1:-/tmp/git_msg_replacements.txt}
+# Ensure .tmp directory exists
+mkdir -p ".tmp"
+OUTPUT_FILE=${1:-.tmp/git_msg_replacements.txt}
 SCRIPT_DIR="$(dirname "$0")"
 
 echo "# Generated commit message replacements" > "$OUTPUT_FILE"

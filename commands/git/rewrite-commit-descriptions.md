@@ -60,10 +60,12 @@ For each bad commit found:
 Use `.claude/utils/git-rewrite-commit-descriptions-helpers/generate-replacements.sh` to create a mapping file for git-filter-repo.
 
 This script:
+- Creates `.tmp/` directory if it doesn't exist
 - Takes bad commits from detection phase
 - Generates improved messages for each
 - Creates properly escaped regex replacements
-- Outputs to `/tmp/git_msg_replacements.txt`
+- Outputs to `.tmp/git_msg_replacements.txt` (project-local temp directory)
+- Ensures cleanup of temp files when done
 
 ### Step 6: Apply Rewrites
 Use `.claude/utils/git-rewrite-commit-descriptions-helpers/apply-rewrites.sh` to apply the changes.
@@ -101,6 +103,8 @@ All helper scripts are in `.claude/utils/git-rewrite-commit-descriptions-helpers
 - Detection of pushed commits with warnings
 - Automatic stashing of uncommitted changes
 - Clear restoration instructions
+- Project-local temporary files (`.tmp/` directory)
+- Automatic cleanup of temporary files
 
 **Tool Preference:**
 1. git-filter-repo (fast, safe, recommended)

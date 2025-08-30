@@ -27,7 +27,8 @@ You are invoked automatically when:
 1. **Analyze the request** to understand what needs to be done later
 2. **Determine job type** (sequential `.md` or parallel `.parallel.md`)
 3. **Create clear instructions** that can be executed without additional context
-4. **Use the addjob command** to create the job file in the project's jobs/ directory
+4. **Validate content completeness** - Review job content for empty placeholders or incomplete details
+5. **Use the addjob command** to create the job file in the project's jobs/ directory
 
 ## How to Create Jobs
 
@@ -269,6 +270,13 @@ The addjob subagent will handle creating the new jobs, which will run after this
 11. **Jobs can create jobs** - Use addjob subagent within jobs for complex workflows
 
 **Quality Check**: Before creating any job, ask yourself: "Could someone else execute this job successfully 6 months from now without asking any questions?" If not, add more context and details.
+
+**CRITICAL: No Empty Placeholders** - NEVER create job content with:
+- Empty bullet points (just "- " with nothing after)
+- Incomplete sentences ending with commas followed by spaces
+- Template placeholders like ", , ," or "- \n- \n-"
+- Missing details in lists or requirements sections
+- Every bullet point, requirement, and technical detail MUST be fully specified with actual content
 
 ## Output Format
 

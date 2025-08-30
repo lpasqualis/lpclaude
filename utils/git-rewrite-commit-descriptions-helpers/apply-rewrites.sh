@@ -35,7 +35,9 @@ fi
 
 # Apply rewrites based on tool
 if [[ "$TOOL" == "git-filter-repo" ]]; then
-    REPLACEMENT_FILE="/tmp/git_msg_replacements.txt"
+    # Ensure .tmp directory exists
+    mkdir -p ".tmp"
+    REPLACEMENT_FILE=".tmp/git_msg_replacements.txt"
     
     if [[ "$DRY_RUN" == "true" ]]; then
         echo "=== DRY RUN MODE ==="
@@ -51,7 +53,9 @@ else
     echo "⚠️  Using git filter-branch (slower, consider installing git-filter-repo)"
     
     # Read replacement file and build sed script
-    SED_SCRIPT="/tmp/git_msg_sed.sh"
+    # Ensure .tmp directory exists
+    mkdir -p ".tmp"
+    SED_SCRIPT=".tmp/git_msg_sed.sh"
     cat > "$SED_SCRIPT" << 'EOF'
 #!/bin/bash
 msg=$(cat)
@@ -67,7 +71,7 @@ EOF
             pattern="${pattern%$}"
             echo "if [[ \"\$msg\" == \"$pattern\" ]]; then echo \"$replacement\"; exit; fi" >> "$SED_SCRIPT"
         fi
-    done < "/tmp/git_msg_replacements.txt"
+    done < ".tmp/git_msg_replacements.txt"
     
     echo "echo \"\$msg\"" >> "$SED_SCRIPT"
     chmod +x "$SED_SCRIPT"

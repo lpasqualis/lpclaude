@@ -60,21 +60,21 @@ To test these scripts on a sample repository:
 
 ```bash
 # Create test repo
-mkdir /tmp/test-repo && cd /tmp/test-repo
+mkdir .tmp/test-repo && cd .tmp/test-repo
 git init
 echo "test" > file1.txt && git add . && git commit -m "fix"
 echo "test2" > file2.txt && git add . && git commit -m "update"
 echo "test3" > file3.txt && git add . && git commit -m "stuff"
 
 # Test detection
-./detect-bad-commits.sh 10 5
+../detect-bad-commits.sh 10 5
 
 # Test analysis
-./analyze-commit.sh HEAD
+../analyze-commit.sh HEAD
 
 # Test full pipeline
-./detect-bad-commits.sh 10 5 | ./generate-replacements.sh /tmp/test-replacements.txt
-./apply-rewrites.sh --dry-run
+../detect-bad-commits.sh 10 5 | ../generate-replacements.sh .tmp/test-replacements.txt
+../apply-rewrites.sh --dry-run
 ```
 
 ## Dependencies
