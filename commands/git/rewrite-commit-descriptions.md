@@ -9,10 +9,21 @@ Analyze and rewrite Git commit messages based on the scope: "$ARGUMENTS"
 
 ## Step 1: Parse Scope and Flags
 Interpret the natural language scope to determine which commits to analyze:
-- "last N" or "last N commits" → HEAD~N
-- "last N days" or "last week/month" → --since="N days ago"
-- "all bad commits" → analyze last 50 commits, filter for poor quality
+
+**Targeted Fix Patterns (only rewrites bad commits, leaves good ones untouched):**
+- "all bad commits" → scan last 50 commits, fix only the bad ones
+- "find N bad" or "fix N bad commits" → scan history until N bad commits found, fix only those
+- "bad in last N" or "scan last N" → examine last N commits, fix only the bad ones
+- "bad commits from last week" → scan time range, fix only bad ones found
+
+**Range Patterns (analyzes all in range):**
+- "last N" or "last N commits" → analyze last N commits
+- "last N days" or "last week/month" → commits from time period
 - Default (no arguments) → analyze last commit only
+
+**Important:** Even when scanning a range, only commits with poor messages are rewritten. Good commit messages are always preserved.
+
+**Flags:**
 - If the user specified --dry-run, describe what you'd do without making the changes
 - If the user specified --no-backup-branches, skip backup branch creation
 
@@ -30,6 +41,16 @@ For each commit, check if the message needs improvement:
 - No verb or unclear action
 - Doesn't describe the actual change
 - Contains profanity or placeholder text
+
+**Selective Rewriting:** The command evaluates EACH commit individually. For example:
+```
+HEAD   → "Add user authentication system"    ✓ Keep (good)
+HEAD~1 → "fix"                              ✗ Rewrite (too generic)
+HEAD~2 → "Refactor database queries"        ✓ Keep (good)
+HEAD~3 → "asdfasdf"                        ✗ Rewrite (meaningless)
+HEAD~4 → "Update dependencies to latest"    ✓ Keep (good)
+```
+In this case, only HEAD~1 and HEAD~3 would be rewritten.
 
 ## Step 3: Generate Improved Messages
 For commits identified as needing improvement:
@@ -52,37 +73,78 @@ git diff <commit_hash>^ <commit_hash>
 - Body (if needed): why the change was made
 
 ## Step 4: Execute Rewrite (if no --dry-run)
-Create and execute an interactive rebase script:
 
-1. Create backup branch (unless --no-backup-branches specified):
-   ```bash
-   # Create backup by default for safety
-   if [[ "$ARGUMENTS" != *"--no-backup-branches"* ]]; then
-       backup_branch="backup-$(date +%Y%m%d-%H%M%S)"
-       git branch $backup_branch
-       echo "Created backup branch: $backup_branch (use --no-backup-branches to skip)"
-   fi
-   ```
+### IMPORTANT SAFETY CHECKS FIRST:
+```bash
+# Check if we have unpushed commits
+if git status | grep -q "Your branch is ahead"; then
+    echo "✅ Safe: Working with unpushed commits only"
+else
+    echo "⚠️  WARNING: These commits may already be pushed!"
+    echo "Rewriting pushed history requires coordination with team"
+    echo "Continue? (y/n)"
+    # Get user confirmation before proceeding
+fi
 
-2. Identify the base commit for rebase
-3. Generate the rebase todo script with "reword" for bad commits
-4. For each reword operation, apply the improved message
-5. Complete the rebase
+# Check for uncommitted changes
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "📝 Stashing uncommitted changes..."
+    git stash push -m "Temporary stash for commit rewrite"
+fi
+```
+
+### Choose the safest method based on scope:
+
+**For recent unpushed commits (SAFEST):**
+Use interactive rebase - no history corruption risk:
+```bash
+# Create backup branch (unless --no-backup-branches specified)
+if [[ "$ARGUMENTS" != *"--no-backup-branches"* ]]; then
+    backup_branch="backup-$(date +%Y%m%d-%H%M%S)"
+    git branch $backup_branch
+    echo "Created backup branch: $backup_branch"
+fi
+
+# Use git rebase -i for recent commits
+git rebase -i <base_commit>^
+# Then manually mark bad commits as "reword"
+```
+
+**For already-pushed commits (REQUIRES CAUTION):**
+1. First try creating a new branch with amended commits
+2. Only use filter-branch/filter-repo as last resort
+3. Always coordinate with team before rewriting shared history
 
 ```bash
-# Start interactive rebase
-git rebase -i <base_commit>^
-
-# The script will automatically:
-# - Mark bad commits as "reword"
-# - Apply improved messages when Git prompts
+# Safer alternative: Create new commits with better messages
+# instead of rewriting history
+git revert --no-commit <bad_commits>
+git commit -m "Revert commits with poor messages"
+# Then re-apply changes with good messages
 ```
 
 ## Step 5: Report Results
 Show a summary of changes:
 - Number of commits analyzed
-- Number of commits improved
+- Number of commits with good messages (preserved)
+- Number of commits with bad messages (rewritten)
 - Before/after comparison of changed messages
+
+Example output:
+```
+Analyzed 30 commits:
+✓ 23 had good messages (preserved)
+✗ 7 had poor messages (rewritten)
+
+Changes made:
+  HEAD~3:  "fix" → "fix: Resolve authentication timeout issue"
+  HEAD~7:  "stuff" → "feat: Add user profile image upload"
+  HEAD~12: "asdf" → "refactor: Extract validation logic to utility module"
+  HEAD~15: "updates" → "chore: Update dependencies for security patches"
+  HEAD~18: "wip" → "feat: Implement real-time notification system"
+  HEAD~22: "." → "docs: Add API documentation for REST endpoints"
+  HEAD~26: "test" → "test: Add integration tests for payment flow"
+```
 
 If this is a personal project branch, offer to force-push:
 ```bash
@@ -98,12 +160,27 @@ git push --force-lease origin <current_branch>
 - Use conventional commit format when appropriate
 
 ## Safety Features:
-- Creates backup branch by default (can disable with --no-backup-branches)
-- Warns if commits are already pushed to remote
-- Dry-run mode available to preview changes
-- Recovery instructions provided if rebase fails:
+- **Pre-flight checks**: Detects pushed commits and uncommitted changes
+- **Backup by default**: Creates backup branch (disable with --no-backup-branches)
+- **Dry-run mode**: Preview changes without modifying history
+- **Stash protection**: Automatically stashes uncommitted work
+- **Method selection**: Uses safest approach based on commit status
+- **Recovery options**: Multiple ways to undo changes:
   ```bash
-  # To recover from backup if something goes wrong:
-  git rebase --abort  # If still in rebase
-  git reset --hard backup-<timestamp>  # Return to backup state
+  # If rebase is still in progress:
+  git rebase --abort
+  
+  # If you have a backup branch:
+  git reset --hard backup-<timestamp>
+  
+  # If you need to restore original state:
+  git reflog  # Find the commit before rewrite
+  git reset --hard <original-commit>
   ```
+
+## Best Practices:
+1. **Always use --dry-run first** to preview changes
+2. **Only rewrite unpushed commits** when possible
+3. **Coordinate with team** before rewriting shared history
+4. **Keep backup branches** unless you're absolutely certain
+5. **Consider alternatives** like new commits instead of rewriting
