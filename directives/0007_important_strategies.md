@@ -27,10 +27,12 @@ When building AI-powered systems, leverage the complementary strengths of non-de
 
 ### Implementation Pattern
 
-```
-1. Code defines structure (schema, required fields)
-2. AI analyzes content (reads, understands, categorizes)
+1. Code defines structure (schema, required fields, formats, deterministic algorithms, execution) and execute algorithms
+2. AI agents analyzes content (reads, understands, categorizes, summarize, interpret) and follow natural language directions
 3. Code enforces boundaries (validation, required elements)
-4. AI fills in intelligence (decisions within constraints)
-5. Code validates output (completeness, correctness)
-```
+4. AI agents fill in intelligence (decisions within constraints, creativity)
+5. Code validates output (completeness, correctness, exact accuracy)
+6. Avoid trying to make code too smart and "creative"
+7. Avoid trying to make an AI agent be too rigid and algorithmic
+8. An AI agent can call code when it needs deterministic results
+9. Code can prepare for an AI agent, and formalize data from an AI agent
