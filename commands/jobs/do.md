@@ -87,10 +87,28 @@ If no `.md` files are found:
   - Continues with remaining parallel jobs
 
 ### 3. Execute Job Instructions
-Read the contents of the `.working` file.
+Read the contents of the `.working` file and parse it for frontmatter and content.
 
-**Check for Slash Command References**:
-If the job file mentions executing a slash command (patterns like "run /memory:learn", "execute /docs:readme-audit", "use the slash command /X", "invoke /X", or any reference to executing slash commands):
+**Parse Job File Structure**:
+1. **Check for YAML frontmatter**: If the file starts with `---`, parse the YAML frontmatter section
+2. **Extract frontmatter metadata** (if present):
+   - title: Job description for display
+   - created: Creation date
+   - origin: What led to creating this job
+   - priority: Execution priority level
+   - complexity: Expected difficulty
+   - notes: Additional context or constraints
+3. **Extract executable content**: Everything after the closing `---` (or entire file if no frontmatter)
+4. **Display job information**: Show frontmatter details for better tracking:
+   ```
+   📋 Executing Job: [title]
+   📅 Created: [created] | 🎯 Priority: [priority] | ⚙️ Complexity: [complexity]
+   📝 Origin: [origin]
+   📄 Notes: [notes list]
+   ```
+
+**Check for Slash Command References** (in the executable content):
+If the job content mentions executing a slash command (patterns like "run /memory:learn", "execute /docs:readme-audit", "use the slash command /X", "invoke /X", or any reference to executing slash commands):
 1. Extract the slash command name (e.g., `/memory:learn`)
 2. Convert to file path format:
    - `/command` → `command.md`
@@ -102,13 +120,13 @@ If the job file mentions executing a slash command (patterns like "run /memory:l
 4. If found: Immediately read that command definition file and execute all its instructions
 5. If not found: Report an error that the command doesn't exist
 
-Follow the instructions EXACTLY as written in the working file:
-- Treat the entire file content as a user message
+**Execute the job content** (not including frontmatter):
+- Treat only the executable content (after frontmatter) as the user message
 - Execute any tasks, write any code, perform any operations specified
 - Use all available tools as needed to complete the job
-- Do not add any preamble or explanation - just do what the file says
-- Update TodoWrite to mark current job as in_progress
-- Do NOT stop to ask unimportant things to the user; make decisions and proceed unless the file itself specifies to ask the user
+- Do not add any preamble or explanation - just do what the content says
+- Update TodoWrite to mark current job as in_progress (include title from frontmatter if available)
+- Do NOT stop to ask unimportant things to the user; make decisions and proceed unless the content itself specifies to ask the user
 - Note any new or updated stop condition that might be specified in the working file
 
 ### 4. Completion Verification
@@ -151,6 +169,7 @@ Before marking a job as done, optionally verify it actually accomplished its goa
 **If execution succeeded AND verification passed:**
 - Rename from `{name}.md.working` to `{name}.md.done` using Bash `mv`
 - Create comprehensive `{name}.md.done_log` with:
+  - **Job metadata** (from frontmatter): title, created date, origin, priority, complexity
   - Execution timestamps (start/end duration)
   - Processing mode (sequential/parallel)
   - Verification status: "✓ Verified complete by completion-verifier"
@@ -158,8 +177,8 @@ Before marking a job as done, optionally verify it actually accomplished its goa
   - Performance metrics (execution time, resources used)
   - Key learnings and insights from job execution
   - Any warnings or recommendations for future jobs
-- Log "✓ Completed and verified job: {name} (duration: Xs)"
-- Update TodoWrite with completion status and metrics
+- Log "✓ Completed: [title from frontmatter] (duration: Xs, priority: [priority], complexity: [complexity])"
+- Update TodoWrite with completion status using job title and metadata
 
 **If execution succeeded but verification failed:**
 - Rename to `{name}.md.needs-verification`

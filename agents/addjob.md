@@ -62,47 +62,139 @@ echo "High priority task" | addjob --stdin --n 100 priority-task
 - Multiple similar tasks can run simultaneously
 - Tasks don't depend on each other's output
 
-## Job Content Structure
+## Job Content Structure - COMPREHENSIVE & SELF-SUFFICIENT
 
-When creating job content, follow this structure:
+**CRITICAL**: Every job must pass the "6 months later test" - someone should be able to execute it without needing conversation context or hunting for missing information.
 
+When creating job content, follow this process:
+
+1. **First, read the default frontmatter template from the addjob utility to understand the current format**
+2. **Fill in the frontmatter fields based on the job requirements**
+3. **Create the comprehensive job content**
+
+The frontmatter structure should be dynamically populated with:
+- **title**: Clear, specific description of what the job accomplishes
+- **created**: Today's date in YYYY-MM-DD format (use `$(date +%Y-%m-%d)` in bash)
+- **origin**: Brief description of what work/event led to creating this job
+- **priority**: One of low/medium/high/critical (defaults to medium if not specified)
+- **complexity**: One of low/medium/high based on effort/skill level required
+- **notes**: YAML list format with bullet points for context, constraints, or warnings
+
+Example structure:
 ```markdown
+---
+title: Fix Bash Compatibility Issues in Git Helper Scripts
+created: $(date +%Y-%m-%d)
+origin: bash syntax error during git-rewrite-commit-descriptions testing
+priority: medium
+complexity: medium
+notes:
+  - Affects macOS default bash 3.2
+  - Breaks detect-bad-commits.sh script
+  - Need to test on actual bash 3.2 system
+---
+
 Follow exactly and without stopping:
 
-## Task: [Clear task title]
+## Task: [Clear, specific task title]
 
-[Detailed step-by-step instructions that can be followed without additional context]
+## Background & Context
+[Complete background: What led to this need? What project/work revealed this requirement?]
+[Root cause: What specific problem occurred that made this work necessary?]
+[Current state: What exists now vs what's missing?]
+[Why this matters: Impact and benefits of completing this work]
 
-1. [First specific action]
-2. [Second specific action]
-3. [Continue with all necessary steps]
+## Problem Description  
+[Specific symptoms or issues encountered]
+[Examples of when/where the problem manifests]
+[Current workarounds being used (if any)]
+[How this problem was discovered]
+
+## Implementation Plan
+1. [First specific action with file paths, commands, or components involved]
+2. [Second specific action with technical details]
+3. [Continue with all necessary steps, including specific tools/methods]
+
+## Technical Requirements
+- File/directory paths: [List specific locations involved]
+- Dependencies: [Required tools, libraries, or other components]  
+- Commands to use: [Exact commands or utilities needed]
+- Reference implementations: [Examples or similar work to reference]
+
+## Success Criteria
+[Specific, measurable outcomes that define completion]
+[How to verify the work was done correctly]
 
 ## Expected Outcome
 [What should be accomplished when this job is complete]
 
-## Notes
-[Any important context or warnings]
+## Reference Information
+[Links to related files, directories, or documentation]
+[Commands or tools that will be needed]
+[Any research or investigation already completed]
+
+## Notes & Warnings
+[Important context, gotchas, or special considerations]
 ```
 
 ## Examples
 
-### Example 1: Sequential Documentation Update
+### Example 1: Comprehensive Sequential Job
 ```bash
-echo "Follow exactly and without stopping:
+echo "---
+title: Fix Bash Compatibility Issues in Git Helper Scripts
+created: $(date +%Y-%m-%d)
+origin: bash syntax error during git-rewrite-commit-descriptions testing
+priority: medium
+complexity: medium
+notes:
+  - Affects macOS default bash 3.2
+  - Breaks detect-bad-commits.sh script
+  - Must test on actual bash 3.2 system
+---
 
-## Task: Update Project Documentation
+Follow exactly and without stopping:
 
-1. Review all markdown files in docs/ directory
-2. Check for outdated API references
-3. Update code examples to match current implementation
-4. Ensure all links are working
-5. Create a summary of changes made
+## Task: Fix Bash Compatibility Issues in Git Helper Scripts
+
+## Background & Context
+During development of git rewrite-commit-descriptions command, we discovered that the detect-bad-commits.sh script uses bash 4+ syntax (\${var,,}) which fails on macOS default bash 3.2. This caused the script to error with 'bad substitution' messages during testing, making the entire git rewrite functionality non-functional on standard macOS systems.
+
+## Problem Description  
+Specific error: 'bad substitution' when running detect-bad-commits.sh on macOS
+Script fails at line 26: \${msg,,} syntax is not supported in bash < 4.0
+Current workaround: Users must install bash 4+ or use different case conversion
+Discovery: Found during testing of helper scripts on /Users/lpasqualis/.lpclaude/test-git-rewrite
+
+## Implementation Plan
+1. Audit all bash scripts in ~/.claude/utils/ for bash 4+ specific syntax
+2. Replace \${var,,} with 'echo \$var | tr [:upper:] [:lower:]' for compatibility
+3. Replace other bash 4+ features like associative arrays if found
+4. Create bash compatibility guide for future script development
+5. Test all updated scripts on bash 3.2 environment
+
+## Technical Requirements
+- File paths: ~/.claude/utils/git-rewrite-commit-descriptions-helpers/*.sh
+- Dependencies: tr command (available on all Unix systems)
+- Commands: bash --version to test compatibility
+- Testing: bash 3.2 environment (macOS default)
+
+## Success Criteria
+All helper scripts run without errors on bash 3.2
+No 'bad substitution' or other bash version errors
+All functionality preserved after compatibility fixes
 
 ## Expected Outcome
-All documentation should accurately reflect the current codebase state
+Git rewrite-commit-descriptions works on all standard Unix systems
 
-## Notes
-This requires analyzing the current code structure, so full context is needed" | addjob --stdin update-docs
+## Reference Information
+- Problem scripts: ~/.claude/utils/git-rewrite-commit-descriptions-helpers/
+- Error location: detect-bad-commits.sh line 26
+- Bash compatibility guide: https://wiki.bash-hackers.org/scripting/bashchanges
+
+## Notes & Warnings
+Avoid bash 4+ specific features: \${var,,}, associative arrays, **glob
+Test changes on actual bash 3.2 system before marking complete" | addjob --stdin fix-bash-compatibility
 ```
 
 ### Example 2: Parallel File Processing
@@ -162,16 +254,21 @@ Follow exactly and without stopping:
 The addjob subagent will handle creating the new jobs, which will run after this analysis completes.
 ```
 
-## Best Practices
+## Best Practices - MANDATORY REQUIREMENTS
 
-1. **Make instructions self-contained** - Don't assume context will be available
-2. **Be specific and detailed** - The executing agent needs clear guidance
-3. **Include success criteria** - Define what "done" looks like
-4. **Consider dependencies** - Use sequential jobs when order matters
-5. **Optimize for parallelism** - Use parallel jobs when possible for better performance
-6. **Use descriptive names** - Job names should clearly indicate their purpose
-7. **Include error handling** - Specify what to do if steps fail
-8. **Jobs can create jobs** - Use addjob subagent within jobs for complex workflows
+1. **Comprehensive Context** - Every job MUST include complete background explaining what work led to this need, what problem occurred, and why it matters
+2. **Self-Sufficient Instructions** - Jobs must be executable 6 months later without conversation memory or additional research
+3. **Specific Technical Details** - Include exact file paths, commands, dependencies, and reference implementations
+4. **Clear Problem Definition** - Describe specific symptoms, examples of failure, and current workarounds
+5. **Measurable Success Criteria** - Define exactly what "done" looks like and how to verify completion
+6. **Complete Reference Information** - List all related files, tools, commands, and existing research
+7. **Consider dependencies** - Use sequential jobs when order matters
+8. **Optimize for parallelism** - Use parallel jobs when possible for better performance
+9. **Use descriptive names** - Job names should clearly indicate their purpose
+10. **Include error handling** - Specify what to do if steps fail
+11. **Jobs can create jobs** - Use addjob subagent within jobs for complex workflows
+
+**Quality Check**: Before creating any job, ask yourself: "Could someone else execute this job successfully 6 months from now without asking any questions?" If not, add more context and details.
 
 ## Output Format
 
