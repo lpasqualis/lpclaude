@@ -1,69 +1,175 @@
 # AI + CLI Orchestration Pattern
+
 ## A Framework for Intelligent Tool Orchestration with Claude Code
 
-### Table of Contents
-1. [Introduction](#introduction)
-2. [Core Philosophy](#core-philosophy)
-3. [Architecture Overview](#architecture-overview)
-4. [Setting Up the CLI System](#setting-up-the-cli-system)
-5. [Communication Protocol](#communication-protocol)
-6. [Responsibility Separation](#responsibility-separation)
-7. [Claude Integration](#claude-integration)
-8. [Implementation Guide](#implementation-guide)
-9. [Best Practices](#best-practices)
-10. [Examples](#examples)
-11. [Troubleshooting](#troubleshooting)
+> **Core idea:** AI plans and supervises; deterministic tools execute. The interface between them is a small, versioned, machine‑parsable protocol.
+
+---
+
+## Table of Contents
+
+- [AI + CLI Orchestration Pattern](#ai--cli-orchestration-pattern)
+  - [A Framework for Intelligent Tool Orchestration with Claude Code](#a-framework-for-intelligent-tool-orchestration-with-claude-code)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Protocol \& Contracts](#protocol--contracts)
+    - [Streaming JSONL Protocol](#streaming-jsonl-protocol)
+    - [Message Types](#message-types)
+    - [Error Taxonomy](#error-taxonomy)
+    - [Run State Machine](#run-state-machine)
+    - [Timeouts, Heartbeats, Cancellation](#timeouts-heartbeats-cancellation)
+  - [Architecture Overview](#architecture-overview)
+    - [System Components](#system-components)
+    - [Execution Flow](#execution-flow)
+  - [Security \& Permissions](#security--permissions)
+  - [Setting Up the CLI System](#setting-up-the-cli-system)
+    - [1) Create the Universal Runner (cross‑platform)](#1-create-the-universal-runner-crossplatform)
+    - [2) Create a Project Shortcut](#2-create-a-project-shortcut)
+    - [3) Dependencies \& Reproducibility](#3-dependencies--reproducibility)
+  - [Responsibility Separation](#responsibility-separation)
+  - [Tool Registry \& Manifest](#tool-registry--manifest)
+  - [Claude Integration](#claude-integration)
+    - [Slash Commands](#slash-commands)
+  - [Implementation Guide](#implementation-guide)
+  - [Best Practices](#best-practices)
+  - [Examples](#examples)
+    - [Example 1: `example_processor` (schema‑checked, JSONL)](#example-1-example_processor-schemachecked-jsonl)
+    - [Example 2: `data_migrator` (batched, retryable errors, checkpoints)](#example-2-data_migrator-batched-retryable-errors-checkpoints)
+    - [Example 3: Workflow Orchestrator (actual subprocess + parallel tasks)](#example-3-workflow-orchestrator-actual-subprocess--parallel-tasks)
+  - [Troubleshooting](#troubleshooting)
+  - [Non‑Goals \& Tradeoffs](#nongoals--tradeoffs)
+  - [Conclusion \& Next Steps](#conclusion--next-steps)
+
+---
 
 ## Introduction
 
-This document describes a powerful architectural pattern for building AI-augmented systems where Claude Code orchestrates deterministic CLI tools to solve complex problems. This pattern combines the intelligence and adaptability of AI with the reliability and precision of traditional programming.
+This pattern describes how to build AI‑augmented systems where Claude Code orchestrates deterministic CLI tools to solve real work: multi‑step workflows, reliable operations, stateful recovery, and auditable decisions. The AI decides *what* to do and *when* to do it; tools guarantee *how* it’s done.
 
-### When to Use This Pattern
+**When to use**
 
-Use this pattern when you need:
-- Complex multi-step workflows requiring both intelligence and determinism
-- Reliable execution of algorithmic operations with AI oversight
-- State management and checkpoint recovery in long-running processes
-- Clear audit trails of AI decisions and tool executions
-- Separation between creative problem-solving and precise execution
+* Multi‑step workflows needing judgment + strict execution
+* Long‑running jobs with checkpoints and resumption
+* Clear audit trails of “AI decided X; tool did Y”
+* Incremental extensibility: add tools and workers over time
 
-### Key Benefits
+**Benefits**
 
-- **Predictable Intelligence**: AI decisions within deterministic boundaries
-- **Resumable Operations**: Checkpoint-based recovery from failures
-- **Clear Accountability**: Traceable decisions and actions
-- **Maintainable Systems**: Clean separation of concerns
-- **Scalable Architecture**: Easy to add new tools and capabilities
+* Predictable intelligence inside deterministic guardrails
+* Resumable operations with explicit state
+* Traceable decisions and outcomes
+* Maintainable separation of concerns
+* Scalable: add tools, not complexity
 
-## Core Philosophy
+---
 
-### "AI Orchestrates, Code Executes"
+## Protocol & Contracts
 
-This pattern leverages the complementary strengths of two paradigms:
+Design everything around a small, versioned, **JSONL** streaming protocol over stdout. This is the contract between AI and tools. Humans can read logs; machines can parse events. No emojis, no prose parsing.
 
-**AI (Non-Deterministic) Provides:**
-- Natural language understanding
-- Context-aware decision making
-- Creative problem solving
-- Adaptive error handling
-- Pattern recognition
-- Semantic analysis
+### Streaming JSONL Protocol
 
-**Code (Deterministic) Provides:**
-- Guaranteed repeatability
-- Precise calculations
-- State management
-- File system operations
-- Network interactions
-- Data validation
+* Each line on **stdout** is a complete JSON object.
+* **stderr** is for human diagnostics only (not parsed).
+* Required envelope fields:
 
-### The Synergy
+```json
+{
+  "v": 1,                    // protocol version
+  "type": "progress",        // message kind
+  "ts": "2025-08-30T12:34:56Z",
+  "run_id": "r-123",         // stable for a run
+  "trace_id": "t-abc",       // optional for distributed tracing
+  "span_id": "s-001"         // optional
+}
+```
+
+Recommended environment variables injected by the runner:
+
+* `RUN_ID`, `TRACE_ID`
+* `WORKSPACE` (ephemeral working dir)
+* `DEADLINE_TS` (ISO8601)
+* `CANCEL_FILE` (path watched for cancellation)
+* `AI_PROTOCOL_VERSION` (expected protocol `v`)
+* `LOG_DIR` (where the runner stores logs/artifacts)
+
+### Message Types
+
+Below are the canonical types and their minimal fields. Tools can include additional fields under `context` or `metrics`.
+
+```json
+{"v":1,"type":"start","ts":"...","run_id":"...","step":"analyze","args":{"input":"data.json"}}
+{"v":1,"type":"progress","ts":"...","run_id":"...","step":"analyze","pct":37.5,"msg":"Reading shard 3/8"}
+{"v":1,"type":"heartbeat","ts":"...","run_id":"...","step":"analyze"}
+{"v":1,"type":"action_required","ts":"...","run_id":"...","action":"choose_migration_strategy","context":{"files":1234,"batch_size":50}}
+{"v":1,"type":"result","ts":"...","run_id":"...","status":"ok","artifacts":[{"path":"./out/report.json","sha256":"..."}],"metrics":{"rows":42017,"duration_s":12.4}}
+{"v":1,"type":"error","ts":"...","run_id":"...","code":"E_INPUT_NOT_FOUND","msg":"data.json not found","hint":"Check path or mount","retryable":false}
+{"v":1,"type":"cancelled","ts":"...","run_id":"...","reason":"cancel-file"}
+{"v":1,"type":"log","ts":"...","run_id":"...","level":"info","msg":"Validated schema v2.1"}
+{"v":1,"type":"task_submitted","ts":"...","run_id":"...","task_id":"t-5","payload":{"command":"transform --part 5"}}
+{"v":1,"type":"task_started","ts":"...","run_id":"...","task_id":"t-5"}
+{"v":1,"type":"task_done","ts":"...","run_id":"...","task_id":"t-5","status":"ok"}
+```
+
+### Error Taxonomy
+
+Map errors to classes and default AI actions:
+
+| `code`              | Class         | Default AI Action                 |
+| ------------------- | ------------- | --------------------------------- |
+| `E_INPUT_NOT_FOUND` | user\_error   | Ask user to fix; don’t retry      |
+| `E_SCHEMA_MISMATCH` | user\_error   | Request mapping or schema update  |
+| `E_TRANSIENT_NET`   | retryable     | Retry with backoff (e.g., 3×)     |
+| `E_RATE_LIMIT`      | retryable     | Backoff + reduce concurrency      |
+| `E_DEADLINE`        | infra\_error  | Split workload / lower batch size |
+| `E_DISK_FULL`       | infra\_error  | Free space or move workspace      |
+| `E_PERMISSION`      | policy\_error | Adjust permissions; do not retry  |
+| `E_UNKNOWN`         | unknown       | Triage; attach `context` and logs |
+
+### Run State Machine
+
+Deterministic run lifecycle:
 
 ```
-User Request → AI Understanding → Tool Selection → Deterministic Execution
-                                          ↓
-AI Monitoring ← Progress Updates ← Tool Feedback ← State Management
+queued → running → (waiting_ai)* → running → completed | failed | cancelled
 ```
+
+* `waiting_ai` occurs after `action_required`.
+* Tools must emit `start` once; `result` or `error` finalizes the run.
+* Runner enforces deadlines and cancellation.
+
+### Timeouts, Heartbeats, Cancellation
+
+* Tools emit `heartbeat` at least every **30s**.
+* Runner kills the process if no `progress`/`heartbeat` for **N** seconds (configurable).
+* Cancellation: the runner creates a `CANCEL_FILE`. Tools check it between batches and emit `cancelled` before exiting with a non‑zero exit code (e.g., 130).
+
+Minimal emitter helper:
+
+```python
+# tools/_lib/protocol.py
+import json, os, sys, time, uuid
+
+RUN_ID = os.environ.get("RUN_ID", str(uuid.uuid4()))
+
+def _emit(payload: dict):
+    payload.setdefault("v", 1)
+    payload.setdefault("ts", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+    payload.setdefault("run_id", RUN_ID)
+    sys.stdout.write(json.dumps(payload) + "\n")
+    sys.stdout.flush()
+
+def emit_start(step, **kw):          _emit({"type":"start","step":step, **kw})
+def emit_progress(step,pct,msg=""):  _emit({"type":"progress","step":step,"pct":pct,"msg":msg})
+def emit_heartbeat(step):            _emit({"type":"heartbeat","step":step})
+def emit_action(action, **ctx):      _emit({"type":"action_required","action":action,"context":ctx})
+def emit_result(status="ok", **kw):  _emit({"type":"result","status":status, **kw})
+def emit_error(code,msg,hint="",**kw):_emit({"type":"error","code":code,"msg":msg,"hint":hint, **kw})
+def emit_log(level,msg,**kw):        _emit({"type":"log","level":level,"msg":msg, **kw})
+def emit_cancelled(reason):          _emit({"type":"cancelled","reason":reason})
+```
+
+---
 
 ## Architecture Overview
 
@@ -71,876 +177,688 @@ AI Monitoring ← Progress Updates ← Tool Feedback ← State Management
 
 ```
 project/
-├── tools/                      # CLI tools directory
-│   ├── venv/                  # Shared Python virtual environment
-│   ├── requirements.txt       # Shared dependencies
-│   ├── run.py                # Universal tool runner
-│   └── [tool_name]/          # Individual tools
-│       ├── cli.py            # Tool entry point
-│       └── lib/              # Tool-specific modules
-├── .claude/                   # Claude Code configuration
-│   ├── commands/             # Slash commands
-│   └── agents/               # AI workers
-└── docs/                      # Documentation
+├── tools/
+│   ├── run.py                 # Universal runner (cross‑platform)
+│   ├── registry/              # Tool registry + manifests
+│   │   └── <tool>/tool.yaml
+│   ├── <tool>/                # Tool implementation
+│   │   ├── cli.py
+│   │   ├── venv/              # Optional per‑tool venv
+│   │   └── _lib/              # Tool libs (protocol, checkpoints)
+│   └── shared_venv/           # Optional shared venv
+├── .runs/                     # Run artifacts, logs, events
+│   └── r-<id>/events.jsonl
+├── .claude/                   # Claude Code config
+│   ├── commands/
+│   └── agents/
+└── docs/
 ```
 
 ### Execution Flow
 
-1. **User Request** → Claude interprets intent
-2. **Claude Decision** → Selects appropriate tool(s)
-3. **Tool Execution** → Runs via universal runner
-4. **Progress Feedback** → Tool communicates status
-5. **AI Monitoring** → Claude tracks and responds
-6. **Result Integration** → Claude synthesizes output
+1. **User request** → Claude interprets intent.
+2. **AI decision** → Selects tool(s) + parameters.
+3. **Runner** → Spawns tool inside an isolated workspace with scoped env.
+4. **Tool** → Streams JSONL events; writes artifacts to workspace.
+5. **AI** → Consumes events, answers `action_required`, monitors heartbeats.
+6. **Result** → AI synthesizes output, emits summary + artifacts.
+
+---
+
+## Security & Permissions
+
+Minimum posture for production:
+
+* **Ephemeral workspace** per run under `.runs/r-<id>/work/`.
+* **Drop privileges:** non‑root user, `ulimit` caps, capped output size.
+* **Scoped environment:** explicit allowlist; no ambient secrets.
+* **Filesystem allowlists:** tools may read/write only under `WORKSPACE` (unless manifest allows more).
+* **Network egress allowlist:** default deny; allow specific hosts/ports per tool manifest.
+* **Secrets** via files with `0o600` permissions; never printed; redacted in logs.
+* **Policy guard:** runner rejects tools whose requested permissions exceed org policy.
+
+Optional hardening:
+
+* Containerize tools (Docker/Podman) or Linux user/ns + seccomp.
+* Use OPA/Rego for policy if needs grow.
+
+---
 
 ## Setting Up the CLI System
 
-### 1. Create the Universal Tool Runner
+### 1) Create the Universal Runner (cross‑platform)
 
 ```python
+# tools/run.py
 #!/usr/bin/env python3
-"""
-Universal Tool Runner - Single entry point for all CLI tools
-"""
-
-import os
-import sys
-import subprocess
+import os, sys, json, shutil, signal, time, tempfile, subprocess, uuid
 from pathlib import Path
-from typing import Dict, List
 
-class ToolRunner:
-    """Discovers and executes CLI tools."""
-    
-    def __init__(self):
-        self.tools_dir = Path(__file__).parent
-        self.venv_path = self.tools_dir / "venv"
-        self.python_exe = self.venv_path / "bin" / "python"
-        
-    def discover_tools(self) -> Dict[str, Path]:
-        """Auto-discover available tools."""
-        tools = {}
-        
-        # Find tool directories with entry points
-        for item in self.tools_dir.iterdir():
-            if item.is_dir() and item.name not in ['venv', '__pycache__']:
-                # Check for cli.py or main.py
-                for entry in ['cli.py', 'main.py']:
-                    entry_point = item / entry
-                    if entry_point.exists():
-                        tools[item.name] = entry_point
-                        break
-                        
-        return tools
-        
-    def run_tool(self, tool_name: str, args: List[str]) -> int:
-        """Execute a tool with arguments."""
-        tools = self.discover_tools()
-        
-        if tool_name not in tools:
-            print(f"Error: Tool '{tool_name}' not found", file=sys.stderr)
-            return 1
-            
-        tool_path = tools[tool_name]
-        
-        # Execute in virtual environment
-        cmd = [str(self.python_exe), str(tool_path)] + args
-        env = os.environ.copy()
-        env['PYTHONPATH'] = str(self.tools_dir)
-        
-        result = subprocess.run(cmd, env=env)
-        return result.returncode
+ROOT = Path(__file__).resolve().parent.parent
+TOOLS_DIR = ROOT / "tools"
+REGISTRY_DIR = TOOLS_DIR / "registry"
+RUNS_DIR = ROOT / ".runs"
+LOGS_DIR = ROOT / ".runs"
+DEFAULT_TIMEOUT_S = int(os.environ.get("TOOL_TIMEOUT_S", "1800"))
+HEARTBEAT_GRACE_S = int(os.environ.get("HEARTBEAT_GRACE_S", "90"))
+
+def _python_for(tool_dir: Path) -> Path:
+    win = os.name == "nt"
+    # Prefer per‑tool venv
+    pt = tool_dir / ("venv\\Scripts\\python.exe" if win else "venv/bin/python")
+    if pt.exists(): return pt
+    # Fallback: shared venv
+    shared = TOOLS_DIR / ("shared_venv\\Scripts\\python.exe" if win else "shared_venv/bin/python")
+    if shared.exists(): return shared
+    # Last resort: current interpreter
+    return Path(sys.executable)
+
+def _entry_for(tool: str) -> Path:
+    td = TOOLS_DIR / tool
+    for e in ("cli.py","main.py"):
+        p = td / e
+        if p.exists(): return p
+    raise SystemExit(f"Tool '{tool}' has no entry (cli.py/main.py)")
+
+def _load_manifest(tool: str) -> dict:
+    mf = REGISTRY_DIR / tool / "tool.yaml"
+    if not mf.exists():
+        return {"name": tool, "version":"0.0.0", "permissions":{}, "resources":{}}
+    import yaml
+    return yaml.safe_load(mf.read_text())
+
+def _mk_run_dirs(run_id: str):
+    base = RUNS_DIR / run_id
+    (base / "work").mkdir(parents=True, exist_ok=True)
+    (base / "logs").mkdir(parents=True, exist_ok=True)
+    (base / "artifacts").mkdir(parents=True, exist_ok=True)
+    return base
+
+def _now_iso():
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+def _write_jsonl(path: Path, obj: dict):
+    with path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(obj) + "\n")
+
+def run_tool(tool: str, args: list[str], timeout_s=DEFAULT_TIMEOUT_S) -> int:
+    entry = _entry_for(tool)
+    manifest = _load_manifest(tool)
+    run_id = f"r-{uuid.uuid4().hex[:10]}"
+    run_dir = _mk_run_dirs(run_id)
+    work = run_dir / "work"
+    events = run_dir / "events.jsonl"
+    cancel_file = run_dir / "CANCEL"
+
+    env = {}
+    # Allowlist environment variables
+    for k in ("PATH",):
+        if k in os.environ: env[k] = os.environ[k]
+    env.update({
+        "RUN_ID": run_id,
+        "WORKSPACE": str(work),
+        "LOG_DIR": str(run_dir / "logs"),
+        "CANCEL_FILE": str(cancel_file),
+        "AI_PROTOCOL_VERSION": "1"
+    })
+
+    # Policy check (very simple example)
+    perms = manifest.get("permissions", {})
+    if perms.get("network", {}).get("egress_allow") in (["*"], "*"):
+        raise SystemExit("Policy: wildcard egress not allowed")
+
+    py = _python_for(TOOLS_DIR / tool)
+    cmd = [str(py), str(entry), *args]
+
+    proc = subprocess.Popen(
+        cmd, cwd=work, env=env,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, text=True
+    )
+
+    last_event_ts = time.monotonic()
+    _write_jsonl(events, {"v":1,"type":"runner_start","ts":_now_iso(),"run_id":run_id,
+                          "tool":tool,"args":args,"timeout_s":timeout_s})
+
+    try:
+        for line in proc.stdout:
+            line = line.rstrip("\n")
+            # Mirror to stdout for the AI
+            print(line)
+            # Also persist to events log
+            try:
+                obj = json.loads(line)
+                last_event_ts = time.monotonic()
+                _write_jsonl(events, obj)
+            except json.JSONDecodeError:
+                _write_jsonl(events, {"v":1,"type":"runner_log","ts":_now_iso(),
+                                      "run_id":run_id,"level":"warn","msg":"non-json stdout","line":line})
+            # Heartbeat guard
+            if time.monotonic() - last_event_ts > HEARTBEAT_GRACE_S:
+                _write_jsonl(events, {"v":1,"type":"runner_error","ts":_now_iso(),
+                                      "run_id":run_id,"code":"E_HEARTBEAT_MISSED"})
+                proc.terminate()
+                break
+
+        try:
+            proc.wait(timeout=timeout_s)
+        except subprocess.TimeoutExpired:
+            cancel_file.touch()
+            proc.kill()
+            _write_jsonl(events, {"v":1,"type":"runner_error","ts":_now_iso(),
+                                  "run_id":run_id,"code":"E_TIMEOUT"})
+            return 124
+
+    finally:
+        rc = proc.returncode if proc.returncode is not None else 1
+        _write_jsonl(events, {"v":1,"type":"runner_end","ts":_now_iso(),"run_id":run_id,"rc":rc})
+    return rc
 
 def main():
-    runner = ToolRunner()
-    
     if len(sys.argv) < 2:
-        print("Usage: python tools/run.py <tool_name> [args...]")
+        print("Usage: ./tool <tool_name> [args...] | --list | --describe <tool>", file=sys.stderr)
         return 1
-        
     if sys.argv[1] == "--list":
-        tools = runner.discover_tools()
-        print("Available tools:")
-        for name in sorted(tools.keys()):
-            print(f"  - {name}")
+        tools = sorted([p.name for p in TOOLS_DIR.iterdir() if p.is_dir() and (p/"cli.py").exists()])
+        for t in tools: print(t)
         return 0
-        
-    tool_name = sys.argv[1]
-    tool_args = sys.argv[2:] if len(sys.argv) > 2 else []
-    return runner.run_tool(tool_name, tool_args)
+    if sys.argv[1] == "--describe":
+        tool = sys.argv[2]
+        print(json.dumps(_load_manifest(tool), indent=2))
+        return 0
+    tool = sys.argv[1]; args = sys.argv[2:]
+    return run_tool(tool, args)
 
 if __name__ == "__main__":
     sys.exit(main())
 ```
 
-### 2. Create a Project Shortcut
+### 2) Create a Project Shortcut
 
 ```python
+# ./tool  (project root)  — make executable: chmod +x tool
 #!/usr/bin/env python3
-# Save as 'tool' in project root, make executable with chmod +x tool
-
-import sys
-import subprocess
+import sys, subprocess
 from pathlib import Path
-
-def main():
-    runner_path = Path(__file__).parent / "tools" / "run.py"
-    cmd = [sys.executable, str(runner_path)] + sys.argv[1:]
-    result = subprocess.run(cmd)
-    return result.returncode
-
 if __name__ == "__main__":
-    sys.exit(main())
+    runner = Path(__file__).parent / "tools" / "run.py"
+    sys.exit(subprocess.call([sys.executable, str(runner), *sys.argv[1:]]))
 ```
 
-### 3. Set Up Virtual Environment
+### 3) Dependencies & Reproducibility
+
+Prefer **per‑tool** virtualenvs to avoid dependency soup. If you keep a shared venv, lock it.
+
+**Option A (simple):**
 
 ```bash
-# One-time setup
-python3 -m venv tools/venv
-source tools/venv/bin/activate  # or tools\venv\Scripts\activate on Windows
-pip install pyyaml jinja2 python-dateutil  # Common dependencies
+python3 -m venv tools/shared_venv
+source tools/shared_venv/bin/activate
+pip install click pyyaml python-dateutil jsonschema pydantic portalocker
 pip freeze > tools/requirements.txt
 ```
 
-## Communication Protocol
+**Option B (deterministic):** use `pip-tools`
 
-### Stdout-Based Markers
-
-Tools communicate with AI using structured stdout messages:
-
-```python
-# Request AI action
-print("AI_ACTION_REQUIRED: <action_type>")
-
-# Provide instructions to AI
-print("AI_INSTRUCTION: <specific_instruction>")
-
-# Signal waiting state
-print("WAIT_FOR_COMPLETION: <what_we're_waiting_for>")
-
-# Report errors
-print("ERROR: <error_message>")
-
-# Report success
-print("✅ <success_message>")
-
-# Request AI review
-print("AI_REVIEW_REQUIRED: <what_to_review>")
+```bash
+# tools/requirements.in (hand-maintained)
+click
+pyyaml
+python-dateutil
+jsonschema
+pydantic
+portalocker
+# compile
+pip-compile tools/requirements.in -o tools/requirements.txt
+pip install -r tools/requirements.txt
 ```
 
-### File-Based Contracts
-
-For complex data exchange, use files instead of stdout:
-
-```python
-import json
-import yaml
-from pathlib import Path
-from datetime import datetime
-
-class SessionManager:
-    """Manages tool session state."""
-    
-    def __init__(self, work_dir: Path):
-        self.work_dir = Path(work_dir)
-        self.session_file = self.work_dir / "session.json"
-        
-    def save_checkpoint(self, data: dict):
-        """Save progress checkpoint."""
-        checkpoint = {
-            "timestamp": datetime.now().isoformat(),
-            "data": data,
-            "status": "in_progress"
-        }
-        self.session_file.write_text(json.dumps(checkpoint, indent=2))
-        
-    def load_checkpoint(self) -> dict:
-        """Load previous checkpoint if exists."""
-        if self.session_file.exists():
-            return json.loads(self.session_file.read_text())
-        return None
-```
-
-### Progress Reporting
-
-```python
-def report_progress(current: int, total: int, description: str):
-    """Report progress to AI."""
-    percent = (current / total) * 100
-    print(f"PROGRESS: {percent:.1f}% - {description}")
-    
-    if percent >= 100:
-        print("✅ Task completed successfully")
-```
+---
 
 ## Responsibility Separation
 
-### AI Responsibilities
+**AI (non‑deterministic)**
 
-1. **Understanding Intent**
-   - Parse user requests
-   - Identify required operations
-   - Plan execution strategy
+* Understands user intent
+* Plans steps and chooses tools
+* Interprets errors and decides recovery
+* Synthesizes results and writes the narrative
 
-2. **Tool Selection**
-   - Choose appropriate tools
-   - Determine execution order
-   - Handle tool dependencies
+**CLI Tools (deterministic)**
 
-3. **Error Recovery**
-   - Interpret error messages
-   - Decide on retry strategies
-   - Provide user feedback
+* Execute file I/O, transforms, DB ops, network calls
+* Maintain state, checkpoints, and progress
+* Validate inputs/outputs against schemas
+* Optimize performance, batching, caching
 
-4. **Result Synthesis**
-   - Combine tool outputs
-   - Generate human-readable summaries
-   - Answer follow-up questions
+---
 
-### CLI Tool Responsibilities
+## Tool Registry & Manifest
 
-1. **Deterministic Operations**
-   - File I/O operations
-   - Data transformations
-   - Network requests
-   - Database operations
+Every tool declares capabilities and constraints in `tools/registry/<tool>/tool.yaml`:
 
-2. **State Management**
-   - Session persistence
-   - Checkpoint creation
-   - Progress tracking
-   - Resource cleanup
+```yaml
+name: data_migrator
+version: 1.2.0
+entry: cli.py
+protocol_version: 1
+inputs:
+  - {name: source, type: path, required: true}
+  - {name: target, type: path, required: true}
+permissions:
+  filesystem:
+    read: ["${WORKSPACE}/source/**"]
+    write: ["${WORKSPACE}/migrated/**"]
+  network:
+    egress_allow: ["api.example.com:443"]
+resources:
+  cpu_seconds: 600
+  memory_mb: 2048
+env:
+  require: ["AWS_REGION"]
+exit_codes:
+  ok: 0
+  retryable_error: 20
+  fatal_error: 30
+health:
+  selftest: ["--selftest"]
+  describe: ["--describe"]
+```
 
-3. **Validation**
-   - Input validation
-   - Schema enforcement
-   - Output verification
-   - Error detection
+The runner exposes `./tool --describe <name>` to print the manifest for AI discovery.
 
-4. **Performance**
-   - Efficient algorithms
-   - Batch processing
-   - Caching strategies
-   - Resource optimization
-
-### Decision Matrix
-
-| Task Type | Handler | Reason |
-|-----------|---------|---------|
-| Parse natural language | AI | Requires understanding context |
-| Sort 10,000 items | CLI Tool | Deterministic algorithm |
-| Choose which file to process | AI | Requires judgment |
-| Calculate checksums | CLI Tool | Precise computation |
-| Decide error recovery strategy | AI | Requires adaptive thinking |
-| Execute database transaction | CLI Tool | Needs ACID guarantees |
-| Interpret ambiguous input | AI | Requires inference |
-| Generate UUID | CLI Tool | Deterministic generation |
+---
 
 ## Claude Integration
 
 ### Slash Commands
 
-Create slash commands that leverage CLI tools:
-
-```yaml
+````yaml
 # .claude/commands/process_data.md
 ---
 description: Process data files using CLI tools
 allowed-tools: [Bash, Read, Write, Edit]
 ---
 
-Process the data files in the specified directory.
+Process the data directory.
 
-1. First, run the data analyzer to understand the structure:
+1. Inspect inputs:
    ```bash
    ./tool analyze_data --input-dir "$ARGUMENTS"
-   ```
+````
 
-2. Based on the analysis, determine processing strategy
+2. When the tool emits `{"type":"action_required","action":"choose_strategy"}`, decide based on file count.
 
-3. Execute the appropriate processor:
+3. Execute:
+
    ```bash
    ./tool process_data --strategy <selected> --input-dir "$ARGUMENTS"
    ```
 
-4. Verify results and report to user
-```
+4. Consume JSONL events; surface `result.artifacts` to the user; escalate on `error.retryable=true` with backoff.
 
-### AI Workers/Agents
+````
 
-Define workers that coordinate with CLI tools:
+### Agents / Workers
 
 ```yaml
-# .claude/agents/data_processor.md
+# .claude/agents/data-processor.md
 ---
 name: data-processor
-description: Processes data files using algorithmic tools
+description: Coordinates CLI tools with JSONL protocol
 tools: [Bash, Read, Write]
 ---
 
-You are a data processing specialist that coordinates with CLI tools.
+- Start tools, stream JSONL, act on `action_required`.
+- If `error.retryable` true: retry up to 3× with exponential backoff.
+- On `progress.pct` stall and missing `heartbeat`: cancel and split workload.
+- Use `--describe` to learn tool capabilities at runtime.
+````
 
-## Your Workflow:
-
-1. Analyze data requirements
-2. Select appropriate CLI tools
-3. Execute tools with proper parameters
-4. Monitor execution progress
-5. Handle errors gracefully
-6. Validate output quality
-
-## Available Tools:
-
-- `./tool analyze_data` - Analyzes data structure
-- `./tool transform_data` - Transforms data format
-- `./tool validate_data` - Validates data integrity
-
-## Communication Protocol:
-
-When tools output AI_ACTION_REQUIRED, respond immediately.
-When tools output WAIT_FOR_COMPLETION, monitor for completion.
-When tools output ERROR, determine recovery strategy.
-```
-
-### Worker-Tool Interaction Pattern
-
-```python
-# In your CLI tool
-def request_worker_assistance():
-    """Request AI worker to handle complex decision."""
-    print("AI_ACTION_REQUIRED: SPAWN_WORKER")
-    print("AI_INSTRUCTION: Spawn data-analyzer worker to review output")
-    print("WORKER_INPUT_FILE: /tmp/analysis_results.yaml")
-    print("WAIT_FOR_COMPLETION: Waiting for worker analysis")
-```
+---
 
 ## Implementation Guide
 
-### Step 1: Project Setup
+1. **Scaffold**
 
-```bash
-# Create project structure
-mkdir -p project/tools/venv
-mkdir -p project/.claude/commands
-mkdir -p project/.claude/agents
-mkdir -p project/docs
+   ```bash
+   mkdir -p project/tools/registry project/.claude/{commands,agents} project/.runs
+   python3 -m venv tools/shared_venv && source tools/shared_venv/bin/activate
+   pip install -r tools/requirements.txt  # or use pip-tools as above
+   ```
+2. **Add the runner** (`tools/run.py`) and shortcut (`./tool`).
+3. **Create your first tool** (`tools/example_processor/cli.py`) with the JSONL emitter.
+4. **Define a manifest** (`tools/registry/example_processor/tool.yaml`).
+5. **Add schema validation** (JSON Schema or Pydantic) for inputs/outputs.
+6. **Enable checkpoints** with atomic writes and file locks.
+7. **Add observability**: `.runs/r-*/events.jsonl`, per‑task logs, artifact hashes.
+8. **Introduce parallelism** where needed with controlled concurrency and per‑task work dirs.
+9. **Wire Claude** via slash commands and an agent that understands JSONL events.
 
-# Initialize virtual environment
-cd project
-python3 -m venv tools/venv
-source tools/venv/bin/activate
-pip install pyyaml jinja2 python-dateutil click
+---
 
-# Create requirements file
-pip freeze > tools/requirements.txt
-```
+## Best Practices
 
-### Step 2: Create Your First Tool
+* **Single responsibility** per tool; idempotent operations preferred.
+* **Strict contracts** at the boundary: validate inputs/outputs.
+* **Explicit retries** only for retryable codes; never guess.
+* **Small batches** + **checkpointing** to improve recovery.
+* **Consistent message format** across tools.
+* **Resource limits**: honor `cpu_seconds`, `memory_mb`, and deadlines.
+* **Dry‑run & explain** modes for safety: show planned actions without side effects.
+* **Secrets hygiene**: pass via files, redact logs, never echo.
+* **Backpressure**: don’t flood the system; gate parallelism.
+
+---
+
+## Examples
+
+### Example 1: `example_processor` (schema‑checked, JSONL)
 
 ```python
 # tools/example_processor/cli.py
 #!/usr/bin/env python3
-"""
-Example data processor tool.
-"""
-
-import sys
-import click
-import json
+import os, sys, json, time, hashlib
 from pathlib import Path
+from jsonschema import validate, ValidationError
+sys.path.append(str(Path(__file__).parent / "_lib"))
+from protocol import emit_start, emit_progress, emit_result, emit_error, emit_log, emit_heartbeat
 
-@click.command()
-@click.option('--input', '-i', required=True, help='Input file path')
-@click.option('--output', '-o', required=True, help='Output file path')
-@click.option('--format', type=click.Choice(['json', 'yaml']), default='json')
-def process(input, output, format):
-    """Process input file and generate output."""
-    
-    input_path = Path(input)
-    output_path = Path(output)
-    
-    # Validate input
+INPUT_SCHEMA = {
+  "type":"object",
+  "properties":{"items":{"type":"array","items":{"type":"object"}}},
+  "required":["items"]
+}
+
+def sha256sum(p: Path) -> str:
+    h = hashlib.sha256()
+    with p.open("rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""): h.update(chunk)
+    return h.hexdigest()
+
+def main():
+    if "--selftest" in sys.argv:
+        print(json.dumps({"selftest":"ok"})); return 0
+
+    args = dict(zip(sys.argv[1::2], sys.argv[2::2]))
+    input_path = Path(args.get("--input",""))
+    output_path = Path(args.get("--output",""))
+
     if not input_path.exists():
-        print(f"ERROR: Input file not found: {input}")
-        sys.exit(1)
-    
-    print(f"Processing {input_path.name}...")
-    
+        emit_error("E_INPUT_NOT_FOUND", f"Input not found: {input_path}", "Check path")
+        return 30
+
+    emit_start("process", args={"input": str(input_path)})
     try:
-        # Perform processing
         data = json.loads(input_path.read_text())
-        
-        # Transform data (example)
-        processed = {
-            "original_keys": list(data.keys()),
-            "item_count": len(data),
-            "processed": True
-        }
-        
-        # Save output
-        output_path.write_text(json.dumps(processed, indent=2))
-        
-        print(f"✅ Successfully processed to {output_path}")
-        
+        validate(instance=data, schema=INPUT_SCHEMA)
+    except ValidationError as e:
+        emit_error("E_SCHEMA_MISMATCH", "Input schema invalid", str(e)[:200])
+        return 30
     except Exception as e:
-        print(f"ERROR: Processing failed: {e}")
-        sys.exit(1)
+        emit_error("E_UNKNOWN", "Failed to read input", str(e))
+        return 30
 
-if __name__ == '__main__':
-    process()
+    total = len(data["items"]) or 1
+    out = {"original_keys": list(data.keys()), "item_count": total, "processed": True}
+
+    for i, _ in enumerate(data["items"], 1):
+        if i % 100 == 0:
+            emit_progress("process", pct=(i/total)*100, msg=f"Processed {i}/{total}")
+            emit_heartbeat("process")
+        time.sleep(0.001)
+
+    output_path.write_text(json.dumps(out, indent=2))
+    artifact = {"path": str(output_path), "sha256": sha256sum(output_path)}
+    emit_result(status="ok", artifacts=[artifact], metrics={"items": total})
+    return 0
+
+if __name__ == "__main__": sys.exit(main())
 ```
 
-### Step 3: Create Universal Runner
+**Manifest**
 
-Copy the universal runner code from earlier into `tools/run.py`.
+```yaml
+# tools/registry/example_processor/tool.yaml
+name: example_processor
+version: 0.1.0
+entry: cli.py
+protocol_version: 1
+inputs:
+  - {name: input, type: path, required: true}
+  - {name: output, type: path, required: true}
+permissions:
+  filesystem:
+    read:  ["${WORKSPACE}/**"]
+    write: ["${WORKSPACE}/**"]
+resources: { cpu_seconds: 60, memory_mb: 256 }
+exit_codes: { ok: 0, retryable_error: 20, fatal_error: 30 }
+health: { selftest: ["--selftest"], describe: ["--describe"] }
+```
 
-### Step 4: Create Project Shortcut
+**Run**
 
 ```bash
-# Create executable shortcut in project root
-cat > tool << 'EOF'
-#!/usr/bin/env python3
-import sys, subprocess
-from pathlib import Path
-subprocess.run([sys.executable, Path(__file__).parent / "tools" / "run.py"] + sys.argv[1:])
-EOF
-
-chmod +x tool
+./tool example_processor --input ./data.json --output ./result.json
 ```
 
-### Step 5: Test the System
+---
 
-```bash
-# List available tools
-./tool --list
-
-# Run your tool
-./tool example_processor --input data.json --output result.json
-```
-
-## Best Practices
-
-### 1. Tool Design Principles
-
-- **Single Responsibility**: Each tool should do one thing well
-- **Idempotent Operations**: Running twice should be safe
-- **Clear Error Messages**: Help AI understand failures
-- **Progress Reporting**: Keep AI informed of status
-- **Checkpoint Support**: Enable resumption after failures
-
-### 2. Error Handling
-
-```python
-def safe_operation(func):
-    """Decorator for safe tool operations."""
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except FileNotFoundError as e:
-            print(f"ERROR: File not found: {e}")
-            print("AI_INSTRUCTION: Check file path and retry")
-            sys.exit(1)
-        except PermissionError as e:
-            print(f"ERROR: Permission denied: {e}")
-            print("AI_INSTRUCTION: Check file permissions")
-            sys.exit(1)
-        except Exception as e:
-            print(f"ERROR: Unexpected error: {e}")
-            print("AI_ACTION_REQUIRED: DIAGNOSE_ERROR")
-            sys.exit(1)
-    return wrapper
-```
-
-### 3. Session Management
-
-```python
-import hashlib
-from datetime import datetime
-
-class Session:
-    """Manages tool session with recovery support."""
-    
-    def __init__(self, work_dir: Path, session_id: str = None):
-        self.work_dir = Path(work_dir)
-        self.work_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Generate or use session ID
-        self.session_id = session_id or datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.session_dir = self.work_dir / f"session_{self.session_id}"
-        self.session_dir.mkdir(exist_ok=True)
-        
-    def checkpoint(self, stage: str, data: dict):
-        """Create checkpoint for recovery."""
-        checkpoint_file = self.session_dir / f"checkpoint_{stage}.json"
-        checkpoint_data = {
-            "timestamp": datetime.now().isoformat(),
-            "stage": stage,
-            "data": data
-        }
-        checkpoint_file.write_text(json.dumps(checkpoint_data, indent=2))
-        print(f"CHECKPOINT: Saved {stage}")
-        
-    def can_resume(self, stage: str) -> bool:
-        """Check if can resume from stage."""
-        checkpoint_file = self.session_dir / f"checkpoint_{stage}.json"
-        return checkpoint_file.exists()
-```
-
-### 4. Parallel Execution Support
-
-```python
-def request_parallel_execution(tasks: list):
-    """Request AI to execute tasks in parallel."""
-    print("AI_ACTION_REQUIRED: PARALLEL_EXECUTION")
-    print(f"AI_INSTRUCTION: Execute {len(tasks)} tasks in parallel:")
-    
-    for i, task in enumerate(tasks, 1):
-        print(f"  Task {i}: {task['command']}")
-        
-    print("WAIT_FOR_COMPLETION: Monitor all parallel tasks")
-```
-
-### 5. Testing Strategy
-
-```python
-# tools/test_framework.py
-import subprocess
-import tempfile
-from pathlib import Path
-
-def test_tool(tool_name: str, args: list) -> dict:
-    """Test a tool execution."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        # Run tool
-        cmd = ["python", "tools/run.py", tool_name] + args
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            cwd=tmpdir
-        )
-        
-        return {
-            "success": result.returncode == 0,
-            "stdout": result.stdout,
-            "stderr": result.stderr,
-            "return_code": result.returncode
-        }
-```
-
-## Examples
-
-### Example 1: Data Migration Tool
+### Example 2: `data_migrator` (batched, retryable errors, checkpoints)
 
 ```python
 # tools/data_migrator/cli.py
 #!/usr/bin/env python3
-
-import click
-import json
+import os, sys, json, time
 from pathlib import Path
-from datetime import datetime
+sys.path.append(str(Path(__file__).parent / "_lib"))
+from protocol import emit_start, emit_progress, emit_result, emit_error, emit_action, emit_heartbeat
+from checkpoints import save_checkpoint, load_checkpoint
 
-@click.command()
-@click.option('--source', required=True, help='Source directory')
-@click.option('--target', required=True, help='Target directory')
-@click.option('--batch-size', default=100, help='Batch size for processing')
-def migrate(source, target, batch_size):
-    """Migrate data from source to target."""
-    
-    source_path = Path(source)
-    target_path = Path(target)
-    
-    # Discover files
-    files = list(source_path.glob("*.json"))
+def transform(record: dict) -> dict:
+    record = dict(record)
+    record["migrated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    record["version"] = "2.0"
+    return record
+
+def main():
+    args = dict(zip(sys.argv[1::2], sys.argv[2::2]))
+    src = Path(args.get("--source",""))
+    tgt = Path(args.get("--target",""))
+    batch_size = int(args.get("--batch-size","100"))
+
+    if not src.exists():
+        emit_error("E_INPUT_NOT_FOUND", f"Source dir not found: {src}", "Check --source")
+        return 30
+    tgt.mkdir(parents=True, exist_ok=True)
+
+    files = list(src.glob("*.json"))
     total = len(files)
-    
     if total == 0:
-        print("ERROR: No files found to migrate")
-        return 1
-        
-    print(f"Found {total} files to migrate")
-    
-    # Request AI decision for strategy
-    print("AI_ACTION_REQUIRED: CHOOSE_MIGRATION_STRATEGY")
-    print(f"AI_INSTRUCTION: {total} files found, batch_size={batch_size}")
-    
-    # Process in batches
-    for i in range(0, total, batch_size):
-        batch = files[i:i+batch_size]
-        current_batch = i // batch_size + 1
-        total_batches = (total + batch_size - 1) // batch_size
-        
-        print(f"PROGRESS: Processing batch {current_batch}/{total_batches}")
-        
-        for file in batch:
+        emit_error("E_INPUT_NOT_FOUND", "No JSON files to migrate", "Add files to source")
+        return 30
+
+    emit_start("migrate", args={"source": str(src), "target": str(tgt), "batch_size": batch_size})
+    emit_action("choose_migration_strategy", files=total, batch_size=batch_size)
+
+    cp = load_checkpoint("migrate") or {"i": 0}
+    i = cp["i"]
+    while i < total:
+        end = min(i+batch_size, total)
+        emit_progress("migrate", pct=(end/total)*100, msg=f"batch {i//batch_size+1}/{(total+batch_size-1)//batch_size}")
+        for f in files[i:end]:
             try:
-                # Read and transform
-                data = json.loads(file.read_text())
-                
-                # Apply transformation
-                transformed = transform_data(data)
-                
-                # Write to target
-                target_file = target_path / file.name
-                target_file.write_text(json.dumps(transformed, indent=2))
-                
+                data = json.loads(f.read_text())
+                out = transform(data)
+                (tgt / f.name).write_text(json.dumps(out))
             except Exception as e:
-                print(f"ERROR: Failed to process {file.name}: {e}")
-                print("AI_ACTION_REQUIRED: HANDLE_MIGRATION_ERROR")
-                
-    print(f"✅ Migration complete: {total} files processed")
+                # retryable on transient I/O
+                emit_error("E_TRANSIENT_NET" if "HTTP" in str(e) else "E_UNKNOWN", f"Failed {f.name}", str(e), retryable=True)
+                # Let AI decide to retry/skip/abort
+                return 20
+        i = end
+        save_checkpoint("migrate", {"i": i})
+        emit_heartbeat("migrate")
 
-def transform_data(data: dict) -> dict:
-    """Apply data transformation."""
-    return {
-        "migrated_at": datetime.now().isoformat(),
-        "original": data,
-        "version": "2.0"
-    }
+    emit_result(status="ok", artifacts=[{"path": str(tgt)}], metrics={"files": total})
+    return 0
 
-if __name__ == '__main__':
-    migrate()
+if __name__ == "__main__": sys.exit(main())
 ```
 
-### Example 2: Claude Slash Command
+**Atomic checkpoints**
 
-```markdown
-# .claude/commands/migrate_data.md
+```python
+# tools/data_migrator/_lib/checkpoints.py
+import json, os, tempfile
+from pathlib import Path
+
+CP_DIR = Path(os.environ.get("WORKSPACE", ".")) / ".checkpoints"
+CP_DIR.mkdir(parents=True, exist_ok=True)
+
+def _atomic_write(path: Path, data: dict):
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent))
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+    os.replace(tmp, path)
+
+def save_checkpoint(stage: str, data: dict):
+    _atomic_write(CP_DIR / f"{stage}.json", {"stage": stage, "data": data})
+
+def load_checkpoint(stage: str):
+    p = CP_DIR / f"{stage}.json"
+    return json.loads(p.read_text())["data"] if p.exists() else None
+```
+
 ---
-description: Migrate data between formats
-allowed-tools: [Bash, Read, Write]
----
 
-Migrate data from source to target directory.
-
-## Steps:
-
-1. Analyze source directory:
-```bash
-./tool data_analyzer --scan "$ARGUMENTS"
-```
-
-2. Based on analysis, determine migration strategy
-
-3. Execute migration:
-```bash
-./tool data_migrator --source "$ARGUMENTS" --target ./migrated --batch-size 50
-```
-
-4. When tool requests AI_ACTION_REQUIRED:
-   - For CHOOSE_MIGRATION_STRATEGY: Select based on file count
-   - For HANDLE_MIGRATION_ERROR: Decide skip/retry/abort
-
-5. Validate migration:
-```bash
-./tool data_validator --directory ./migrated
-```
-
-6. Report results to user
-```
-
-### Example 3: Complex Workflow
+### Example 3: Workflow Orchestrator (actual subprocess + parallel tasks)
 
 ```python
 # tools/workflow_orchestrator/cli.py
 #!/usr/bin/env python3
-
-import click
-import yaml
+import os, sys, json, subprocess, concurrent.futures, shlex
 from pathlib import Path
-from typing import List, Dict
+sys.path.append(str(Path(__file__).parent / "_lib"))
+from protocol import emit_start, emit_progress, emit_result, emit_error, emit_action, emit_log
 
-class WorkflowOrchestrator:
-    """Orchestrates complex multi-tool workflows."""
-    
-    def __init__(self, workflow_file: Path):
-        self.workflow = yaml.safe_load(workflow_file.read_text())
-        self.checkpoints_dir = Path(".checkpoints")
-        self.checkpoints_dir.mkdir(exist_ok=True)
-        
-    def execute(self):
-        """Execute workflow steps."""
-        total_steps = len(self.workflow['steps'])
-        
-        for i, step in enumerate(self.workflow['steps'], 1):
-            step_name = step['name']
-            checkpoint_file = self.checkpoints_dir / f"{step_name}.done"
-            
-            # Check if already completed
-            if checkpoint_file.exists():
-                print(f"SKIP: {step_name} already completed")
-                continue
-                
-            print(f"STEP {i}/{total_steps}: {step_name}")
-            
-            # Determine execution type
-            if step['type'] == 'tool':
-                self.execute_tool(step)
-            elif step['type'] == 'ai_decision':
-                self.request_ai_decision(step)
-            elif step['type'] == 'parallel':
-                self.execute_parallel(step)
-                
-            # Mark complete
-            checkpoint_file.touch()
-            print(f"✅ Completed: {step_name}")
-            
-    def execute_tool(self, step: Dict):
-        """Execute a tool step."""
-        print(f"EXECUTE: {step['command']}")
-        # Tool execution logic here
-        
-    def request_ai_decision(self, step: Dict):
-        """Request AI decision."""
-        print(f"AI_ACTION_REQUIRED: {step['decision_type']}")
-        print(f"AI_INSTRUCTION: {step['instruction']}")
-        print("WAIT_FOR_COMPLETION: Awaiting AI decision")
-        
-    def execute_parallel(self, step: Dict):
-        """Execute parallel tasks."""
-        tasks = step['tasks']
-        print(f"AI_ACTION_REQUIRED: PARALLEL_EXECUTION")
-        print(f"AI_INSTRUCTION: Execute {len(tasks)} tasks in parallel")
-        for task in tasks:
-            print(f"  - {task}")
+def run_cmd(cmd: str, cwd: Path, env: dict) -> int:
+    p = subprocess.Popen(shlex.split(cmd), cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    for line in p.stdout: print(line, end="")   # forward JSONL from child tools
+    return p.wait()
 
-@click.command()
-@click.option('--workflow', required=True, help='Workflow YAML file')
-def orchestrate(workflow):
-    """Orchestrate a complex workflow."""
-    workflow_path = Path(workflow)
-    
-    if not workflow_path.exists():
-        print(f"ERROR: Workflow file not found: {workflow}")
-        return 1
-        
-    orchestrator = WorkflowOrchestrator(workflow_path)
-    orchestrator.execute()
+def main():
+    args = dict(zip(sys.argv[1::2], sys.argv[2::2]))
+    wf_file = Path(args.get("--workflow",""))
+    if not wf_file.exists():
+        emit_error("E_INPUT_NOT_FOUND", f"Workflow not found: {wf_file}", "Check --workflow")
+        return 30
+    wf = json.loads(wf_file.read_text())
+    steps = wf.get("steps", [])
+    emit_start("workflow", args={"workflow": str(wf_file)})
 
-if __name__ == '__main__':
-    orchestrate()
+    work = Path(os.environ["WORKSPACE"])
+    env = os.environ.copy()
+
+    for idx, step in enumerate(steps, 1):
+        emit_progress("workflow", pct=(idx-1)/len(steps)*100, msg=f"step {idx}/{len(steps)}: {step['name']}")
+        if step["type"] == "tool":
+            rc = run_cmd(f"./tool {step['command']}", cwd=work, env=env)
+            if rc != 0:
+                emit_error("E_UNKNOWN", f"Step failed: {step['name']}", f"rc={rc}")
+                return rc
+        elif step["type"] == "ai_decision":
+            emit_action(step["decision_type"], instruction=step.get("instruction",""))
+        elif step["type"] == "parallel":
+            tasks = step["tasks"]
+            emit_log("info", f"Submitting {len(tasks)} tasks")
+            with concurrent.futures.ThreadPoolExecutor(max_workers=step.get("max_concurrency", 4)) as pool:
+                futs = [pool.submit(run_cmd, f"./tool {t}", work, env) for t in tasks]
+                for f in concurrent.futures.as_completed(futs):
+                    if f.result() != 0:
+                        emit_error("E_UNKNOWN", "Parallel task failed", "")
+                        return 1
+
+    emit_result(status="ok")
+    return 0
+
+if __name__ == "__main__": sys.exit(main())
 ```
+
+---
 
 ## Troubleshooting
 
-### Common Issues and Solutions
+**Tool not found**
 
-#### 1. Tool Not Found
+* `./tool --list` to see discovered tools.
+* Ensure `tools/<name>/cli.py` exists and is executable.
+* Verify a manifest exists in `tools/registry/<name>/tool.yaml` (recommended).
 
-**Problem**: `Error: Tool 'my_tool' not found`
+**JSONL parse issues**
 
-**Solution**:
-- Ensure tool directory exists in `tools/`
-- Check for `cli.py` or `main.py` entry point
-- Verify no Python syntax errors in entry point
+* Emit one JSON object per line.
+* Keep `stderr` for diagnostics; protocol on **stdout** only.
+* Validate messages with a JSON linter during development.
 
-#### 2. Virtual Environment Issues
+**No progress / heartbeat missed**
 
-**Problem**: `ModuleNotFoundError` when running tools
+* Tools must emit `progress` or `heartbeat` at least every 30s.
+* Runner kills the job after `HEARTBEAT_GRACE_S`.
 
-**Solution**:
+**Timeouts**
+
+* Increase `TOOL_TIMEOUT_S` if needed, or split batches.
+* Check `DEADLINE_TS` and honor it inside the tool.
+
+**Resume fails**
+
+* Check `.runs/r-*/work/.checkpoints/*`.
+* Ensure atomic writes (use `os.replace`) and consistent stage names.
+
+**Parallel tasks interfere**
+
+* Use per‑task working dirs if tasks write temp files.
+* Avoid shared mutable state; pass inputs explicitly.
+
+**Permissions / policy rejections**
+
+* Adjust manifest `permissions` to avoid wildcards.
+* Add necessary env var names to `env.require`.
+
+---
+
+## Non‑Goals & Tradeoffs
+
+* **Not** a full workflow engine (Temporal/Dagster). It’s a lean contract + runner. If workflows balloon, migrate later.
+* **Not** a security boundary on its own. Use containers or OS sandboxing if you run untrusted tools.
+* **Not** a long‑term storage system. Artifacts live under `.runs/`; promote them elsewhere if needed.
+
+---
+
+## Conclusion & Next Steps
+
+1. Adopt the **JSONL protocol** across all tools.
+2. Replace ad‑hoc prints with the emitter helpers.
+3. Use the **cross‑platform runner** with per‑tool venvs, timeouts, and logs.
+4. Add **manifests** and a minimal **policy guard**.
+5. Harden with **atomic checkpoints**, retry taxonomy, and workspace isolation.
+
+Once those are in place, wire up Claude Code with a single agent that understands the protocol. You’ll get predictable runs, clean recovery, and an audit trail you can defend.
+
+---
+
+**Appendix: Quick Commands**
+
 ```bash
-# Rebuild virtual environment
-rm -rf tools/venv
-python3 -m venv tools/venv
-source tools/venv/bin/activate
-pip install -r tools/requirements.txt
+# List tools
+./tool --list
+
+# Describe a tool's capabilities
+./tool --describe example_processor
+
+# Run with a longer timeout (env var)
+TOOL_TIMEOUT_S=3600 ./tool data_migrator --source ./in --target ./out --batch-size 200
+
+# Enable debug logs (tool-defined)
+TOOL_DEBUG=true ./tool example_processor --input data.json --output result.json
 ```
-
-#### 3. Communication Protocol Not Working
-
-**Problem**: AI not responding to tool markers
-
-**Solution**:
-- Ensure markers are printed to stdout, not stderr
-- Check exact marker format (case-sensitive)
-- Verify markers are on their own lines
-
-#### 4. Session Recovery Failing
-
-**Problem**: Tool doesn't resume from checkpoints
-
-**Solution**:
-- Check checkpoint file permissions
-- Verify checkpoint directory exists
-- Ensure consistent session ID usage
-
-#### 5. Parallel Execution Issues
-
-**Problem**: Parallel tasks interfering with each other
-
-**Solution**:
-- Use unique working directories per task
-- Implement proper file locking
-- Avoid shared state between parallel tasks
-
-### Debug Mode
-
-Add debug support to tools:
-
-```python
-import os
-import sys
-
-DEBUG = os.environ.get('TOOL_DEBUG', '').lower() == 'true'
-
-def debug_print(message):
-    """Print debug message if debug mode enabled."""
-    if DEBUG:
-        print(f"[DEBUG] {message}", file=sys.stderr)
-
-# Usage
-debug_print(f"Processing file: {filename}")
-```
-
-Enable debug mode:
-```bash
-TOOL_DEBUG=true ./tool my_tool --input data.json
-```
-
-### Performance Profiling
-
-```python
-import time
-from functools import wraps
-
-def profile_performance(func):
-    """Profile function performance."""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        duration = time.time() - start
-        print(f"PERFORMANCE: {func.__name__} took {duration:.2f}s")
-        return result
-    return wrapper
-
-@profile_performance
-def process_large_dataset(data):
-    # Processing logic
-    pass
-```
-
-## Conclusion
-
-The AI + CLI Orchestration Pattern provides a robust framework for building intelligent systems that combine the best of both AI and traditional programming. By maintaining clear separation of responsibilities and using structured communication protocols, you can create maintainable, scalable, and reliable AI-augmented applications.
-
-### Key Takeaways
-
-1. **Separation is Strength**: Let AI handle intelligence, let code handle execution
-2. **Communication is Critical**: Use structured markers and file contracts
-3. **State Management Matters**: Implement checkpoints and session recovery
-4. **Tools Should be Simple**: Each tool does one thing well
-5. **Integration is Powerful**: Claude's features amplify tool capabilities
-
-### Next Steps
-
-1. Start with simple tools and gradually add complexity
-2. Establish team conventions for markers and protocols
-3. Build a library of reusable tool patterns
-4. Document your specific implementations
-5. Share learnings and improvements with the community
-
-This pattern will continue to evolve as AI capabilities expand, but the fundamental principle remains: combine AI's intelligence with code's reliability to build systems that are both smart and dependable.
