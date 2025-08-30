@@ -13,7 +13,19 @@ import re
 import argparse
 from pathlib import Path
 
-DEFAULT_CONTENT="Follow exactly and without stopping:\n"
+DEFAULT_CONTENT="""---
+title: [Clear description of what this job accomplishes]
+created: [YYYY-MM-DD]
+origin: [What work/event led to creating this job]
+priority: [low/medium/high/critical - optional, defaults to medium]
+complexity: [low/medium/high - effort/skill level required]
+notes:
+  - [Brief context or constraint]
+  - [Additional notes as needed]
+---
+
+Follow exactly and without stopping:
+"""
 
 def get_project_root():
     """Get the project root directory (VS Code workspace or current directory)."""
