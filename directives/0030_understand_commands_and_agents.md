@@ -1,6 +1,6 @@
 # Commands and agents/subagents
 
-Remember the difference between slash commands and agents:
+## Remember the difference between slash commands and agents:
 - **Commands (slash commands)**:
   - Markdown files containing prompts injected as user input into current conversation
   - Support YAML frontmatter (allowed-tools, model, description, argument-hint)
@@ -14,3 +14,14 @@ Remember the difference between slash commands and agents:
   - Written as role definitions ("You are an expert...") plus detailed instructions
   - YAML frontmatter: name, description (triggers automatic invocation), tools (optional)
   - Location: `.claude/agents/` (project) or `~/.claude/agents/` (personal)
+
+## Rules
+
+**In slash commands and subagents, bash code blocks must contain ONLY executable commands:**
+- ✅ Actual terminal commands: `./tool detect_potential_dups --verbose`
+- ✅ Real bash scripts to be run as-is
+- ❌ NEVER pseudo-code with conditionals (`if [ -f... ]; then`)
+- ❌ NEVER instructional comments disguised as bash
+- ❌ NEVER hypothetical command flows
+
+**For conditional behavior, use plain markdown text instead of bash syntax.**
