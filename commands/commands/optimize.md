@@ -107,9 +107,11 @@ Fix these issues if found:
 - Invalid slash command execution patterns (convert to file reading)
 - Absolute paths with usernames (breaks portability)
 
-### 7. Verification Phase (Critical)
+### 7. Verification Phase
 
-After optimizing the working copy, run THREE identical parallel verification tasks to ensure no functionality was lost. The verifiers will compare the original with the optimized copy.
+If only minor changes were made, no need to verify. Skip directly to step 8.
+
+If and only if significant changes were made, after optimizing the working copy, run THREE identical parallel verification tasks to ensure no functionality was lost. The verifiers will compare the original with the optimized copy.
 
 #### Verification Process
 
