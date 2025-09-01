@@ -1,6 +1,6 @@
 ---
 name: addjob
-description: Creates job files for deferred task execution using the addjob utility. Invoke when users say "add a job", "create job", "create jobs", "make a job", "make jobs", "defer this task", "do this later", "schedule this", "queue this work", "save this for later", or any variation involving the word "job" or "jobs". Use when tasks need to be scheduled for later processing, when work should be deferred rather than executed immediately, when creating batch processing queues, or when user asks to create any job files. Automatically triggered by keywords like "job", "jobs", "defer", "later", "schedule", "queue", "batch", "todo", "task list", or "save for later". This agent uses the addjob bash command to create structured job files in the project's jobs/ directory. MUST BE USED PROACTIVELY when job-related keywords are detected, including plural forms.
+description: Creates job files for deferred task execution using the addjob utility. Invoke when users say "add a job", "create job", "create jobs", "make a job", "make jobs", "defer this task", "do this later", "schedule this", "queue this work", "save this for later", or any variation involving the word "job" or "jobs". Use when tasks need to be scheduled for later processing, when work should be deferred rather than executed immediately, when creating batch processing queues, or when user asks to create any job files. Automatically triggered by keywords like "job", "jobs", "defer", "later", "schedule", "queue", "batch", "todo", "task list", or "save for later". This agent uses the addjob bash command to create structured job files in the project's jobs/ directory. Use proactively when job-related keywords are detected, including plural forms.
 model: haiku
 color: purple
 tools: Bash, Read, LS, Glob, Grep
@@ -65,7 +65,7 @@ echo "High priority task" | addjob --stdin --n 100 priority-task
 
 ## Job Content Structure - COMPREHENSIVE & SELF-SUFFICIENT
 
-**CRITICAL**: Every job must pass the "6 months later test" - someone should be able to execute it without needing conversation context or hunting for missing information.
+**Key requirement**: Every job should pass the "6 months later test" - someone should be able to execute it without needing conversation context or hunting for missing information.
 
 When creating job content, follow this process:
 
@@ -255,9 +255,9 @@ Follow exactly and without stopping:
 The addjob subagent will handle creating the new jobs, which will run after this analysis completes.
 ```
 
-## Best Practices - MANDATORY REQUIREMENTS
+## Best Practices
 
-1. **Comprehensive Context** - Every job MUST include complete background explaining what work led to this need, what problem occurred, and why it matters
+1. **Comprehensive Context** - Every job should include complete background explaining what work led to this need, what problem occurred, and why it matters
 2. **Self-Sufficient Instructions** - Jobs must be executable 6 months later without conversation memory or additional research
 3. **Specific Technical Details** - Include exact file paths, commands, dependencies, and reference implementations
 4. **Clear Problem Definition** - Describe specific symptoms, examples of failure, and current workarounds
@@ -271,12 +271,12 @@ The addjob subagent will handle creating the new jobs, which will run after this
 
 **Quality Check**: Before creating any job, ask yourself: "Could someone else execute this job successfully 6 months from now without asking any questions?" If not, add more context and details.
 
-**CRITICAL: No Empty Placeholders** - NEVER create job content with:
+**Avoid Empty Placeholders** - Don't create job content with:
 - Empty bullet points (just "- " with nothing after)
 - Incomplete sentences ending with commas followed by spaces
 - Template placeholders like ", , ," or "- \n- \n-"
 - Missing details in lists or requirements sections
-- Every bullet point, requirement, and technical detail MUST be fully specified with actual content
+- Every bullet point, requirement, and technical detail should be fully specified with actual content
 
 ## Output Format
 

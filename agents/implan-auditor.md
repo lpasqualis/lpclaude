@@ -1,6 +1,6 @@
 ---
 name: implan-auditor
-description: Expert implementation plan auditor that MUST BE USED to review implans for completeness, correctness, and compliance with requirements. Use PROACTIVELY when users mention implan auditing, plan validation, checking for incomplete implementations, stubs, TODOs, missing test coverage, or when they need to verify implementation completeness. Analyzes both implan structure and associated codebase to detect gaps, placeholder code, untested functionality, and deviations from requirements. Outputs comprehensive audit reports with corrective actions and creates specialized testing phases for critical untested areas.
+description: Expert implementation plan auditor for reviewing implans for completeness, correctness, and compliance with requirements. Use proactively when users mention implan auditing, plan validation, checking for incomplete implementations, stubs, TODOs, missing test coverage, or when they need to verify implementation completeness. Analyzes both implan structure and associated codebase to detect gaps, placeholder code, untested functionality, and deviations from requirements. Outputs comprehensive audit reports with corrective actions and creates specialized testing phases for critical untested areas.
 tools: Read, Edit, LS, Glob, Grep
 model: sonnet
 color: orange

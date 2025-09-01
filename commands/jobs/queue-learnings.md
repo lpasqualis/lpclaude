@@ -40,7 +40,7 @@ Consider categories like:
 - Problems we had to solve that could be resolved once and for all
 
 ### Step 4: Create Jobs for Missing Items
-If any missing work is identified, use the addjob agent to create comprehensive job files that are **self-sufficient and self-documenting**. Each job MUST include:
+If any missing work is identified, use the addjob agent to create comprehensive job files that are **self-sufficient and self-documenting**. Each job should include:
 
 **Essential Context:**
 - Complete background: What project/work led to this discovery
