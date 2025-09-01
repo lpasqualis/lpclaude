@@ -2,19 +2,14 @@
 
 Quick lookup for all framework components.
 
-## Agents
+## Quick Guides
+- [Subagents vs Commands vs Tasks](../resources/subagents_vs_commands_vs_tasks.md) - When to use each approach
 
-### Optimization
-| Agent | Purpose | Triggers On |
-|-------|---------|------------|
-| `subagent-optimizer` | Optimize agent definitions | "optimize agent", agent improvements |
-| `command-optimizer` | Optimize command definitions | "optimize command", command improvements |
-| `claude-md-optimizer` | Improve CLAUDE.md files | CLAUDE.md quality issues |
+## Agents
 
 ### Content Management
 | Agent | Purpose | Triggers On |
 |-------|---------|------------|
-| `memory-keeper` | Add to CLAUDE.md | "remember", "store", "memorize" |
 | `documentation-auditor` | Update docs | Documentation outdated/inconsistent |
 
 ### Development Support
@@ -30,8 +25,11 @@ Quick lookup for all framework components.
 | Command | Purpose | Usage |
 |---------|---------|-------|
 | `/commands:create` | Create new commands | Interactive wizard |
+| `/commands:optimize` | Optimize command definitions | Improves command quality |
 | `/commands:normalize` | Standardize structure | Batch normalization |
+| `/subagents:optimize` | Optimize agent definitions | Improves agent quality |
 | `/subagents:review-ecosystem` | Analyze agent overlap | Ecosystem health check |
+| `/claude:optimize-md` | Optimize CLAUDE.md files | Scope-based organization |
 
 ### Documentation
 | Command | Purpose | Output |
@@ -55,7 +53,7 @@ Quick lookup for all framework components.
 ### Memory
 | Command | Purpose | Captures |
 |---------|---------|----------|
-| `/memory:learn` | Extract session learnings | Technical insights |
+| `/learn` | Add insights or extract learnings | CLAUDE.md management |
 
 ## Worker Templates
 
@@ -140,7 +138,7 @@ allowed-tools: Task, Read, Write, Edit, Bash, LS, Glob, Grep, WebSearch, WebFetc
 
 | Type | Convention | Example |
 |------|-----------|---------|
-| Agents | lowercase-hyphenated | `memory-keeper.md` |
+| Agents | lowercase-hyphenated | `hack-spotter.md` |
 | Commands | namespace/command | `git/commit-and-push.md` |
 | Task Templates | command-purpose | `commit-analyzer.md` |
 | Directives | descriptive_names | `python_standards.md` |

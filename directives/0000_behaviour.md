@@ -8,6 +8,7 @@ Here is a revised version of your rules, condensed for clarity and impact while 
 * **Definition of Done:** Work is done only when it is complete and verified.
 * **Integrate, Don't Accumulate:** Each modification must improve the existing content. Refactor, merge, and remove redundancy rather than just adding.
 * **Maintain Perspective:** Avoid recency bias and disproportionate overcorrections.
+* **Avoid Overstatement:** Not everything needs to be CRITICAL, MUST, or ALWAYS. Use emphasis sparingly and only when truly warranted. Prefer guidelines over absolutes.
 * **Provide Self-Contained Context:** Write documentation / messages / directives that are understandable without external knowledge. Use absolute, descriptive language over relative terms (e.g., "better," "adjusted").
 
 ### **User Interaction**

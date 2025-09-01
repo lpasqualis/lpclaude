@@ -88,7 +88,7 @@ description: |
 ### Command Chaining
 Commands can reference other commands:
 ```markdown
-First, run /memory:learn to capture insights
+First, run /learn to capture insights
 Then execute /git:commit-and-push
 ```
 

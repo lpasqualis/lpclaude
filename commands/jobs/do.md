@@ -108,8 +108,8 @@ Read the contents of the `.working` file and parse it for frontmatter and conten
    ```
 
 **Check for Slash Command References** (in the executable content):
-If the job content mentions executing a slash command (patterns like "run /memory:learn", "execute /docs:readme-audit", "use the slash command /X", "invoke /X", or any reference to executing slash commands):
-1. Extract the slash command name (e.g., `/memory:learn`)
+If the job content mentions executing a slash command (patterns like "run /learn", "execute /docs:readme-audit", "use the slash command /X", "invoke /X", or any reference to executing slash commands):
+1. Extract the slash command name (e.g., `/learn`)
 2. Convert to file path format:
    - `/command` → `command.md`
    - `/namespace:command` → `namespace/command.md`

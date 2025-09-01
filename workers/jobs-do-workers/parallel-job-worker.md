@@ -19,7 +19,7 @@ Before execution, scan the job content for context requirements:
 - Read the `.working` file content
 - Check for patterns that require main agent context:
   - **Subagent invocation patterns**:
-    - References to specific agent names (e.g., "memory-keeper", "hack-spotter", etc.)
+    - References to specific agent names (e.g., "hack-spotter", "delegate", etc.)
     - Instructions to "use the [agent-name] agent" or "invoke [agent-name]"
     - Task tool usage patterns or "Task:" references
   - **Slash command references**:

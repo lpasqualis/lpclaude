@@ -191,17 +191,6 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "agents/memory-keeper.md",
-      "type": "curator",
-      "description": "Manages CLAUDE.md memory storage",
-      "knowledge_areas": [
-        "claude-md-structure",
-        "contradiction-resolution",
-        "memory-patterns"
-      ],
-      "last_updated": "2025-08-08"
-    },
-    {
       "path": "commands/commands/create.md",
       "type": "command",
       "description": "Creates new slash commands",
@@ -295,13 +284,13 @@
       "last_updated": "2025-08-08"
     },
     {
-      "path": "commands/memory/learn.md",
+      "path": "commands/learn.md",
       "type": "command",
-      "description": "Learns from conversations",
+      "description": "Adds insights to CLAUDE.md or extracts from conversation",
       "knowledge_areas": [
-        "parallel-optimization",
-        "task-tool-usage",
-        "memory-integration"
+        "claude-md-management",
+        "quality-gates",
+        "scope-based-placement"
       ],
       "last_updated": "2025-08-08"
     },

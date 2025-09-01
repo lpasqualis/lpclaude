@@ -124,8 +124,8 @@ Your audit report should include:
 When your audit reveals issues that extend beyond the implan itself, suggest appropriate follow-up agent invocations:
 
 - **Documentation gaps discovered**: Suggest using `documentation-auditor` if the implan changes require documentation updates
-- **New architectural decisions made**: Suggest using `memory-keeper` to record important decisions in CLAUDE.md
-- **CLAUDE.md quality issues noticed**: Suggest using `claude-md-optimizer` if you notice contradictions or poor organization in CLAUDE.md while reviewing project standards
+- **New architectural decisions made**: Suggest that the user run `/learn` command to record important decisions in CLAUDE.md
+- **CLAUDE.md quality issues noticed**: Suggest that the user run `/claude:optimize-md` command if you notice contradictions or poor organization in CLAUDE.md while reviewing project standards
 
 Include these suggestions in your final report when relevant, helping users maintain consistency across all project artifacts.
 

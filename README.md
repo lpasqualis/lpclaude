@@ -24,7 +24,7 @@ Task(subagent_type="documentation-auditor", prompt="Audit API docs")
 /git:commit-and-push
 
 # Extract and save learnings from your session
-/memory:learn
+/learn
 
 # Create implementation plans from conversations
 /implan:create
@@ -152,7 +152,7 @@ The framework includes sophisticated optimizers that don't just fix issues - the
 
 ### Productivity Boosters
 - **`/git:commit-and-push`** - Intelligent commits with semantic versioning
-- **`/memory:learn`** - Extract and save session learnings
+- **`/learn`** - Add insights to CLAUDE.md or extract from conversation
 - **`/docs:capture-session`** - Document work for seamless handoff
 - **`/implan:create`** - Generate detailed implementation plans
 

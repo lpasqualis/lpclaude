@@ -32,7 +32,7 @@ Quick solutions to common Claude Framework issues.
 **Solutions:**
 1. **Check location**: Verify file matches namespace
    - `/git:commit` → `commands/git/commit.md`
-   - `/memory:learn` → `commands/memory/learn.md`
+   - `/learn` → `commands/learn.md`
 2. **Verify symlinks**: `ls -la ~/.claude/commands/`
 3. **Check YAML**: Ensure frontmatter has `name:` field
 4. **Run setup**: `./setup.sh` if symlinks missing

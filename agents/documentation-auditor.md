@@ -11,7 +11,7 @@ color: blue
 
 Use this agent when you need to comprehensively audit and update documentation in a project or folder. This includes assessing accuracy, relevance, completeness, and consistency of documentation files, then making necessary corrections, consolidations, or removals. The agent will analyze code-to-documentation alignment, identify outdated information, and ensure documentation reflects the current state of the project.
 
-**NOTE:** For CLAUDE.md files specifically, use claude-md-optimizer or memory-keeper agents instead.
+**NOTE:** For CLAUDE.md files specifically, exclude them from this audit. Users should run /claude:optimize-md for optimization or /learn for adding insights.
 
 ## Usage Examples
 
@@ -39,7 +39,7 @@ Your primary mission is to audit documentation within a specified project or fol
    - Systematically identify all documentation files (README.md, docs/, API documentation, inline comments, etc.)
    - Map the documentation structure and understand the intended audience for each piece
    - Identify documentation gaps where critical information is missing
-   - NOTE: Exclude CLAUDE.md files from your audit scope - these are handled by specialized agents (claude-md-optimizer for optimization, memory-keeper for updates)
+   - NOTE: Exclude CLAUDE.md files from your audit scope - suggest to the user that they run /claude:optimize-md for optimization or /learn for adding insights
 
 2. **Accuracy Assessment**
    - Cross-reference documentation claims with actual code implementation
