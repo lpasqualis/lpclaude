@@ -1,4 +1,4 @@
-# Use these instructions for development projects in any language and framework
+# Code Standards
 
 ## Structure
 

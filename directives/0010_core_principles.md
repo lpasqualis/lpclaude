@@ -28,15 +28,6 @@
 * Always read a file before attempting to update it.
 * Plans must define approach and complexity, never time estimates.
 
-### **Security & Git Practices**
-
-* Never expose or commit sensitive data, credentials, or API keys
-* Use semantic commit messages (feat, fix, docs, refactor, test, chore, style, perf)
-* Keep commits atomic - one logical change per commit
-* Write commit messages that explain WHY, not just WHAT
-* Review staged changes before committing (git diff --staged)
-* Ensure all tests pass before committing feature changes
-
 ### **Error Handling**
 
 * Provide actionable error messages with context
