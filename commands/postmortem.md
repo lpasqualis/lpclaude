@@ -5,11 +5,18 @@ argument-hint: [optional focus area or specific issues]
 allowed-tools: Read, LS, Glob, Grep, Bash
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-09-01 -->
-
 Conduct a postmortem analysis of the current session to identify and document all issues encountered, their root causes, and next steps for systematic resolution.
 
+## Areas of focus
+
+Focus on the following area. If this section is empty, decided what to focus on:
+
+<focus-area>
+$ARGUMENTS
+</focus-area>
+
 ## Purpose
-Extract and document problems discovered during work, focusing on root causes rather than workarounds. The goal is to produce a report for developers to systematically fix underlying issues.
+Extract and document problems discovered during work in the focus area; examine true issues and root causes rather than workarounds. The goal is to produce a report that can be used to systematically fix underlying issues withou any additional context or logs. The report should NOT contain problems that were fully resolved permanently, if there is nothing left to do to improve the situation.
 
 ## Step 1: Issue Discovery
 
@@ -26,6 +33,7 @@ Use these methods:
 - Identify patterns in problem occurrences
 - Note any temporary fixes or manual interventions
 - Document struggles, resolutions, and prevention strategies
+- Document situations where you had to try and retry sto accomplish a goal in different ways
 
 ## Step 2: Root Cause Analysis
 
@@ -34,7 +42,7 @@ For each identified issue:
 2. **Impact**: How did this affect the work?
 3. **Root Cause**: What underlying problem caused this?
 4. **Reproduction Steps**: How can this be reliably reproduced?
-5. **Evidence**: File paths, error messages, command outputs
+5. **Evidence & Domain**: File paths, error messages, command outputs
 
 ## Step 3: Issue Categorization
 
@@ -55,7 +63,7 @@ Session Context: $ARGUMENTS
 ## Executive Summary
 [Brief overview of major issues found]
 
-## Issues Identified
+## Issues Identified, in order of severity
 
 ### Issue #1: [Descriptive Title]
 - **Severity**: [Critical/Major/Minor]
@@ -67,9 +75,10 @@ Session Context: $ARGUMENTS
   2. [Step 2]
   ...
 - **Evidence**:
-  - File: [path]
-  - Error: [message]
+  - File(s): [path]
+  - Error(s): [message]
   - Command: [what was run]
+- **Workarounds**: [list of workaround that were implemented]
 - **Recommended Fix**: [Specific action needed]
 
 [Repeat for each issue]
@@ -87,7 +96,7 @@ Priority order for fixing:
 ...
 
 ## Prevention Recommendations
-[Suggestions to prevent similar issues]
+[Suggestions to prevent similar issues in the future - avoid speculative suggestions]
 ```
 
 Focus on actionable information that enables systematic fixes, not temporary workarounds. Present the complete report to the user without saving to file.
