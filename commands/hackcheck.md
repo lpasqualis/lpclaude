@@ -1,17 +1,19 @@
 ---
 name: /hackcheck
-description: Run 6 parallel security audits and consolidate findings by priority
+description: Run 7 parallel security audits and consolidate findings by priority
 argument-hint: [optional: specific files/directories to focus on]
 allowed-tools: Read, LS, Glob, Grep, Task
 ---
 
 # Security Audit - Parallel Hack Detection
 
-Run 6 concurrent hack-spotter agents to comprehensively audit the codebase for security issues, technical debt, and dangerous shortcuts.
+Run 7 hack-spotter agents in batches (5 parallel, then 2 parallel) to comprehensively audit the codebase for security issues, technical debt, and dangerous shortcuts.
 
 ## Execution Plan
 
-Launch 6 parallel hack-spotter agents with different focus areas:
+Launch agents in two batches to respect parallel execution limits:
+
+### Batch 1 (5 agents in parallel):
 
 1. **Agent 1 - Authentication & Secrets**
    Focus: Hardcoded credentials, API keys, exposed secrets, authentication bypasses, disabled security checks
@@ -28,6 +30,8 @@ Launch 6 parallel hack-spotter agents with different focus areas:
 5. **Agent 5 - DRY Violations & Over-Engineering**
    Focus: Code duplication violations of DRY principle, copy-paste programming, redundant implementations, over-engineered solutions, speculative "future-proofing" code, unnecessary abstractions, YAGNI violations, premature optimization
 
+### Batch 2 (2 agents in parallel):
+
 6. **Agent 6 - Context-Specific Analysis**
    Dynamically determine focus based on project type and technology stack. First analyze:
    - Project type (web app, CLI tool, library, API, etc.)
@@ -40,7 +44,24 @@ Launch 6 parallel hack-spotter agents with different focus areas:
    - Technology-specific performance bottlenecks
    - Stack-specific best practice violations
 
+7. **Agent 7 - Monolithic Code & SRP Violations**
+   Focus: Oversized components that violate Single Responsibility Principle
+   - Files exceeding reasonable line counts (>500 lines)
+   - God classes with too many responsibilities
+   - Functions/methods doing too many things (>50 lines)
+   - Classes with too many methods (>20 public methods)
+   - Modules with mixed concerns that should be separated
+   - Long parameter lists indicating poor abstraction
+   - Deep nesting levels (>4 levels) suggesting complexity
+   - Components that know too much about their collaborators
+
 $ARGUMENTS
+
+## Execution Notes
+
+- Run Batch 1 (5 agents) first, wait for completion
+- Then run Batch 2 (2 agents) in parallel
+- This ensures we stay within the 5 parallel execution limit while maximizing efficiency
 
 ## Consolidation Requirements
 
