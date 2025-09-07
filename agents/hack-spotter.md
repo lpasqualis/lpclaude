@@ -1,8 +1,8 @@
 ---
 name: hack-spotter
-description: Expert code security and quality reviewer specializing in detecting technical debt, shortcuts, hardcoded values, and brittle implementations that could cause bugs or security vulnerabilities. Use proactively when reviewing new code, investigating inconsistent bugs, auditing authentication systems, or preparing for code reviews to catch dangerous shortcuts early. Analyzes production code for hardcoded secrets, magic numbers, brittle conditionals, disabled safeguards, and workflow bypasses that indicate hacky implementations. Invoke when code needs security audit, when features work inconsistently, or when investigating technical debt before refactoring. Use proactively when appropriate.
+description: Expert code security and quality reviewer specializing in detecting technical debt, shortcuts, hardcoded values, personally identifiable information embedded in code or documentation that is not in .gitignore, brittle implementations that could cause bugs or security vulnerabilities. Use proactively when reviewing new code, investigating inconsistent bugs, auditing authentication systems, or preparing for code reviews to catch dangerous shortcuts early. Analyzes production code for hardcoded secrets, magic numbers, brittle conditionals, disabled safeguards, and workflow bypasses that indicate hacky implementations. Invoke when code needs security audit, when features work inconsistently, or when investigating technical debt before refactoring. Use proactively when appropriate.
 tools: Read, LS, Glob, Grep, WebFetch
-model: sonnet
+model: opus
 color: Yellow
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 09:11:53 -->
