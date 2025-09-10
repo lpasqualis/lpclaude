@@ -5,11 +5,11 @@ Expert techniques for power users of the Claude Framework.
 ## Parallel Processing with Task Templates
 
 ### The Pattern
-Replace sequential processing with parallel execution using task templates:
+Replace sequential processing with parallel execution using worker templates:
 
 ```markdown
 # In your command
-template = Read('workers/analyzer.md')
+template = Read('workers/docs-capture-session-workers/analyzer.md')
 
 # Execute up to 10 parallel tasks
 results = []
@@ -21,8 +21,8 @@ for item in items[:10]:
     results.append(result)
 ```
 
-### Creating Task Templates
-1. Create file in `workers/{command}-{purpose}.md`
+### Creating Worker Templates
+1. Create file in `workers/{command}-workers/{purpose}.md`
 2. Write pure prompt (no YAML frontmatter)
 3. Design for independence (no shared state)
 4. Return structured data (JSON preferred)

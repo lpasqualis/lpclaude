@@ -1,43 +1,40 @@
 # Development Guide
 
-## Creating Components - Quick Reference
+## Creating Components
 
-### Automated Creation (Recommended)
-
-**Create an Agent:**
+### Create a Command (Automated)
 ```bash
-/agents                                    # Interactive wizard
-"Optimize agents/my-new-agent.md"         # Auto-optimize after
+/commands:create                          # Interactive wizard provided by this repo
 ```
+**Value**: Guides you through best practices, ensures proper structure
 
-**Create a Command:**
-```bash
-/commands:create                          # Interactive wizard  
-"Optimize commands/namespace/command.md"   # Auto-optimize after
-```
+### Create an Agent (Manual)
+Add a `.md` file to `agents/` with YAML frontmatter:
 
-### Manual Creation
-
-**Agent YAML:**
 ```yaml
 ---
 name: agent-name
-description: Clear description. MUST BE USED PROACTIVELY when [trigger].
-model: sonnet    # haiku/sonnet/opus
+description: Clear description. MUST BE USED PROACTIVELY when [trigger keywords].
+tools: [Read, Write, Edit]    # No Task tool for agents
 ---
+
+Your agent instructions here...
 ```
 
-**Command YAML:**
+**Value**: Agents activate automatically based on conversation keywords
+
+### Command Structure
 ```yaml
 ---
-name: /namespace:command
 description: What it does
 argument-hint: "[optional-arg]"
 allowed-tools: Read, Write, Edit, Task, LS, Glob, Grep
 ---
+
+Command instructions here...
 ```
 
-Always optimize after creation!
+**Value**: Commands can use Task tool for parallel execution
 
 ## Directives
 
@@ -46,22 +43,13 @@ Always optimize after creation!
 **Location:** `directives/` folder  
 **Output:** `CLAUDE_global_directives.md` (auto-generated)
 
-## Automatic Optimization
+## Testing Your Components
 
-Just ask naturally - optimizers trigger automatically:
-- "Optimize my agent"
-- "Improve this command"
-- "Review for best practices"
-
-**What gets optimized:**
-- Agents: Descriptions, models, triggers, colors
-- Commands: Permissions, arguments, placeholders
-
-## Testing
-
-- **Agents:** `Task(subagent_type: 'agent-name', prompt: 'test')`
-- **Commands:** Type the slash command
+- **Agents:** Trigger naturally in conversation (e.g., mention "security" for hack-spotter)
+- **Commands:** Type the slash command directly
 - **Changes:** Propagate immediately via symlinks
+
+**Value**: Test in real scenarios to ensure components work as expected
 
 ## Version Control
 

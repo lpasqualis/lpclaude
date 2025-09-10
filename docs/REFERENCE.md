@@ -22,14 +22,13 @@ Quick lookup for all framework components.
 ## Commands
 
 ### Core Management
-| Command | Purpose | Usage |
+| Command | Purpose | Value |
 |---------|---------|-------|
-| `/commands:create` | Create new commands | Interactive wizard |
-| `/commands:optimize` | Optimize command definitions | Improves command quality |
-| `/commands:normalize` | Standardize structure | Batch normalization |
-| `/subagents:optimize` | Optimize agent definitions | Improves agent quality |
-| `/subagents:review-ecosystem` | Analyze agent overlap | Ecosystem health check |
-| `/claude:optimize-md` | Optimize CLAUDE.md files | Scope-based organization |
+| `/commands:create` | Create new commands | Interactive wizard guides best practices |
+| `/commands:optimize` | Optimize command definitions | Adds parallelization and improves quality |
+| `/subagents:optimize` | Optimize agent definitions | Ensures reliable triggering |
+| `/subagents:review-ecosystem` | Analyze agent overlap | Prevents duplicate functionality |
+| `/claude:optimize-md` | Optimize CLAUDE.md files | Organizes directives by scope |
 
 ### Documentation
 | Command | Purpose | Output |
@@ -57,15 +56,18 @@ Quick lookup for all framework components.
 
 ## Worker Templates
 
-Templates for parallel processing (in `workers/` directory):
+Templates for parallel processing (in `workers/` directory subdirectories):
 
-| Template | Used By | Purpose |
-|----------|---------|---------|
-| `capture-session-analyzer` | `/docs:capture-session` | Session analysis |
-| `commit-analyzer` | `/git:commit-and-push` | File grouping |
-| `commit-and-push-security` | `/git:commit-and-push` | Security scan |
-| `jobs-do-worker` | `/jobs:do` | Parallel job processing |
-| `review-subagent-ecosystem-analyzer` | `/subagents:review-ecosystem` | Agent analysis |
+| Template Path | Used By | Purpose |
+|--------------|---------|---------|
+| `docs-capture-session-workers/analyzer.md` | `/docs:capture-session` | Session analysis |
+| `git-commit-and-push-workers/analyzer.md` | `/git:commit-and-push` | File grouping |
+| `git-commit-and-push-workers/security.md` | `/git:commit-and-push` | Security scan |
+| `git-commit-and-push-workers/validator.md` | `/git:commit-and-push` | Validation |
+| `jobs-do-workers/parallel-job-worker.md` | `/jobs:do` | Parallel job processing |
+| `subagents-review-ecosystem-workers/analyzer.md` | `/subagents:review-ecosystem` | Agent analysis |
+| `commands-add-parallelization-workers/analyzer.md` | `/add-parallelization` | Parallelization analysis |
+| `commands-create-workers/command-validator.md` | `/commands:create` | Command validation |
 
 ## File Structure
 
@@ -140,7 +142,7 @@ allowed-tools: Task, Read, Write, Edit, Bash, LS, Glob, Grep, WebSearch, WebFetc
 |------|-----------|---------|
 | Agents | lowercase-hyphenated | `hack-spotter.md` |
 | Commands | namespace/command | `git/commit-and-push.md` |
-| Task Templates | command-purpose | `commit-analyzer.md` |
+| Worker Templates | command-workers/purpose | `git-commit-workers/analyzer.md` |
 | Directives | descriptive_names | `python_standards.md` |
 
 ## Quick Command Reference
@@ -150,13 +152,11 @@ allowed-tools: Task, Read, Write, Edit, Bash, LS, Glob, Grep, WebSearch, WebFetc
 ./setup.sh                              # Install symlinks
 ./rebuild_claude_md.sh                  # Compile directives
 
-# Creation
-/agents                                 # Create agent
-/commands:create                        # Create command
+# Creation (this repo provides)
+/commands:create                        # Create command interactively
 
-# Optimization
-"Optimize agents/my-agent.md"           # Optimize agent
-"Optimize commands/my/command.md"       # Optimize command
+# Create agents manually
+# Add .md file to agents/ with YAML frontmatter
 
 # Maintenance (this repo only)
 /maintenance:update-knowledge-base      # Update framework knowledge

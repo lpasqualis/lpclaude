@@ -1,198 +1,143 @@
-# Claude Framework Development Workspace
+# Claude Code Components Library
 
-**Supercharge Claude Code with custom agents, commands, and automation that work across ALL your projects.**
+A curated personal configuration for Claude Code containing agents, commands, and tools. Once installed via symbolic links to ~/.claude/, these components become available in all your projects.
 
-Transform Claude Code into your personal AI development assistant by creating custom extensions that automate repetitive tasks, enforce best practices, and streamline your workflow. Write once, use everywhere.
+## What's Included
 
-## What Can You Build?
+### Agents
+- **completion-verifier** - Verifies task completion claims
+- **delegate** - Delegates tasks to external LLMs
+- **documentation-auditor** - Audits documentation against code
+- **hack-spotter** - Reviews code for security issues and technical debt
+- **implan-auditor** - Reviews implementation plans for completeness
 
-### Custom Agents - Specialized AI Workers
-```bash
-# Automatically spot security issues in your code
-Task(subagent_type="hack-spotter", prompt="Review auth.js")
+### Slash Commands
 
-# Create comprehensive implementation plans from conversations
-/implan:create user dashboard feature
+#### Git & Version Control
+- `/git:commit-and-push` - Intelligent commits with semantic versioning
+- `/git:rewrite-commit-descriptions` - Improve commit messages
 
-# Optimize your documentation
-Task(subagent_type="documentation-auditor", prompt="Audit API docs")
-```
+#### Documentation
+- `/docs` - Documentation utilities
+- `/docs:capture-session` - Document work for team handoff
+- `/docs:capture-strategy` - Capture strategic decisions
+- `/docs:readme-audit` - Audit and optimize README files
+- `/pdf2md` - Convert PDF to Markdown
 
-### Slash Commands - Instant Automation
-```bash
-# Intelligently commit with semantic versioning
-/git:commit-and-push
+#### Planning & Implementation
+- `/implan:create` - Generate implementation plans
+- `/implan:execute` - Execute implementation plans
+- `/postmortem` - Generate incident postmortems
 
-# Extract and save learnings from your session
-/learn
+#### Job Queue Management
+- **addjob** - Queue tasks (Python utility, also has supporting agent)
+- `/jobs:do` - Execute queued jobs in parallel
+- `/jobs:auto-improve` - Enhance job descriptions for better execution
+- `/jobs:queue-learnings` - Queue learnings for processing
 
-# Create implementation plans from conversations
-/implan:create
+#### Code Quality & Validation
+- `/hackcheck` - Check for code hacks and shortcuts
+- `/doublecheck` - Verify implementation completeness
+- `/commands:validate` - Validate code or configurations
+- `/simplify` - Simplify complex code or text
 
-# Capture session work for handoff
-/docs:capture-session
-```
+#### Knowledge Management
+- `/learn` - Add insights to CLAUDE.md or extract from conversation
+- `/claude:optimize-md` - Optimize CLAUDE.md files
+- `/question` - Answer questions without taking action
 
-### Job Queue System - Never Lose Focus
-```bash
-# Queue tasks without interrupting your flow
-addjob "Refactor the authentication module"
-addjob "Update API documentation" 
-addjob "Run comprehensive test suite"
-addjob "Review and fix linting issues"
+#### Framework Development
+- `/commands:create` - Interactive command creator
+- `/add-parallelization` - Add parallel processing to commands
+- `/optimize` - General optimization command
+- `/subagents:optimize` - Optimize subagent definitions
+- `/subagents:review-ecosystem` - Analyze agent interactions
+- `/worker:run` - Run worker templates
 
-# Later, execute all queued jobs in parallel with a single command
-/jobs:do
+#### VS Code Integration
+- `/vs:settings-help` - VS Code settings assistance
+- `/vs:tint-workspace` - Tint VS Code workspace
 
-# The system processes up to 10 jobs simultaneously, 
-# maintaining context and handling each task independently
-```
+### Hooks
+- **guard-cd** - Prevents Claude from changing directories and losing context
+- **show-cwd** - Shows current working directory
 
-### Global Directives - Shape Claude's Behavior
-- Enforce coding standards across all projects
-- Set project-specific conventions
-- Define custom workflows and patterns
+### Output Styles
+- **html-documentation** - HTML formatted documentation output
+- **yaml-structured** - YAML structured data output
 
-## Quick Start (2 minutes)
+### Utilities
+- **Global directives** - Coding standards and patterns via CLAUDE.md
 
-### 1. Install Framework
+## Usage
 
-```bash
-git clone [repository-url] ~/claude-framework
-cd ~/claude-framework
-./setup.sh
-```
-
-That's it! Your custom agents and commands are now available in every project.
-
-### 2. Create Your First Extension (The Smart Way)
-
-**The framework helps you create and optimize its own components!**
-
-**Create a custom command** using the framework's own command creator:
-```bash
-# Use the framework's command creator - it guides you through everything!
-/commands:create
-
-# Follow the interactive prompts to:
-# - Choose namespace and name
-# - Define requirements
-# - Set appropriate tool permissions
-# The command creator ensures best practices automatically
-```
-
-**Create a custom agent** using Claude's built-in agent creator:
-```bash
-# Use Claude's built-in agent creation command
-/agents
-
-# This will:
-# - Guide you through agent definition
-# - Create properly formatted YAML frontmatter
-# - Set up the agent in the correct location
-```
-
-**Optimize automatically** - Just ask Claude!
-```bash
-# After creating any agent or command, simply say:
-"Please optimize my new agent"
-# or
-"Optimize the command I just created"
-
-# This automatically triggers the framework's optimizers:
-# - command-optimizer for commands
-# - subagent-optimizer for agents
-# They'll ensure best practices, proper structure, and maximum effectiveness
-```
-
-**Why this approach is better:**
-- ✅ No manual file creation or YAML editing
-- ✅ Built-in best practices enforcement
-- ✅ Automatic optimization for maximum effectiveness
-- ✅ The framework improves itself!
-
-## The Framework That Improves Itself
-
-### 🧠 Intelligent Optimizers - Transform Your Extensions
-
-The framework includes sophisticated optimizers that don't just fix issues - they **transform your extensions into high-performance, parallel-capable systems**:
-
-#### Command Optimizer - Makes Commands Lightning Fast
-```bash
-# After creating any command, just say:
-"Please optimize my command"
-
-# The command-optimizer will:
-# ⚡ Analyze for parallelization opportunities
-# ⚡ Automatically create specialized subagents for parallel execution
-# ⚡ Convert sequential operations into concurrent workflows
-# ⚡ Set up proper tool permissions and model selection
-# ⚡ Transform monolithic commands into efficient, distributed systems
-
-# Example: A command that analyzes 50 files sequentially becomes
-# a parallel system processing 10 files simultaneously!
-```
-
-#### Subagent Optimizer - Ensures Reliable Invocation
-```bash
-# After creating any agent, just say:
-"Optimize this agent"
-
-# The subagent-optimizer will:
-# 🎯 Enhance descriptions with trigger keywords for automatic invocation
-# 🎯 Optimize model selection (haiku for speed, opus for complexity)
-# 🎯 Validate YAML frontmatter and proactive settings
-# 🎯 Ensure proper tool permissions are granted
-# 🎯 Add semantic colors and improve discoverability
-```
-
-**The Magic**: These optimizers include "MUST BE USED PROACTIVELY" in their descriptions - they trigger automatically when you mention optimization. They don't just fix problems; they architect solutions that leverage Claude's full parallel processing capabilities!
-
-## Featured Extensions
-
-### Productivity Boosters
-- **`/git:commit-and-push`** - Intelligent commits with semantic versioning
-- **`/learn`** - Add insights to CLAUDE.md or extract from conversation
-- **`/docs:capture-session`** - Document work for seamless handoff
-- **`/implan:create`** - Generate detailed implementation plans
-
-### Code Quality & Performance
-- **`hack-spotter`** - Detect technical debt and security issues
-- **`documentation-auditor`** - Keep docs in sync with code
-- **`command-optimizer`** - Transform commands into parallel-capable systems
-  - Automatically creates specialized worker subagents
-  - Converts sequential workflows to concurrent execution
-  - Optimizes for up to 10x performance improvement
-- **`subagent-optimizer`** - Maximize agent effectiveness
-  - Ensures reliable automatic invocation
-  - Optimizes model selection and tool permissions
-  - Enhances discoverability through keyword optimization
-
-### Development Workflow
-
-#### 🚀 Powerful Job Queue System - Work Without Interruptions
-- **`addjob` utility** - Queue tasks for batch processing without breaking your flow
-  - Add tasks to a queue while you stay focused on current work
-  - Defer complex operations for later execution
-  - Create job files that capture full context and requirements
-- **`/jobs:do`** - Execute all queued jobs in parallel (up to 10 simultaneously)
-  - Process your entire job queue with a single command
-  - Automatic parallel execution for maximum efficiency
-  - Perfect for end-of-session cleanup, bulk operations, or deferred tasks
-- **`/subagents:review-ecosystem`** - Analyze agent interactions
+- **Agents** activate automatically based on keywords in your conversation
+- **Slash commands** are typed directly (e.g., `/git:commit-and-push`)
+- **addjob** queues tasks from terminal, then `/jobs:do` executes them in parallel
 
 ## How It Works
 
-Once installed, the framework uses symlinks to make your extensions globally available:
+This repository uses symbolic links to make all components available globally:
 
 ```
-Your ~/.claude/                    This Repository
-├── agents/ ───────→           agents/
-├── commands/ ─────→           commands/
-└── directives/ ───→           directives/
+~/.claude/                         This Repository
+├── agents/ ───────→           ~/.lpclaude/agents/
+├── commands/ ─────→           ~/.lpclaude/commands/
+├── directives/ ───→           ~/.lpclaude/directives/
+├── hooks/ ────────→           ~/.lpclaude/hooks/
+├── mcp/ ──────────→           ~/.lpclaude/mcp/
+├── output-styles/ →           ~/.lpclaude/output-styles/
+├── resources/ ────→           ~/.lpclaude/resources/
+├── utils/ ────────→           ~/.lpclaude/utils/
+├── workers/ ──────→           ~/.lpclaude/workers/
+├── settings.json ─→           ~/.lpclaude/settings/settings.json
+├── statusline.sh ─→           ~/.lpclaude/statusline/statusline.sh
+└── CLAUDE.md ─────→           ~/.lpclaude/directives/CLAUDE_global_directives.md
 ```
 
-**Result**: Edit here, use everywhere. Changes take effect instantly.
+**Result**: Agents, commands, and tools you add or modify here become available in ALL your projects immediately.
+
+## Installation Options
+
+### Option 1: Full Installation (Recommended)
+Install everything via symbolic links - all components become available globally:
+
+```bash
+git clone https://github.com/lpasqualis/lpclaude.git ~/.lpclaude
+cd ~/.lpclaude
+./setup.sh
+```
+
+This creates symbolic links from `~/.claude/` to this repository, giving you the complete curated collection.
+
+### Option 2: Selective Installation
+Cherry-pick specific components by manually copying them to your `~/.claude/` directory:
+
+```bash
+# Example: Install only specific agents
+cp ~/.lpclaude/agents/hack-spotter.md ~/.claude/agents/
+
+# Example: Install only certain commands
+cp ~/.lpclaude/commands/git/commit-and-push.md ~/.claude/commands/git/
+
+# Example: Install specific hooks
+cp ~/.lpclaude/hooks/guard-cd.sh ~/.claude/hooks/
+```
+
+**Note:** With selective installation, you're responsible for:
+- Creating the necessary subdirectories in `~/.claude/`
+- Maintaining and updating these files manually
+- Resolving any dependencies between components
+
+### Optional: Make addjob Available System-Wide
+
+To use the `addjob` utility from any directory:
+
+```bash
+echo "alias addjob='python3 ~/.claude/utils/addjob'" >> ~/.zshrc
+source ~/.zshrc
+```
+
 
 ## Documentation
 
@@ -210,21 +155,21 @@ Your ~/.claude/                    This Repository
 
 ## Quick Reference
 
-| Task | Command |
+| Task | Action |
 |------|--------|
-| Install framework | `./setup.sh` |
-| Create new agent | Add to `agents/`, test with Task tool |
-| Create new command | Add to `commands/namespace/` |
-| Update directives | `./rebuild_claude_md.sh` |
-| Setup addjob utility | `alias addjob='python3 ~/.claude/utils/addjob'` |
+| Install everything | `./setup.sh` |
+| Create new agent | Add `.md` file to `agents/` with YAML frontmatter |
+| Create new command | Add `.md` file to `commands/namespace/` |
+| Update global directives | `./rebuild_claude_md.sh` |
+| Make addjob available | `alias addjob='python3 ~/.claude/utils/addjob'` |
 
 ## Contributing
 
-This framework thrives on community contributions. To add your own extensions:
+This collection grows through community contributions. To add your own agents and commands:
 
 1. Fork this repository
 2. Create your agents/commands following the patterns in [Development Guide](docs/DEVELOPMENT.md)
-3. Test thoroughly
+3. Test thoroughly in your own projects
 4. Submit a pull request
 
 ## License

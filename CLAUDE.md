@@ -1,22 +1,17 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code when working in the **Claude Framework Development Workspace**.
-
 ## Project Purpose
-Central repository where custom agents, commands, directives, and output styles are developed and maintained for global use across all projects.
+Central repository for Claude Code extensions (agents, commands, directives, output styles) that are symlinked globally to ~/.claude/ for use across all projects.
 
-## Critical Architecture
+## Architecture
 
-### Dual .claude Folder System
-- **Global** (`~/.claude/`): Symlinked folders accessible in ALL projects
-  - `agents/`, `commands/`, `resources/`, `output-styles/` → point to this repo
-- **Local** (`.claude/` in this repo): Framework maintenance commands only
-  - Contains `/maintenance:update-knowledge-base` and other meta-commands
+### Dual .claude System
+- **Global** (`~/.claude/`): Symlinked to this repo, available in all projects
+- **Local** (`.claude/`): Framework maintenance commands only
 
 ### Scope Rules
-- Files in `commands/`, `agents/`, `output-styles/` = Global (via symlinks)
-- Files in `.claude/commands/`, `.claude/agents/` = Project-local
-- Optimizers must respect this distinction when creating components
+- `commands/`, `agents/`, `output-styles/` → Global via symlinks
+- `.claude/commands/`, `.claude/agents/` → Project-local only
 
 ## Essential Commands
 
@@ -46,57 +41,46 @@ Main Claude → Can use Task → Invoke any subagent
 - **No "proactive" field in YAML** - Use "MUST BE USED PROACTIVELY" in description
 - **Agent changes require Claude Code restart** - Agents load at startup only
 
-### Slash Command Clarity
-Slash commands like `/doublecheck` or `/jobs:do` are markdown files containing instructions:
-- Location: `.claude/commands/[namespace/][name].md` or `~/.claude/commands/[namespace/][name].md`
-- Usage: READ the .md file with Read tool, then FOLLOW its instructions
-- NEVER write "execute /command" - commands are not bash executables
+### Slash Commands
+- Commands are markdown files with instructions, not executables
+- Claude reads the .md file and follows its instructions
+- Location: `commands/[namespace/]name.md`
 
-## Framework Design Principles
+## Design Principles
 - **Discover, don't hardcode** - Find project structure dynamically
-- **Adapt to conventions** - Don't impose fixed patterns
-- **Complete tool groups** - Grant logical permission sets (Read+Write+Edit)
 - **Test immediately** - No implementation is complete without verification
+- **Respect scope** - Global vs local component boundaries
 
 ## Quick Reference
 
-### Creating Components
-- **Agents**: `agents/name.md` with YAML (name, description, tools)
-- **Commands**: `commands/namespace/name.md` with YAML (allowed-tools)
-- **Worker Templates**: `workers/name.md` (pure prompt, no YAML)
+### Component Creation
+- **Agents**: `agents/name.md` with YAML (name, description, tools - no Task)
+- **Commands**: `commands/namespace/name.md` with YAML (allowed-tools including Task)
+- **Workers**: `workers/{command}-workers/purpose.md` (pure prompt, no YAML)
 - **Output Styles**: `output-styles/name.md` with YAML
-
-### Tool Permission Groups
-- **Read-only**: `Read, LS, Glob, Grep`
-- **File modification**: `Read, Write, Edit, MultiEdit, LS, Glob, Grep`
-- **Complex workflows**: Include `Task` for commands (never for agents)
 
 ### Naming Conventions
 - Agents/Commands: `lowercase-hyphenated`
 - Namespaces: `/domain:action-target`
-- Worker templates: `{command}-{purpose}.md`
+- Worker subdirectories: `{command}-workers/`
 
-## Additional Documentation
+## Documentation
 
-### Module-Specific Context
-- **Workers Context** (`workers/CLAUDE.md`): Worker template organization and patterns
+### Subdirectory Context
+- **Workers** (`workers/CLAUDE.md`): Worker template patterns and organization
 
-### Reference Guides
-- **Getting Started** (`docs/QUICK_START.md`): Environment setup and first steps
-- **Component Reference** (`docs/REFERENCE.md`): Catalog of existing components
-- **Development Guide** (`docs/DEVELOPMENT.md`): Creating new components
-- **Architecture** (`docs/ARCHITECTURE.md`): Complex workflow design
-- **Advanced Patterns** (`docs/ADVANCED_PATTERNS.md`): Parallel processing techniques
+### Key References
+- **Quick Start** (`docs/QUICK_START.md`): Setup and first steps
+- **Component Reference** (`docs/REFERENCE.md`): Complete component catalog
+- **Development** (`docs/DEVELOPMENT.md`): Creating new components
 - **Troubleshooting** (`docs/TROUBLESHOOTING.md`): Common issues and solutions
-- **Terminal Colors** (`docs/TERMINAL_COLORS.md`): ANSI color handling in Claude Code
 
-### Research & Best Practices
-- `resources/slash_commands_best_practices_research.md`: Command design patterns
-- `resources/subagent_invocation_research.md`: Agent creation guidelines
-- `resources/commands_and_agents.md`: Framework internals
+## Important Notes
+- Changes here affect ALL projects using Claude Code
+- Test components before global deployment
 
-## Project-Specific Notes
-
-- This repository IS the global configuration (via symlinks)
-- Changes here affect ALL your projects using Claude Code
-- Test in isolation before global deployment
+## Documentation Standards
+- **Accuracy** - List only components that exist, verify before documenting
+- **Clarity** - Focus on value and real usage, not marketing
+- **Completeness** - Include all component types (agents, commands, hooks, etc.)
+- **Organization** - Group by function, not alphabetically

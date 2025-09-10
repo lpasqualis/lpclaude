@@ -1,41 +1,59 @@
 # Quick Start Guide
 
-Start developing Claude Code components in 2 minutes.
+Get up and running with this curated Claude Code configuration.
+
+## Why Use This Repository
+
+**Problem**: Every Claude Code session starts fresh, requiring you to re-explain project conventions, preferences, and workflows.
+
+**Solution**: This repository provides a maintained collection of agents, commands, and tools that work across ALL your projects, giving Claude consistent capabilities and knowledge.
 
 ## Installation
 ```bash
-./setup.sh                 # Creates symlinks to make components globally available
-./rebuild_claude_md.sh     # Compiles directives (run after changes)
+git clone https://github.com/lpasqualis/lpclaude.git ~/.lpclaude
+cd ~/.lpclaude
+./setup.sh                 # Creates symlinks to ~/.claude/
 ```
 
-## Creating Components - The Fast Way
+That's it! All components are now available in every Claude Code session.
 
-### Create an Agent
-```bash
-/agents                    # Interactive agent creator
-```
-Then optimize: `"Please optimize the agent I just created"`
+## What You Get
+
+### Immediate Productivity Gains
+- **Git workflows**: `/git:commit-and-push` for intelligent commits
+- **Knowledge capture**: `/learn` to save insights across sessions
+- **Parallel execution**: `/jobs:do` to run queued tasks concurrently
+- **Code quality**: `hack-spotter` agent auto-detects security issues
+- **Documentation**: `/docs:capture-session` for handoff documentation
+
+## Creating Your Own Components
 
 ### Create a Command
 ```bash
-/commands:create           # Interactive command creator
+/commands:create           # Interactive command creator (provided by this repo)
 ```
-Then optimize: `"Please optimize the command I just created"`
 
-## Testing Your Work
-- **Test agents**: Use Task tool with the agent name
-- **Test commands**: Type the slash command
-- **Changes propagate immediately** via symlinks (no rebuild needed)
+### Create an Agent
+Create a `.md` file in `agents/` with YAML frontmatter:
+```yaml
+---
+name: my-agent
+description: What it does (include trigger keywords)
+tools: [Read, Write, Edit]
+---
+
+Agent instructions here...
+```
 
 ## Most Common Tasks
 
-| Task | Command/Action |
-|------|---------------|
-| Create new agent | `/agents` then optimize |
-| Create new command | `/commands:create` then optimize |
-| Update directives | Edit in `directives/` then run `./rebuild_claude_md.sh` |
-| Test a component | Use Task tool (agents) or slash command (commands) |
-| Fix "not triggering" | Run optimizer: `"Optimize agents/my-agent.md"` |
+| Task | How |
+|------|-----|
+| Create new command | `/commands:create` (provided by this repo) |
+| Create new agent | Add `.md` file to `agents/` with YAML |
+| Update global behavior | Edit `directives/` then run `./rebuild_claude_md.sh` |
+| Queue a task | `addjob "task description"` in terminal |
+| Execute queued tasks | `/jobs:do` in Claude Code |
 
 ## Key Files to Know
 - `agents/` - Your custom agents (global)

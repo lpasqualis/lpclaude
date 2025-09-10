@@ -11,8 +11,8 @@ Quick solutions to common Claude Framework issues.
 **Solutions:**
 1. **Add trigger phrase**: Include "MUST BE USED PROACTIVELY" in description
 2. **Add keywords**: Use specific action verbs and domain terms
-3. **Run optimizer**: `"Optimize agents/my-agent.md"`
-4. **Test explicitly**: `Task(subagent_type: 'agent-name', prompt: 'test')`
+3. **Check keywords**: Ensure description contains words users would naturally say
+4. **Test naturally**: Mention the trigger keywords in conversation
 
 ### Agent Fails with Tool Errors
 
@@ -48,11 +48,11 @@ Quick solutions to common Claude Framework issues.
 
 ### Parallel Processing Failures
 
-**Symptoms:** Task templates don't run in parallel or fail silently.
+**Symptoms:** Worker templates don't run in parallel or fail silently.
 
 **Solutions:**
-1. **Check template location**: Must be in `workers/` directory
-2. **Remove YAML**: Templates must be pure prompts
+1. **Check template location**: Must be in `workers/[command]-workers/` subdirectory
+2. **Remove YAML**: Templates must be pure prompts (no frontmatter)
 3. **Limit concurrency**: Max 10 parallel tasks
 4. **Return structured data**: Use JSON for aggregation
 
@@ -68,15 +68,15 @@ Quick solutions to common Claude Framework issues.
 3. **Check permissions**: Ensure files are readable
 4. **Verify symlinks**: `ls -la ~/.claude/` should show arrows
 
-### Optimization Not Working
+### Components Not Working as Expected
 
-**Symptoms:** Asking to optimize doesn't trigger optimizer agents.
+**Symptoms:** Agents or commands don't behave as intended.
 
 **Solutions:**
-1. **Use natural language**: "Optimize my agent" or "Improve this command"
-2. **Specify file**: "Optimize agents/my-agent.md"
-3. **Check optimizers exist**: Verify `subagent-optimizer` and `command-optimizer` present
-4. **Clear language**: Avoid ambiguous requests
+1. **Check YAML frontmatter**: Ensure proper format and required fields
+2. **Verify file location**: Commands need correct namespace structure
+3. **Test trigger words**: For agents, use exact keywords from description
+4. **Review tool permissions**: Ensure all needed tools are granted
 
 ### Circular Dependencies
 
