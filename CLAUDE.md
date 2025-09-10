@@ -77,10 +77,8 @@ Main Claude → Can use Task → Invoke any subagent
 ### Subdirectory Context
 - **Workers** (`workers/CLAUDE.md`): Worker template patterns and organization
 
-### Key References
-- **Component Reference** (`docs/REFERENCE.md`): Complete component catalog
-- **Development** (`docs/DEVELOPMENT.md`): Creating new components
-- **Troubleshooting** (`docs/TROUBLESHOOTING.md`): Common issues and solutions
+### Key References  
+- **Architecture** (`docs/ARCHITECTURE.md`): Technical design patterns
 
 ## Important Notes
 - Changes here affect ALL projects using Claude Code

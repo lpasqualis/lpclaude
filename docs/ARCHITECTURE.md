@@ -14,10 +14,10 @@
 - Your personal Claude Code configuration directory
 
 ### Local (`.claude/` - This Repo)
-- Framework maintenance only
-- Contains meta-commands
+- Repository maintenance only
+- Contains meta-commands for managing this configuration
 - Not available in other projects
-- Keeps framework tools isolated
+- Keeps maintenance tools isolated
 
 ## Visual Architecture
 ```
@@ -28,12 +28,12 @@ Your Development Environment
 │   ├── commands/                   # Your commands (copied or symlinked)
 │   └── resources/                  # Your resources (copied or symlinked)
 │                               │
-├── /path/to/this/repository/ ◄─┘   # FRAMEWORK: Development workspace
+├── /path/to/this/repository/ ◄─┘   # REPOSITORY: Configuration source
 │   ├── agents/                     # Source of global agents
 │   ├── commands/                   # Source of global commands  
 │   ├── resources/                  # Source of documentation
-│   ├── .claude/                    # LOCAL: Framework-only tools
-│   │   └── commands/maintenance/   # Meta-commands for framework
+│   ├── .claude/                    # LOCAL: Repository-only tools
+│   │   └── commands/maintenance/   # Meta-commands for this repo
 │   └── setup.sh                    # Creates the symlinks
 │
 └── /path/to/other/projects/        # OTHER PROJECTS
@@ -47,7 +47,7 @@ Your Development Environment
 ├── commands/        # Global commands (symlinked)
 ├── workers/         # Parallel processing templates
 ├── directives/      # Behavior modifiers
-├── resources/       # Framework documentation
+├── resources/       # Research and documentation
 ├── .claude/         # Local maintenance commands
 ├── setup.sh        # Creates symlinks
 └── rebuild_claude_md.sh  # Compiles directives
@@ -70,7 +70,7 @@ Your Development Environment
 - **Risk**: Can accidentally replace existing configurations
 
 ### Why Dual Configuration?
-- **Isolation**: Framework maintenance tools don't pollute user projects
+- **Isolation**: Repository maintenance tools don't pollute user projects
 - **Clear boundaries**: Global tools vs local utilities
 - **Safe development**: Test changes without affecting other projects
 

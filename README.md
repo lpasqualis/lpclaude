@@ -442,13 +442,8 @@ I'm still investigating whether @-mentions fully replace the need for a compiled
 
 ## Documentation
 
-### Quick Reference
-- **[Component Reference](docs/REFERENCE.md)** - Complete list of agents and commands
-- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
-
-### Deep Dives
-- **[Architecture Guide](docs/ARCHITECTURE.md)** - Technical design and structure
-- **[Development Guide](docs/DEVELOPMENT.md)** - Create your own extensions
-- **[Advanced Patterns](docs/ADVANCED_PATTERNS.md)** - Parallel processing and complex workflows
-- **[Best Practices](resources/)** - Research and patterns
+### Additional Resources
+- **[Architecture Guide](docs/ARCHITECTURE.md)** - Technical design and structure  
+- **[Terminal Colors](docs/TERMINAL_COLORS.md)** - Workarounds for Claude Code color rendering
+- **[Research & Patterns](resources/)** - Collected learnings and experiments
 

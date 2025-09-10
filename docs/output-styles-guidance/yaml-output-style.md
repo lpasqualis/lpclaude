@@ -1,1 +1,0 @@
-This output style generates a outoput in yaml format that breaks down the output in a very coincise but fully complete structured version of the output. The goal is to create a conceptual breakdown of the concepts, and format it in yaml for ease of reference and parsing.

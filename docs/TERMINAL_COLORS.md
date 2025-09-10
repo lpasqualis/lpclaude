@@ -1,7 +1,12 @@
-# Claude Code Terminal Color Handling
+# Terminal Color Workarounds for Claude Code Status Lines
+
+## Context
+While developing my custom status line for Claude Code, I discovered several quirks in how Claude Code's terminal renders ANSI color escape sequences. This document captures the workarounds I found necessary to get colors displaying correctly.
+
+**Note**: These are workarounds for Claude Code-specific rendering issues I encountered. Your terminal or a future Claude Code version may behave differently.
 
 ## Working Color Escape Sequences
-Claude Code's terminal properly renders ANSI colors when using these patterns:
+Through trial and error with my status line, I found these patterns render correctly in Claude Code:
 
 ### 1. Combined escape sequences
 Put background and foreground in ONE escape:
@@ -30,8 +35,14 @@ These patterns may display incorrectly or show literal characters:
 ### 3. String format with color codes
 - ❌ Using `%s` format when color codes need integer formatting
 
-## Best Practices for Statusline Scripts
-- Combine all SGR parameters in one escape sequence
-- Use `%d` format specifier for numeric color codes
-- Stick to standard 8/16 color palette
-- Test in Claude Code environment, not just external terminal
+## Lessons Learned for Status Line Development
+- Combine all SGR parameters in one escape sequence (workaround for Claude Code parsing)
+- Use `%d` format specifier for numeric color codes (avoids rendering issues)
+- Stick to standard 8/16 color palette (24-bit colors don't work in Claude Code)
+- Test in Claude Code environment, not just external terminal (they render differently)
+
+## Why This Document Exists
+I'm documenting these quirks so that:
+1. Others developing status lines can avoid the same trial-and-error process
+2. I remember these workarounds when updating my own status line
+3. We can track if these issues are fixed in future Claude Code versions
