@@ -1,5 +1,11 @@
 # Development Guide
 
+## About This Guide
+
+**This shows how I develop and test components for my personal Claude Code configuration.** Use these patterns as inspiration for your own setup, but adapt them to your workflow.
+
+This is NOT documentation for a framework - it's examples from one person's configuration.
+
 ## Creating Components
 
 ### Create a Command (Automated)
@@ -47,9 +53,9 @@ Command instructions here...
 
 - **Agents:** Trigger naturally in conversation (e.g., mention "security" for hack-spotter)
 - **Commands:** Type the slash command directly
-- **Changes:** Propagate immediately via symlinks
+- **Test first:** Copy individual components to test before deploying all
 
-**Value**: Test in real scenarios to ensure components work as expected
+Test in real scenarios to ensure components work as expected
 
 ## Version Control
 
@@ -64,10 +70,10 @@ Command instructions here...
 
 **Command not found?**
 - Check namespace structure
-- Verify symlinks: `ls -la ~/.claude/`
+- Verify file was copied: `ls -la ~/.claude/commands/`
 
 **Changes not showing?**
-- Directives: Run `./rebuild_claude_md.sh`
-- Components: Check you're editing in framework repo
+- Directives: Run `./rebuild_claude_md.sh` and copy result
+- Components: Ensure you copied updated files to ~/.claude/
 
 See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for detailed solutions.

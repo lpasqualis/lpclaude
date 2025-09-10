@@ -1,12 +1,17 @@
 # Architecture
 
+## About This Document
+
+**This describes how I organize my personal Claude Code configuration.** It's one approach among many possible ways to structure these files. Use it as inspiration for your own organization.
+
 ## Dual .claude System
 
-### Global (`~/.claude/` - Symlinked)
+### Global (`~/.claude/`)
 - Available in ALL projects
-- Created by `./setup.sh`
-- Points to this repository
-- Instant updates via symlinks
+- Can be populated by:
+  - Manually copying files from this repo (recommended)
+  - Using symlinks via `./setup.sh` (advanced users only)
+- Your personal Claude Code configuration directory
 
 ### Local (`.claude/` - This Repo)
 - Framework maintenance only
@@ -19,9 +24,9 @@
 Your Development Environment
 │
 ├── ~/.claude/                      # GLOBAL: Available everywhere
-│   ├── agents/ ────────────────┐   # (symlinks to this repo)
-│   ├── commands/ ──────────────┤
-│   └── resources/ ─────────────┤
+│   ├── agents/                     # Your agents (copied or symlinked)
+│   ├── commands/                   # Your commands (copied or symlinked)
+│   └── resources/                  # Your resources (copied or symlinked)
 │                               │
 ├── /path/to/this/repository/ ◄─┘   # FRAMEWORK: Development workspace
 │   ├── agents/                     # Source of global agents
@@ -50,11 +55,19 @@ Your Development Environment
 
 ## Key Design Decisions
 
-### Why Symlinks?
-- **Instant updates**: Edit once, available everywhere immediately
-- **Single source**: No version conflicts or sync issues
-- **Easy management**: Simple setup.sh script handles everything
-- **Clean uninstall**: Just remove symlinks, no residue
+### Installation Options
+
+#### Option 1: Manual Copying (Recommended)
+- **Mix and match**: Combine components from this repo with your own
+- **Safe**: No risk of overwriting existing configurations
+- **Selective**: Choose exactly what you want
+- **Control**: You decide when to update components
+
+#### Option 2: Symlinks (Advanced Users Only)
+- **All-or-nothing**: Replaces entire folders
+- **Central updates**: Edit once in the repo, available everywhere
+- **Clean uninstall**: Remove symlinks, your personal config remains intact
+- **Risk**: Can accidentally replace existing configurations
 
 ### Why Dual Configuration?
 - **Isolation**: Framework maintenance tools don't pollute user projects

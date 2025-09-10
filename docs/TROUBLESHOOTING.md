@@ -1,6 +1,10 @@
 # Troubleshooting Guide
 
-Quick solutions to common Claude Framework issues.
+## About This Guide
+
+**This documents issues I've encountered with my personal Claude Code setup and how I solve them.** Your issues may be different based on your configuration.
+
+Remember: This is NOT a framework - it's examples from one person's configuration. Adapt these solutions to your needs.
 
 ## Agent Issues
 
@@ -63,7 +67,7 @@ Quick solutions to common Claude Framework issues.
 **Symptoms:** Edits to agents/commands don't appear in other projects.
 
 **Solutions:**
-1. **Edit in framework repo**: Not in `~/.claude/` (those are symlinks)
+1. **Edit in source location**: If using symlinks, edit in the repository, not in `~/.claude/`
 2. **For directives**: Run `./rebuild_claude_md.sh`
 3. **Check permissions**: Ensure files are readable
 4. **Verify symlinks**: `ls -la ~/.claude/` should show arrows
@@ -112,15 +116,17 @@ Quick solutions to common Claude Framework issues.
 
 ## Setup Issues
 
-### Symlinks Not Working
+### Components Not Available
 
-**Symptoms:** Components not available globally.
+**Symptoms:** Components not showing up in Claude Code.
 
 **Solutions:**
-1. **Run setup**: `./setup.sh` from repository root
-2. **Check permissions**: Need write access to `~/.claude/`
-3. **Remove old symlinks**: `rm -rf ~/.claude/agents ~/.claude/commands`
-4. **Verify paths**: Ensure repository path is correct
+1. **For manually copied files**: Verify they're in the right location (`~/.claude/agents/`, etc.)
+2. **Check file extensions**: Must be `.md` files
+3. **Restart Claude Code**: Some changes require a restart
+4. **Verify permissions**: Files must be readable
+
+**⚠️ WARNING**: If using symlinks (not recommended), never use `rm -rf` on ~/.claude folders
 
 ### Directive Compilation Fails
 

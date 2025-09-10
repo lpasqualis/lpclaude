@@ -1,7 +1,15 @@
 # CLAUDE.md
 
-## Project Purpose
-Central repository for Claude Code extensions (agents, commands, directives, output styles) that are symlinked globally to ~/.claude/ for use across all projects.
+## What This Is
+**This is my personal Claude Code configuration repository.** I use it to:
+- Version control my Claude customizations
+- Sync my setup across multiple machines
+- Share examples of how to organize Claude Code configurations
+
+**This is NOT a framework or product to install.** It's one person's configuration shared as an example. You should create your own configuration with your own preferences.
+
+## How I Use This Repository
+I maintain my Claude Code extensions (agents, commands, directives, output styles) here and use symlinks to make them available in ~/.claude/ across all my projects.
 
 ## Architecture
 
