@@ -1,5 +1,14 @@
 # Workers Directory Context
 
+## What Are Workers?
+**Workers are NOT a Claude Code feature** - they're my custom pattern for organizing reusable task instructions that can be executed in parallel without the overhead of full agents.
+
+### Why Workers Instead of Agents?
+- **Agents consume context space** even when not actively used
+- **Agents auto-trigger** on keywords, which isn't always desired
+- **Workers are lightweight** - just instruction templates loaded on-demand
+- **Workers enable parallelization** - run up to 10 tasks concurrently
+
 ## Worker Template Pattern
 Worker templates are pure prompts designed for parallel execution - they do NOT have YAML frontmatter.
 

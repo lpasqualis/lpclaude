@@ -42,13 +42,13 @@ To create your own configuration repository:
 Here's what I've built for my workflow (yours will be different):
 
 - **Slash Commands** (30+) - My shortcuts for git, documentation, job processing, learning capture, VS Code theming
-- **Agents** (10+) - Auto-triggering helpers I use for security reviews, documentation, task queueing
-- **Workers** - Templates for parallel processing that speed up my multi-task workflows
+- **Agents** - Auto-triggering helpers I use for security reviews, documentation, task queueing
+- **Workers** - My custom pattern: reusable task templates that commands can run in parallel (not a Claude feature)
 - **Hooks** - Shell scripts that prevent me from making mistakes (like cd'ing to wrong directories)
 - **Output Styles** - How I prefer Claude to format responses for different contexts
 - **Status Line** - My terminal prompt integration showing session context
 - **Utility Scripts** - Helper tools like my `addjob` task queuing system
-- **Directives** - General directives split into numbered files, compiled into CLAUDE.md (see note below)
+- **Directives** - General directives split into numbered files, compiled into CLAUDE.md (see [Directives Compilation](#directives-compilation) below)
 - **Resources** - Research and documentation I've collected about Claude Code patterns
 - **Organization** - How I structure everything to stay maintainable
 
@@ -190,36 +190,43 @@ If you choose to use the standard setup (you don't have to), this repository use
 - Make uninstallation simple - just remove the symlinks, your personal config remains
 
 
-### Component Interaction Flow
+### Component Interaction
 
 ```
-Your Claude Code Session
-         ┃
-         ▼
-   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-   │   AGENTS    │     │  COMMANDS   │     │   HOOKS     │
-   │ (automatic) │     │ (on-demand) │     │(lifecycle)  │
-   └─────────────┘     └─────────────┘     └─────────────┘
-         ┃                       ┃                   ┃
-         ▼                       ▼                   ▼
    ┌─────────────────────────────────────────────────────┐
-   │              WORKERS (parallel)                     │
-   │ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐   │
-   │ │Task 1   │ │Task 2   │ │Task 3   │ │Task N   │   │
-   │ └─────────┘ └─────────┘ └─────────┘ └─────────┘   │
+   │            GLOBAL DIRECTIVES (CLAUDE.md)            │
+   │         Loaded at startup, applies to everything    │
    └─────────────────────────────────────────────────────┘
-         ┃
-         ▼
-   ┌─────────────┐
-   │ GLOBAL      │
-   │ DIRECTIVES  │ ← Your persistent preferences and standards
-   │ (CLAUDE.md) │
-   └─────────────┘
+                            ┃
+                            ▼
+   ┌─────────────────────────────────────────────────────┐
+   │             Your Claude Code Session                │
+   └─────────────────────────────────────────────────────┘
+         ┃                  ┃                    ┃
+         ▼                  ▼                    ▼
+   ┌────────────┐    ┌──────────────┐    ┌─────────────┐
+   │   AGENTS   │    │   COMMANDS   │    │    HOOKS    │
+   │(automatic) │    │ (explicit /) │    │ (lifecycle) │
+   └────────────┘    └──────────────┘    └─────────────┘
+                            ┃
+                     (some commands)
+                            ▼
+                  ┌──────────────────┐
+                  │     WORKERS      │
+                  │ (parallel tasks) │
+                  └──────────────────┘
 
-Flow Examples:
-• You mention "security" → hack-spotter AGENT activates → Reviews code automatically
-• You type "/git:commit-and-push" → COMMAND launches → WORKERS analyze in parallel → Result
-• You start Claude Code → HOOKS initialize → Global directives load → Context established
+How Components Work:
+• DIRECTIVES: Define behavior and standards for all interactions
+• AGENTS: Auto-trigger on keywords (e.g., "security" → hack-spotter)
+• COMMANDS: User types /command (e.g., /git:commit-and-push)
+• HOOKS: Run at specific events (e.g., before cd commands)
+• WORKERS*: My custom pattern - reusable task templates for parallel execution
+• OUTPUT STYLES: Format Claude's responses (not shown)
+
+*Note: Workers are not a Claude Code feature - they're my pattern for organizing
+reusable task instructions that commands can execute in parallel via the Task tool,
+without the overhead of creating full agents that consume context space.
 ```
 
 ## If You Want to Try My Components
@@ -324,6 +331,42 @@ source ~/.bashrc
 echo "alias addjob='python3 ~/.claude/utils/addjob'" >> ~/.config/fish/config.fish
 source ~/.config/fish/config.fish
 ```
+
+## Directives Compilation
+
+I organize my Claude directives (coding standards, behavioral guidelines, technical patterns) using a compilation system that might be unnecessary with Claude's newer @-mention feature.
+
+### How My Directives System Works
+
+1. **Numbered directive files** in `directives/`:
+   - `0010_core_principles.md` - Core behavioral guidelines
+   - `0020_prompt_engineering.md` - AI prompt best practices  
+   - `0030_engineering_strategies.md` - Technical patterns
+   - Files are numbered to control compilation order
+
+2. **Compilation via `rebuild_claude_md.sh`**:
+   ```bash
+   ./rebuild_claude_md.sh
+   ```
+   - Concatenates all `.md` files in `directives/` folder
+   - Processes them in alphabetical order (hence the numbering)
+   - Creates `directives/CLAUDE_global_directives.md`
+   - This compiled file is symlinked as `~/.claude/CLAUDE.md`
+
+3. **Why this approach?**
+   - Keeps different directive categories organized in separate files
+   - Makes it easy to enable/disable specific directives (rename to `.disabled`)
+   - Version control tracks changes to individual directive categories
+   - Compilation creates a single file that Claude reads at startup
+
+### Note About Claude's @-Mention Feature
+
+**Claude Code now supports @-mentioning files directly**, which might make this compilation approach unnecessary. You could potentially:
+- Keep directives in separate files
+- @-mention specific directive files when needed
+- Avoid the compilation step entirely
+
+I'm still investigating whether @-mentions fully replace the need for a compiled CLAUDE.md. For now, my compilation system works reliably across all Claude Code versions.
 
 ## Creating Your Own Configuration Repository
 
