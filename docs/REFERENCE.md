@@ -32,17 +32,6 @@ This is NOT a product catalog - it's one person's collection of Claude customiza
 
 **Example**: The `/jobs:do` command uses workers to process multiple jobs in your queue simultaneously.
 
-## Version Compatibility Matrix
-
-| Component Type | Claude Code Version | Status | Notes |
-|----------------|-------------------|--------|-------|
-| **Agents** | v1.0+ | ✅ Full Support | YAML frontmatter required |
-| **Commands** | v1.0+ | ✅ Full Support | Slash command syntax |
-| **Workers** | v1.2+ | ✅ Full Support | Task tool integration needed |
-| **Hooks** | v1.1+ | ✅ Full Support | Shell script execution |
-| **Output Styles** | v1.3+ | ✅ Full Support | Formatting templates |
-| **MCP Integration** | v1.4+ | ⚠️ Beta | Experimental features |
-
 **Framework Requirements:**
 - **Minimum**: Claude Code v1.0, Git, Basic shell
 - **Recommended**: Claude Code v1.4+, jq, modern terminal

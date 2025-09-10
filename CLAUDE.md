@@ -78,7 +78,6 @@ Main Claude → Can use Task → Invoke any subagent
 - **Workers** (`workers/CLAUDE.md`): Worker template patterns and organization
 
 ### Key References
-- **Quick Start** (`docs/QUICK_START.md`): Setup and first steps
 - **Component Reference** (`docs/REFERENCE.md`): Complete component catalog
 - **Development** (`docs/DEVELOPMENT.md`): Creating new components
 - **Troubleshooting** (`docs/TROUBLESHOOTING.md`): Common issues and solutions

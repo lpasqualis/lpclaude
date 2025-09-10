@@ -1,6 +1,12 @@
 # My Claude Code Configuration (Example Repository)
 
-**This is my personal Claude Code configuration that I maintain in Git.** I'm sharing it publicly as an example of how to organize and version-control a Claude Code setup.
+**This is my personal Claude Code configuration that I maintain in Git.** I'm sharing it publicly as an example of how to organize and version-control a Claude Code setup. This system works for me and my needs, but might not work for others. My requirements are:
+
+1. **Make components available globally** - Have my slash commands, agents, hooks, etc. accessible across all projects I work on
+2. **Source control everything** - Version control these components for history, backup, and evolution tracking
+3. **Multi-machine sync** - Use the same setup on multiple machines and systems seamlessly
+4. **Learn by doing** - Continue learning about agentic systems by experimenting with different patterns
+5. **Share and improve** - Document my approach for others and gather feedback to improve
 
 > **What this is:** My personal collection of agents, commands, and tools that I use across all my projects.
 > 
@@ -117,10 +123,11 @@ Claude Code is Anthropic's official CLI for AI-powered coding assistance.
 - `/commands:validate` - Validate code or configurations
 - `/simplify` - Simplify complex code or text
 
-#### Knowledge Management
+#### Context & Memory Management  
 - `/learn` - Add insights to CLAUDE.md or extract from conversation
 - `/claude:optimize-md` - Optimize CLAUDE.md files
 - `/question` - Answer questions without taking action
+- `/docs:capture-session` - Document work for team handoff (preserves context)
 
 #### Framework Development
 - `/commands:create` - Interactive command creator
@@ -332,6 +339,29 @@ echo "alias addjob='python3 ~/.claude/utils/addjob'" >> ~/.config/fish/config.fi
 source ~/.config/fish/config.fish
 ```
 
+## Session Context & Memory Management
+
+Claude Code sessions have limited context windows, so I've developed patterns to manage both memory and context effectively:
+
+### Context Management Strategies
+- **CLAUDE.md** - Persistent directives loaded at session start (doesn't consume conversation context)
+- **Agents vs Workers** - Agents consume context even when idle; workers are loaded only when needed
+- **Selective Tool Usage** - Some commands delegate to the Task tool to avoid loading everything into main context
+- **Job Queuing** - The `addjob` system defers work to future sessions, preserving context for current tasks
+
+### Memory Persistence
+- **Global Memory** - `~/.claude/CLAUDE.md` persists across all projects and sessions
+- **Project Memory** - `.claude/CLAUDE.md` in projects adds project-specific context
+- **Session Capture** - Commands like `/docs:capture-session` preserve session knowledge for handoffs
+- **Learning Extraction** - `/learn` command extracts insights from conversations into permanent memory
+
+### Why This Matters
+Context is precious in AI systems. By managing it carefully, I can:
+- Work on larger, more complex tasks without hitting limits
+- Maintain consistent behavior across sessions
+- Build up institutional knowledge over time
+- Hand off work between sessions or team members effectively
+
 ## Directives Compilation
 
 I organize my Claude directives (coding standards, behavioral guidelines, technical patterns) using a compilation system that might be unnecessary with Claude's newer @-mention feature.
@@ -366,7 +396,7 @@ I organize my Claude directives (coding standards, behavioral guidelines, techni
 - @-mention specific directive files when needed
 - Avoid the compilation step entirely
 
-I'm still investigating whether @-mentions fully replace the need for a compiled CLAUDE.md. For now, my compilation system works reliably across all Claude Code versions.
+I'm still investigating whether @-mentions fully replace the need for a compiled CLAUDE.md. For now, my compilation system works reliably.
 
 ## Creating Your Own Configuration Repository
 
@@ -412,8 +442,7 @@ I'm still investigating whether @-mentions fully replace the need for a compiled
 
 ## Documentation
 
-### Quick Start
-- **[Getting Started](docs/QUICK_START.md)** - 2-minute setup guide
+### Quick Reference
 - **[Component Reference](docs/REFERENCE.md)** - Complete list of agents and commands
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
