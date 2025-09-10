@@ -48,7 +48,7 @@ Here's what I've built for my workflow (yours will be different):
 - **Output Styles** - How I prefer Claude to format responses for different contexts
 - **Status Line** - My terminal prompt integration showing session context
 - **Utility Scripts** - Helper tools like my `addjob` task queuing system
-- **Directives** - My coding standards and preferences compiled into CLAUDE.md
+- **Directives** - General directives split into numbered files, compiled into CLAUDE.md (see note below)
 - **Resources** - Research and documentation I've collected about Claude Code patterns
 - **Organization** - How I structure everything to stay maintainable
 
@@ -103,7 +103,7 @@ Claude Code is Anthropic's official CLI for AI-powered coding assistance.
 #### Planning & Implementation
 - `/implan:create` - Generate implementation plans
 - `/implan:execute` - Execute implementation plans
-- `/postmortem` - Generate incident postmortems
+- `/postmortem` - Analyze session to identify and document issues for systematic fixing
 
 #### Job Queue Management
 - **addjob** - Queue tasks (Python utility, also has supporting agent)
@@ -299,7 +299,7 @@ cd ~/.lpclaude
 - **If you have existing `agents/` or `commands/` folders**: The setup will skip them and warn you
 - **To use this repo with existing folders**, you have three options:
   1. Backup and move your existing folders: `mv ~/.claude/agents ~/.claude/agents.backup`
-  2. Use selective installation (Option 2) to manually copy specific files
+  2. Use selective installation (Option 1 above) to manually copy specific files
   3. Merge your content into this repo and fork it
 
 
