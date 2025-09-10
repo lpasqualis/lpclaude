@@ -76,6 +76,6 @@ Your Development Environment
 
 ### Component Roles & Value
 - **Agents**: Auto-activate on keywords, handle specialized tasks without user intervention
-- **Commands**: Execute complex workflows, can orchestrate parallel operations via Task
+- **Slash Commands**: Execute complex workflows, can orchestrate parallel operations via Task
 - **Workers**: Enable 10x speedup through parallel processing
 - **Directives**: Enforce consistent coding standards across all projects

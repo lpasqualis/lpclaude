@@ -9,19 +9,19 @@
 **This is NOT a framework or product to install.** It's one person's configuration shared as an example. You should create your own configuration with your own preferences.
 
 ## How I Use This Repository
-I maintain my Claude Code extensions (agents, commands, directives, output styles) here and use symlinks to make them available in ~/.claude/ across all my projects.
+I maintain my Claude Code extensions (agents, slash commands, directives, output styles) here and use symlinks to make them available in ~/.claude/ across all my projects.
 
 ## Architecture
 
 ### Dual .claude System
 - **Global** (`~/.claude/`): Symlinked to this repo, available in all projects
-- **Local** (`.claude/`): Framework maintenance commands only
+- **Local** (`.claude/`): Framework maintenance slash commands only
 
 ### Scope Rules
 - `commands/`, `agents/`, `output-styles/` → Global via symlinks
 - `.claude/commands/`, `.claude/agents/` → Project-local only
 
-## Essential Commands
+## Essential Commands (Shell Commands)
 
 ```bash
 ./setup.sh                        # Create symlinks from ~/.claude/ to this repo
@@ -36,38 +36,33 @@ I maintain my Claude Code extensions (agents, commands, directives, output style
 **Execution Capabilities by Level:**
 
 1. **Main Claude** (top level - you interacting with user)
-   - ✅ Can use Task tool to invoke subagents
+   - ✅ Can invoke subagents using the Task tool with `subagent_type: <subagent-name>`
+   - ✅ Can invoke workers using Task tool with `subagent_type: 'general-purpose'`
    - ✅ Can execute slash commands
 
 2. **Slash Commands** (when Main Claude runs a command like `/some-command`)
-   - ✅ Can use Task tool to invoke workers (up to 10 parallel)
+   - ✅ Can invoke subagents using Task tool with `subagent_type: <subagent-name>`
+   - ✅ Can invoke workers using Task tool with `subagent_type: 'general-purpose'`
    - ❌ Cannot execute other slash commands
 
-3. **Workers/Subagents** (invoked via Task tool)
-   - ❌ Cannot use Task tool (filtered by framework)
+3. **Subagents/Workers** (invoked via Task tool by Main Claude or Slash Commands)
+   - ❌ Cannot use Task tool
    - ❌ Cannot execute slash commands
-
-**Visual representation:**
-```
-Main Claude
-    ├─→ Task tool → Subagents/Workers
-    └─→ Slash commands
-            └─→ Task tool → Workers (parallel OK)
-                    └─→ [Dead end - no further delegation]
-```
 
 ### Key Constraints
 - **Subagents CANNOT have Task tool** - Filtered at framework level
-- **Commands CAN use Task** for parallel execution (up to 10 concurrent)
-- **No recursive delegation** - Tasks can't spawn Tasks
+- **Slash Commands CAN use Task** - Up to 10 concurrent Task invocations
+- **All Task invocations can be parallel** - From Main Claude or slash commands
+- **No recursive delegation** - Tasks and/or subagents can't spawn other Tasks or subagents
 - **Subagents only trigger on user input**, never on Claude's output
 - **No "proactive" field in YAML** - Use "MUST BE USED PROACTIVELY" in description
 - **Agent changes require Claude Code restart** - Agents load at startup only
+- **Slash Command changes require Claude Code restart** - Slash commands load at startup only
 
 ### Slash Commands
-- Commands are markdown files with instructions, not executables
+- Slash commands are markdown files with instructions, not executables
 - Claude reads the .md file and follows its instructions
-- Location: `commands/[namespace/]name.md`
+- Location: `commands/[namespace/]name.md` (for slash commands)
 
 ## Design Principles
 - **Discover, don't hardcode** - Find project structure dynamically
@@ -78,12 +73,12 @@ Main Claude
 
 ### Component Creation
 - **Agents**: `agents/name.md` with YAML (name, description, tools - no Task)
-- **Commands**: `commands/namespace/name.md` with YAML (allowed-tools including Task)
+- **Slash Commands**: `commands/namespace/name.md` with YAML (allowed-tools including Task)
 - **Workers**: `workers/{command}-workers/purpose.md` (pure prompt, no YAML)
 - **Output Styles**: `output-styles/name.md` with YAML
 
 ### Naming Conventions
-- Agents/Commands: `lowercase-hyphenated`
+- Agents/Slash Commands: `lowercase-hyphenated`
 - Namespaces: `/domain:action-target`
 - Worker subdirectories: `{command}-workers/`
 
@@ -102,5 +97,5 @@ Main Claude
 ## Documentation Standards
 - **Accuracy** - List only components that exist, verify before documenting
 - **Clarity** - Focus on value and real usage, not marketing
-- **Completeness** - Include all component types (agents, commands, hooks, etc.)
+- **Completeness** - Include all component types (agents, slash commands, hooks, etc.)
 - **Organization** - Group by function, not alphabetically

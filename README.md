@@ -8,7 +8,7 @@
 4. **Learn by doing** - Continue learning about agentic systems by experimenting with different patterns
 5. **Share and improve** - Document my approach for others and gather feedback to improve
 
-> **What this is:** My personal collection of agents, commands, and tools that I use across all my projects.
+> **What this is:** My personal collection of agents, slash commands, and tools that I use across all my projects.
 > 
 > **What this isn't:** A framework or product to install. It's one person's configuration shared as a reference.
 
@@ -18,7 +18,7 @@ Claude Code supports personal configurations via `~/.claude/`, but there aren't 
 
 - **How I structure my configuration** for maintainability
 - **How I use Git** to version control and sync across machines
-- **Examples of agents, commands, and hooks** I've found useful
+- **Examples of agents, slash commands, and hooks** I've found useful
 - **Patterns for organizing** a growing collection of Claude customizations
 
 ## How to Use This Repository
@@ -26,7 +26,7 @@ Claude Code supports personal configurations via `~/.claude/`, but there aren't 
 ### As a Reference
 Browse the repository to:
 - See how to structure your own Claude configuration
-- Get ideas for agents and commands you might want to create
+- Get ideas for agents and slash commands you might want to create
 - Learn the syntax and patterns for different component types
 - Understand how various Claude Code features work together
 
@@ -40,7 +40,7 @@ If you find something useful:
 To create your own configuration repository:
 1. Fork this repo
 2. Delete my specific configurations
-3. Add your own agents, commands, and preferences
+3. Add your own agents, slash commands, and preferences
 4. Maintain your own version-controlled Claude setup
 
 ## What's in My Configuration
@@ -49,7 +49,7 @@ Here's what I've built for my workflow (yours will be different):
 
 - **Slash Commands** (30+) - My shortcuts for git, documentation, job processing, learning capture, VS Code theming
 - **Agents** - Auto-triggering helpers I use for security reviews, documentation, task queueing
-- **Workers** - My custom pattern: reusable task templates that commands can run in parallel (not a Claude feature)
+- **Workers** - My custom pattern: reusable task templates that slash commands can run in parallel (not a Claude feature)
 - **Hooks** - Shell scripts that prevent me from making mistakes (like cd'ing to wrong directories)
 - **Output Styles** - How I prefer Claude to format responses for different contexts
 - **Status Line** - My terminal prompt integration showing session context
@@ -130,8 +130,8 @@ Claude Code is Anthropic's official CLI for AI-powered coding assistance.
 - `/docs:capture-session` - Document work for team handoff (preserves context)
 
 #### Framework Development
-- `/commands:create` - Interactive command creator
-- `/add-parallelization` - Add parallel processing to commands
+- `/commands:create` - Interactive slash command creator
+- `/add-parallelization` - Add parallel processing to slash commands
 - `/optimize` - General optimization command
 - `/subagents:optimize` - Optimize subagent definitions
 - `/subagents:review-ecosystem` - Analyze agent interactions
@@ -212,11 +212,11 @@ If you choose to use the standard setup (you don't have to), this repository use
          ┃                  ┃                    ┃
          ▼                  ▼                    ▼
    ┌────────────┐    ┌──────────────┐    ┌─────────────┐
-   │   AGENTS   │    │   COMMANDS   │    │    HOOKS    │
+   │   AGENTS   │    │SLASH COMMANDS│    │    HOOKS    │
    │(automatic) │    │ (explicit /) │    │ (lifecycle) │
    └────────────┘    └──────────────┘    └─────────────┘
                             ┃
-                     (some commands)
+                   (some slash commands)
                             ▼
                   ┌──────────────────┐
                   │     WORKERS      │
@@ -226,13 +226,13 @@ If you choose to use the standard setup (you don't have to), this repository use
 How Components Work:
 • DIRECTIVES: Define behavior and standards for all interactions
 • AGENTS: Auto-trigger on keywords (e.g., "security" → hack-spotter)
-• COMMANDS: User types /command (e.g., /git:commit-and-push)
-• HOOKS: Run at specific events (e.g., before cd commands)
+• SLASH COMMANDS: User types /command (e.g., /git:commit-and-push)
+• HOOKS: Run at specific events (e.g., before shell commands)
 • WORKERS*: My custom pattern - reusable task templates for parallel execution
 • OUTPUT STYLES: Format Claude's responses (not shown)
 
 *Note: Workers are not a Claude Code feature - they're my pattern for organizing
-reusable task instructions that commands can execute in parallel via the Task tool,
+reusable task instructions that slash commands can execute in parallel via the Task tool,
 without the overhead of creating full agents that consume context space.
 ```
 
@@ -257,7 +257,7 @@ cp ~/.lpclaude/hooks/guard-cd.sh ~/.claude/hooks/
 ```
 
 **Benefits of selective installation:**
-- Mix components from this repo with your own custom agents/commands
+- Mix components from this repo with your own custom agents/slash commands
 - Keep some folders under your control while using others from this repo
 - Test individual components before committing to the full set
 
@@ -346,14 +346,14 @@ Claude Code sessions have limited context windows, so I've developed patterns to
 ### Context Management Strategies
 - **CLAUDE.md** - Persistent directives loaded at session start (doesn't consume conversation context)
 - **Agents vs Workers** - Agents consume context even when idle; workers are loaded only when needed
-- **Selective Tool Usage** - Some commands delegate to the Task tool to avoid loading everything into main context
+- **Selective Tool Usage** - Some slash commands delegate to the Task tool to avoid loading everything into main context
 - **Job Queuing** - The `addjob` system defers work to future sessions, preserving context for current tasks
 
 ### Memory Persistence
 - **Global Memory** - `~/.claude/CLAUDE.md` persists across all projects and sessions
 - **Project Memory** - `.claude/CLAUDE.md` in projects adds project-specific context
-- **Session Capture** - Commands like `/docs:capture-session` preserve session knowledge for handoffs
-- **Learning Extraction** - `/learn` command extracts insights from conversations into permanent memory
+- **Session Capture** - Slash commands like `/docs:capture-session` preserve session knowledge for handoffs
+- **Learning Extraction** - `/learn` slash command extracts insights from conversations into permanent memory
 
 ### Why This Matters
 Context is precious in AI systems. By managing it carefully, I can:
@@ -416,7 +416,7 @@ I'm still investigating whether @-mentions fully replace the need for a compiled
    ```
 
 2. **Build Your Components**
-   - Start with one or two agents/commands you'll actually use
+   - Start with one or two agents/slash commands you'll actually use
    - Test them by copying to `~/.claude/` first
    - Once they work, commit them to your repo
    - Gradually build up your collection
@@ -428,14 +428,14 @@ I'm still investigating whether @-mentions fully replace the need for a compiled
    - You might prefer a different approach
 
 4. **Ideas for Your Configuration**
-   - **Automate what you do repeatedly** - That's what commands are for
+   - **Automate what you do repeatedly** - That's what slash commands are for
    - **Create agents for your review process** - Code review, security, docs
    - **Add hooks for your common mistakes** - Prevent errors before they happen
    - **Build your own directives** - Your coding standards, not mine
 
 ### Best Practices for Your Configuration
 
-- **Start Small**: Begin with 2-3 agents and commands, grow organically
+- **Start Small**: Begin with 2-3 agents and slash commands, grow organically
 - **Document Everything**: Each component should explain its purpose
 - **Version Control**: Commit your customizations for team sharing
 - **Test First**: Verify components work before team-wide deployment

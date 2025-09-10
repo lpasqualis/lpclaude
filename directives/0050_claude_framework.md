@@ -1,14 +1,14 @@
 # Commands and agents/subagents
 
 ## Remember the difference between slash commands and agents:
-- **Commands (slash commands)**:
+- **Slash Commands**:
   - Markdown files containing prompts injected as user input into current conversation
   - Support YAML frontmatter (allowed-tools, model, description, argument-hint)
   - Can include dynamic arguments ($ARGUMENTS), file references (@), bash execution (!)
   - Written as instructions TO Claude ("Analyze this...", "Review the following...")
   - Location: `.claude/commands/` (project) or `~/.claude/commands/` (personal)
-  - Can be organized in subdirectories for namespacing (shown in descriptions but don't affect command name)
-  - Project commands take precedence over personal commands with same name
+  - Can be organized in subdirectories for namespacing (shown in descriptions but don't affect slash command name)
+  - Project slash commands take precedence over personal slash commands with same name
   - IMPORTANT: You CANNOT run a slash command. NEVER try. Whenever it is necessary to run a slash command (to test it, or perform operations) you need to ask the user to run it. Provide the full command syntax, and the user will run it for you.
 - **Subagents**:
   - Specialized AI assistants with separate context windows
@@ -29,12 +29,12 @@
 
 Special placeholders (macros) are replaced before they are sent to Claude:
 
-- **`$ARGUMENTS`** - is expanded in all command arguments before Claude sees it
+- **`$ARGUMENTS`** - is expanded in all slash command arguments before Claude sees it
   - Example: `/some-command foo bar` → `$ARGUMENTS` becomes `foo bar` before Claude sees it
-- **Bash Pre-execution** - bash commands prefixed wuth `!` are executed before Claude sees it, and the output is places in its place.
+- **Bash Pre-execution** - bash shell commands prefixed wuth `!` are executed before Claude sees it, and the output is places in its place.
   - Example "!`echo say hello`" is received by Claude as "say hello"
   - **LIMITATIONS**: 
-    - Each `!` command runs in isolation - variables don't persist between them
+    - Each `!` shell command runs in isolation - variables don't persist between them
     - Can only access existing shell environment variables
     - Output is included as static text in the prompt
   - NOTES: markdown bash code blocks are NOT executed automatically like it happens using `!`. Claude sees all markdown code blocks as just text. 
