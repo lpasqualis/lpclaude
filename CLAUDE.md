@@ -32,13 +32,28 @@ I maintain my Claude Code extensions (agents, commands, directives, output style
 ## Framework Execution Rules
 
 ### Hierarchy
+
+**Execution Capabilities by Level:**
+
+1. **Main Claude** (top level - you interacting with user)
+   - ✅ Can use Task tool to invoke subagents
+   - ✅ Can execute slash commands
+
+2. **Slash Commands** (when Main Claude runs a command like `/some-command`)
+   - ✅ Can use Task tool to invoke workers (up to 10 parallel)
+   - ❌ Cannot execute other slash commands
+
+3. **Workers/Subagents** (invoked via Task tool)
+   - ❌ Cannot use Task tool (filtered by framework)
+   - ❌ Cannot execute slash commands
+
+**Visual representation:**
 ```
-Main Claude → Can use Task → Invoke any subagent
-           → Can execute → Slash commands
-               └── Commands → Can use Task → Invoke workers (parallel OK!)
-                           → Cannot execute other commands
-                               └── Workers → Cannot use Task tool
-                                           → Cannot execute commands
+Main Claude
+    ├─→ Task tool → Subagents/Workers
+    └─→ Slash commands
+            └─→ Task tool → Workers (parallel OK)
+                    └─→ [Dead end - no further delegation]
 ```
 
 ### Key Constraints
