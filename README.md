@@ -108,7 +108,7 @@ Claude Code is Anthropic's official CLI for AI-powered coding assistance.
 #### Job Queue Management
 - **addjob** - Queue tasks (Python utility, also has supporting agent)
 - `/jobs:do` - Execute queued jobs in parallel
-- `/jobs:auto-improve` - Enhance job descriptions for better execution
+- `/jobs:auto-improve` - Natural language project improvement that continuously finds and fixes issues
 - `/jobs:queue-learnings` - Queue learnings for processing
 
 #### Code Quality & Validation
