@@ -1,5 +1,16 @@
 # Choosing a Prompting Strategy
 
+## Core Concepts
+
+### What is Claude Code?
+Claude Code is an AI-powered development assistant that can understand and execute various types of prompts and commands. It operates through different execution contexts and delegation mechanisms.
+
+### Key Terms
+- **Main Claude**: The primary AI instance you interact with directly in your conversation
+- **Context window**: The memory space containing the conversation history and loaded information
+- **Fresh context**: A new, separate memory space with no access to the main conversation
+- **Task tool**: A mechanism that allows Claude to delegate work to separate AI instances
+
 ## Background
 
   Claude Code offers multiple ways to deliver and execute prompts:
@@ -9,6 +20,24 @@
   - **Fresh context delegation**: The Task tool executes prompts in separate context windows
   - **Specialized delegates**: Subagents (auto-triggered or Claude-invoked) and workers 
     (slash command-invoked) are conventions built on top of the Task tool
+
+## The Decision Tree
+```
+ START: How will this prompt be used?
+    │
+    ├─> Will it be reused across multiple sessions?
+    │   ├─> NO → INTERACTIVE USER PROMPT
+    │   └─> YES → How will it be triggered?
+    │       ├─> User types a command → SLASH COMMAND
+    │       ├─> By slash command(s) programmatically
+    │       │    └─> Reusable across commands OR needs parallel execution?
+    │       │         ├─> YES → WORKER
+    │       │         └─> NO → INLINE PROMPT IN THE SLASH COMMAND
+    │       ├─> By Main Claude programmatically → SUBAGENT
+    │       └─> Automatically on keywords → SUBAGENT
+    │
+    └─> Default → INTERACTIVE USER PROMPT
+```
 
 ## Ways to execute Prompts
 
@@ -21,7 +50,7 @@
 - **Location**: Not stored anywhere
 
 ### 2. MAIN CLAUDE AGENT
-**What is it**: The LLM prompting itself and deciding what to do next
+**What is it**: Main Claude prompting itself and deciding what to do next
 - **Invocation**: The LLM working on a problem
 - **Context**: Run in Main Claude's conversation context
 - **Superpowers**: 
@@ -56,7 +85,7 @@
 
 ### 5. SUBAGENT
 **What they are**: Specialized AI assistants that users trigger automatically on keywords or main Claude can invoke as needed to solve problems. 
-- **Invocation**: Auto-trigger on users keywords or invoked by main Claude based on need. Behind the courtains, it runs using a Task tool.
+- **Invocation**: Auto-trigger on users keywords or invoked by Main Claude based on need. Behind the curtains, it runs using a Task tool.
 - **Context**: Fresh, dedicated context window per invocation
 - **Superpower**: 
   - Native Claude Code concept
@@ -77,24 +106,6 @@
   - Cannot invoke other tasks, workers, subagents or slash commands. 
   - Claude won't choose to run one as needed like it does for subagents.
 - **Location**: `workers/` directory (by convention)
-
-## The Decision Tree
-```
- START: How will this prompt be used?
-    │
-    ├─> Will it be reused across multiple sessions?
-    │   ├─> NO → INTERACTIVE USER PROMPT
-    │   └─> YES → How will it be triggered?
-    │       ├─> User types a command → SLASH COMMAND
-    │       ├─> By slash command(s) programmatically
-    │       │    └─> Reusable across commands OR needs parallel execution?
-    │       │         ├─> YES → WORKER
-    │       │         └─> NO → INLINE PROMPT IN THE SLASH COMMAND
-    │       ├─> By Main Claude programmatically → SUBAGENT
-    │       └─> Automatically on keywords → SUBAGENT
-    │
-    └─> Default → INTERACTIVE USER PROMPT
-```
 
 ## Technical Constraints
 
