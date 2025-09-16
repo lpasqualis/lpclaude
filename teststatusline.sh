@@ -23,14 +23,17 @@ test_statusline() {
     echo -e "${BLUE}═══════════════════════════════════════════════${NC}"
     echo ""
     
+    # Use current working directory instead of hardcoded path
+    local current_dir="$(pwd)"
+
     # Test case 1: Default (small context, short session)
     echo -e "${MAGENTA}1. Default (small context, short session):${NC}"
-    echo '{"version":"1.0.93","model":{"display_name":"Opus 4.1"},"output_style":{"name":"default"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":12,"total_lines_removed":3,"total_duration_ms":45000,"total_api_duration_ms":2300}}' | "$script"
+    echo "{\"version\":\"1.0.93\",\"model\":{\"display_name\":\"Opus 4.1\"},\"output_style\":{\"name\":\"default\"},\"workspace\":{\"current_dir\":\"$current_dir\"},\"exceeds_200k_tokens\":false,\"cost\":{\"total_lines_added\":12,\"total_lines_removed\":3,\"total_duration_ms\":45000,\"total_api_duration_ms\":2300}}" | "$script"
     echo ""
-    
+
     # Test case 2: Large context warning (longer session)
     echo -e "${MAGENTA}2. Large context (>200k tokens, longer session):${NC}"
-    echo '{"version":"1.0.93","model":{"display_name":"Opus 4.1"},"output_style":{"name":"default"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":true,"cost":{"total_lines_added":500,"total_lines_removed":250,"total_duration_ms":325000,"total_api_duration_ms":18500}}' | "$script"
+    echo "{\"version\":\"1.0.93\",\"model\":{\"display_name\":\"Opus 4.1\"},\"output_style\":{\"name\":\"default\"},\"workspace\":{\"current_dir\":\"$current_dir\"},\"exceeds_200k_tokens\":true,\"cost\":{\"total_lines_added\":500,\"total_lines_removed\":250,\"total_duration_ms\":325000,\"total_api_duration_ms\":18500}}" | "$script"
     echo ""
     
     echo -e "${BLUE}═══════════════════════════════════════════════${NC}"
@@ -111,7 +114,8 @@ select_statusline() {
             
             # Show a quick test of the activated statusline
             echo -e "${CYAN}Quick test of activated statusline:${NC}"
-            echo '{"version":"1.0.93","model":{"display_name":"Opus 4.1"},"output_style":{"name":"default"},"workspace":{"current_dir":"/Users/lpasqualis/.lpclaude"},"exceeds_200k_tokens":false,"cost":{"total_lines_added":12,"total_lines_removed":3,"total_duration_ms":125000,"total_api_duration_ms":8500}}' | "$STATUSLINE_DIR/statusline.sh"
+            local current_dir="$(pwd)"
+            echo "{\"version\":\"1.0.93\",\"model\":{\"display_name\":\"Opus 4.1\"},\"output_style\":{\"name\":\"default\"},\"workspace\":{\"current_dir\":\"$current_dir\"},\"exceeds_200k_tokens\":false,\"cost\":{\"total_lines_added\":12,\"total_lines_removed\":3,\"total_duration_ms\":125000,\"total_api_duration_ms\":8500}}" | "$STATUSLINE_DIR/statusline.sh"
             echo ""
             echo ""
             echo -n -e "${GREEN}Press Enter to continue...${NC}"

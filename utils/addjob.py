@@ -13,6 +13,12 @@ import re
 import argparse
 from pathlib import Path
 
+# Constants for job numbering and validation
+DEFAULT_JOB_START = 10
+JOB_INCREMENT = 10
+MAX_JOB_NUMBER = 9999
+MIN_JOB_NUMBER = 0
+
 DEFAULT_CONTENT="""---
 title: [Clear description of what this job accomplishes]
 created: [YYYY-MM-DD]
@@ -58,28 +64,28 @@ def get_existing_job_files(jobs_dir):
 def calculate_next_number(job_files):
     """Calculate the next job number based on existing files."""
     if not job_files:
-        return 10
-    
+        return DEFAULT_JOB_START
+
     # Get the highest number
     highest_num = job_files[-1][0]
-    
-    # Round up to next multiple of 10
-    next_num = ((highest_num // 10) + 1) * 10
-    
+
+    # Round up to next multiple of JOB_INCREMENT
+    next_num = ((highest_num // JOB_INCREMENT) + 1) * JOB_INCREMENT
+
     return next_num
 
 
 def renumber_jobs(jobs_dir):
-    """Renumber all job files starting from 0010 in increments of 10."""
+    """Renumber all job files starting from DEFAULT_JOB_START in increments of JOB_INCREMENT."""
     job_files = get_existing_job_files(jobs_dir)
-    
+
     if not job_files:
         print("No job files found to renumber.")
         return
-    
+
     # Create a mapping of old names to new names
     renames = []
-    new_num = 10
+    new_num = DEFAULT_JOB_START
     
     for old_num, old_name in job_files:
         # Extract the suffix after the number
@@ -89,7 +95,7 @@ def renumber_jobs(jobs_dir):
         if old_name != new_name:
             renames.append((old_name, new_name))
         
-        new_num += 10
+        new_num += JOB_INCREMENT
     
     if not renames:
         print("All files are already correctly numbered.")
@@ -229,8 +235,8 @@ Examples:
     
     # Determine job number
     if args.n is not None:
-        if args.n < 0 or args.n > 9999:
-            print("Error: Job number must be between 0 and 9999")
+        if args.n < MIN_JOB_NUMBER or args.n > MAX_JOB_NUMBER:
+            print(f"Error: Job number must be between {MIN_JOB_NUMBER} and {MAX_JOB_NUMBER}")
             sys.exit(1)
         job_number = args.n
     else:

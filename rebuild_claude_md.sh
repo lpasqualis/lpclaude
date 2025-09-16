@@ -28,7 +28,10 @@ echo "" >> "$OUTPUT_FILE"
 
 # Find all .md files in directives/ except the output file itself, sorted alphabetically
 echo "Processing directive files in alphabetical order..."
-for file in $(ls directives/*.md | sort); do
+# Use glob pattern instead of ls to handle filenames with spaces
+for file in directives/*.md; do
+    # Check if the glob matched any files
+    [ -e "$file" ] || continue
     # Skip the output file itself
     if [ "$file" != "$OUTPUT_FILE" ]; then
         echo "  Adding: $file"
@@ -36,7 +39,7 @@ for file in $(ls directives/*.md | sort); do
         cat "$file" >> "$OUTPUT_FILE"
         echo "" >> "$OUTPUT_FILE"
     fi
-done
+done | sort
 
 echo "Successfully built $OUTPUT_FILE"
 

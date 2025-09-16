@@ -3,6 +3,13 @@
 # Usage: ./generate-replacements.sh <output_file>
 # Reads bad commits from stdin (format: hash:old_msg:reason)
 
+# Set up cleanup trap for temporary files
+cleanup() {
+    # Clean up .tmp directory if it's empty
+    [ -d ".tmp" ] && rmdir ".tmp" 2>/dev/null || true
+}
+trap cleanup EXIT
+
 # Ensure .tmp directory exists
 mkdir -p ".tmp"
 OUTPUT_FILE=${1:-.tmp/git_msg_replacements.txt}

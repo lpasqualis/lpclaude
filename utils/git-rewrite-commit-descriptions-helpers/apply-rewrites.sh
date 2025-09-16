@@ -2,6 +2,17 @@
 # apply-rewrites.sh - Apply commit message rewrites using best available tool
 # Usage: ./apply-rewrites.sh [--dry-run] [--no-backup]
 
+# Set up cleanup trap for temporary files
+TEMP_FILES=()
+cleanup() {
+    for file in "${TEMP_FILES[@]}"; do
+        [ -f "$file" ] && rm -f "$file"
+    done
+    # Clean up .tmp directory if it's empty
+    [ -d ".tmp" ] && rmdir ".tmp" 2>/dev/null || true
+}
+trap cleanup EXIT
+
 DRY_RUN=false
 NO_BACKUP=false
 
@@ -38,6 +49,7 @@ if [[ "$TOOL" == "git-filter-repo" ]]; then
     # Ensure .tmp directory exists
     mkdir -p ".tmp"
     REPLACEMENT_FILE=".tmp/git_msg_replacements.txt"
+    TEMP_FILES+=("$REPLACEMENT_FILE")
     
     if [[ "$DRY_RUN" == "true" ]]; then
         echo "=== DRY RUN MODE ==="
@@ -56,6 +68,7 @@ else
     # Ensure .tmp directory exists
     mkdir -p ".tmp"
     SED_SCRIPT=".tmp/git_msg_sed.sh"
+    TEMP_FILES+=("$SED_SCRIPT")
     cat > "$SED_SCRIPT" << 'EOF'
 #!/bin/bash
 msg=$(cat)

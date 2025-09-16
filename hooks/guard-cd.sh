@@ -44,9 +44,25 @@ trimmed="$(sed -E 's/^[[:space:]]+|[[:space:]]+$//g' <<<"$cmd")"
 # Extract leading subshell header if present
 if [[ "$trimmed" =~ ^\([[:space:]]*cd[[:space:]]+([^[:space:]\;\|\)]+)[[:space:]]*&&[[:space:]] ]]; then
   cd_arg="${BASH_REMATCH[1]}"
-  # Expand env vars like $CLAUDE_PROJECT_DIR safely
-  # shellcheck disable=SC2016
-  target="$(eval printf '%s' "$cd_arg" 2>/dev/null || true)"
+  # Expand env vars like $CLAUDE_PROJECT_DIR safely without eval
+  # Remove quotes if present
+  cd_arg="${cd_arg//\"/}"
+  cd_arg="${cd_arg//\'/}"
+
+  # Use parameter expansion to safely expand variables
+  if [[ "$cd_arg" == *'$'* ]]; then
+    # Expand known safe variables only
+    target="$cd_arg"
+    target="${target//\$CLAUDE_PROJECT_DIR/$CLAUDE_PROJECT_DIR}"
+    target="${target//\$\{CLAUDE_PROJECT_DIR\}/$CLAUDE_PROJECT_DIR}"
+    target="${target//\$HOME/$HOME}"
+    target="${target//\$\{HOME\}/$HOME}"
+    target="${target//\$PWD/$PWD}"
+    target="${target//\$\{PWD\}/$PWD}"
+  else
+    target="$cd_arg"
+  fi
+
   [[ -n "$target" ]] || block
 
   # Must be absolute
