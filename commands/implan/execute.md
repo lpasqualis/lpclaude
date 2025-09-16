@@ -78,6 +78,8 @@ Without directive or with "until complete":
 - Continue working through all phases sequentially
 - Complete entire implementation plan
 - Run full test suite and quality checks
+- Do not compromise on quality or cut corners, even if it takes a long time
+- You do not have time constraints, unless specified explicitally by the user. 
 
 ### 4. Update the Plan as You Work
 - Mark completed items with `[x]`
@@ -90,9 +92,9 @@ Without directive or with "until complete":
 ### 5. Execution Monitoring and Stopping
 
 During execution, continuously monitor for stopping conditions:
-- **Time checks**: After each task completion if time-based
-- **Milestone checks**: After each significant step
-- **Error monitoring**: Stop gracefully on unrecoverable errors
+- **Time checks**: After each task completion, if explicitally time-based
+- **Milestone checks**: After each significant step, if explicitally step-constrained
+- **Error monitoring**: Stop gracefully on unrecoverable errors, if continuing without making assumptions is not possible
 - **User interruption**: Allow user to modify directive mid-execution
 
 When stopping condition is met:

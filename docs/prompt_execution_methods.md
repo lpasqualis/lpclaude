@@ -169,3 +169,10 @@ Subagents/Workers
 ### Inline → Worker
 **When**: Inline prompts within slash command could run in parallel with other operations AND it needs to be shared by multiple slash commands
 **Benefit**: Faster execution through parallelization, reusability and single source of truth
+
+## File Locations
+| Component | Project | Global |
+|-----------|---------|--------|
+| Slash commands | `.claude/commands` | `~/.claude/commands` |
+| Subagents | `.claude/agents` | `~/.claude/agents` |
+| Workers | `workers/` | `~/.claude/workers` |

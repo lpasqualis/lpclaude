@@ -43,3 +43,10 @@ Subagents/Workers → Cannot invoke: anything (no Task tool access)
 - **No recursive delegation**: Prompts invoked via Task cannot use Task tool
 - **Fresh context**: Subagents/workers run with separate fresh context
 - **Auto-trigger**: Keywords only trigger subagents from user input, not Claude output (but Claude can explicitly invoke subagents)
+
+ ## File Locations
+  | Component | Project | Global |
+  |-----------|---------|--------|
+  | Slash commands | `.claude/commands` | `~/.claude/commands` |
+  | Subagents | `.claude/agents` | `~/.claude/agents` |
+  | Workers | `workers/` | `~/.claude/workers` |
