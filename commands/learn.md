@@ -126,7 +126,7 @@ For each target CLAUDE.md:
 - **Consistent**: Match existing CLAUDE.md style
 
 **When to rephrase**:
-- Casual language: "memory-keeper doesn't work" → "Use /learn command directly - subagents cannot execute slash commands"
+- Casual language: "that API thing is broken" → "WebFetch tool fails with 403 errors on private GitHub repos - use Read tool for local files instead"
 - Missing context: "bash breaks with ${var,,}" → "Use `tr '[:upper:]' '[:lower:]'` instead of `${var,,}` for bash 3.2 compatibility"
 - Well-formed input can be kept as-is
 
