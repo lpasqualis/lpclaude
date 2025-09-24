@@ -1,6 +1,7 @@
 ---
 description: Test recursive slash command invocation via SlashCommand tool with safety limits
 allowed-tools: SlashCommand
+disable-model-invocation: true
 argument-hint: [recursion-level] [target-command]
 ---
 

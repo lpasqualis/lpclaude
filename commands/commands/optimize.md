@@ -43,9 +43,16 @@ If found:
 - **allowed-tools**: Complete logical groupings (avoid incomplete sets like `Write` without `Edit, MultiEdit`)
 - **argument-hint**: Clear hints for expected arguments (use `[]` for optional, `<>` for required)
 
+#### Optional Fields
+- **model**: Full model alias identifiers (e.g., `claude-opus-4-1`)
+  - If omitted the model will be inherited from the session model
+- **disable-model-invocation**: Set to `true` to exclude from SlashCommand tool
+  - Consider for test commands, maintenance commands, or commands with very long descriptions
+  - Saves context tokens by preventing command metadata from being loaded
+
 #### Model Selection (if specified)
 - Fetch current models from https://docs.anthropic.com/en/docs/about-claude/models/overview
-- Commands need full model alias identifiers (e.g., `claude-opus-4-1)`
+- Commands need full model alias identifiers
 - If omitted the model will be inherited from the session model which, in many cases, might be the right choice.
 
 ### 3. Prompt Body Optimization
@@ -106,6 +113,12 @@ Fix these issues if found:
 - Monolithic commands doing unrelated things
 - Invalid slash command execution patterns (convert to SlashCommand tool usage)
 - Absolute paths with usernames (breaks portability)
+
+Consider adding `disable-model-invocation: true` when:
+- Command name contains "test" and is for manual testing only
+- Command is in maintenance/ namespace and rarely automated
+- Description exceeds 150 characters (consumes excessive context)
+- Command is project-specific and unlikely to be called programmatically
 
 ### 7. Verification Phase
 

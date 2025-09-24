@@ -1,6 +1,7 @@
 ---
 description: Test whether agents (subagents) can invoke other agents - expects failure
 allowed-tools: Task
+disable-model-invocation: true
 ---
 
 # Test: Agent → Agent Invocation (Expected Failure)

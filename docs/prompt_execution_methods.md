@@ -104,6 +104,8 @@ Claude Code is an AI-powered development assistant that can understand and execu
   - Can specify which model to use
   - Can restrict what tools are available to it
 - **Limitations**: Can only be invoked by a user as an interactive user prompt (though can invoke other slash commands via SlashCommand tool)
+- **Cost**: Command metadata (name, args, description) consumes context tokens via SlashCommand tool
+- **Opt-out**: Add `disable-model-invocation: true` to frontmatter to exclude from SlashCommand tool
 - **Location**: `commands/[namespace]` folder(s)
 
 ### 5. SUBAGENT
@@ -196,6 +198,16 @@ Subagents/Workers
 **Benefit**: Faster execution through parallelization, reusability and single source of truth
 
 ## The SlashCommand Tool (v1.0.123+)
+
+### Context Management
+The SlashCommand tool automatically loads slash command metadata into context:
+- **What's loaded**: Command name, argument-hint, and description for each command
+- **Character budget**: Default 15,000 chars (configurable via SLASH_COMMAND_TOOL_CHAR_BUDGET)
+- **When budget exceeded**: Only a subset of commands will be available to Claude
+- **Monitor usage**: Use `/context` to see SlashCommand tool token consumption
+- **Opt-out options**:
+  - Per-command: Add `disable-model-invocation: true` to frontmatter
+  - Globally: Use `/permissions` to deny SlashCommand tool entirely
 
 ### Overview
 The SlashCommand tool enables programmatic invocation of slash commands from any execution context. This powerful capability was introduced in Claude Code v1.0.123 and fundamentally expands orchestration possibilities.

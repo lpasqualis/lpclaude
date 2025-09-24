@@ -1,6 +1,7 @@
 ---
 description: Meta test that runs all test commands and reports their results
 allowed-tools: Glob, Read, SlashCommand
+disable-model-invocation: true
 ---
 
 # Test: Run All Tests and Report Results

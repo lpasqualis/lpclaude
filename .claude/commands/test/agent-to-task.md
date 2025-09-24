@@ -1,6 +1,7 @@
 ---
 description: Test whether agents (subagents) can use Task tool - expects failure
 allowed-tools: Task
+disable-model-invocation: true
 ---
 
 # Test: Agent → Task Tool Usage (Expected Failure)

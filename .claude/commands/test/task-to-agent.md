@@ -1,6 +1,7 @@
 ---
 description: Test whether Tasks (workers) can invoke agents - expects failure
 allowed-tools: Task
+disable-model-invocation: true
 ---
 
 # Test: Task → Agent Invocation (Expected Failure)

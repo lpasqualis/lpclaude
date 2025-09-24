@@ -20,6 +20,7 @@ From the description, determine:
 - Required tools based on operations needed
 - Command type (Tool vs Workflow)
 - Whether arguments are needed
+- Whether to exclude from SlashCommand tool (disable-model-invocation)
 
 ## Tool Permission Selection
 
@@ -49,6 +50,13 @@ $ARGUMENTS
 
 [Any constraints or output format requirements]
 ```
+
+### Optional Frontmatter Fields:
+- **disable-model-invocation: true** - Exclude from SlashCommand tool to save context
+  - Use when: Command is rarely needed programmatically
+  - Use when: Command is maintenance/admin only
+  - Use when: Command has a very long description that would consume excessive context
+- **model: [haiku/sonnet/opus]** - Override default model for this command
 
 ## Implementation Steps
 
@@ -88,5 +96,10 @@ If creating parallel execution workers for a command:
 - **Use directive language**: "Analyze", "Generate", "Review"
 - **Include $ARGUMENTS**: Allow user customization
 - **Validate early**: Check against best practices during creation
+- **Context awareness**: Consider adding `disable-model-invocation: true` for:
+  - Test commands that are only run manually
+  - Maintenance commands that don't need automation
+  - Commands with very long descriptions
+  - Project-specific commands unlikely to be called by Claude
 
 $ARGUMENTS

@@ -69,8 +69,11 @@ For multiple [targets]:
 
 Ensure the updated command:
 - Maintains original functionality for single targets
+- Preserves all existing frontmatter (including disable-model-invocation if present)
 - Uses Task tool appropriately
 - Includes proper error handling
 - Documents parallelization clearly
+
+Note: If the command has `disable-model-invocation: true`, preserve it - parallel execution capability doesn't change whether Claude should invoke it programmatically.
 
 $ARGUMENTS

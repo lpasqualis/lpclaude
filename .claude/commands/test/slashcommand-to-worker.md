@@ -1,6 +1,7 @@
 ---
 description: Test slash command creating workers (part of worker-to-slashcommand chain)
 allowed-tools: Task, SlashCommand
+disable-model-invocation: true
 argument-hint: [recursion-level]
 ---
 

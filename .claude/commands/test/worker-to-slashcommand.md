@@ -1,6 +1,7 @@
 ---
 description: Test whether workers/subagents can invoke slash commands that create other workers
 allowed-tools: Task, SlashCommand
+disable-model-invocation: true
 argument-hint: [recursion-level]
 ---
 

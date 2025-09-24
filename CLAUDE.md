@@ -65,6 +65,8 @@ I maintain my Claude Code extensions (agents, slash commands, directives, output
 - Slash commands are markdown files with instructions, not executables
 - Claude reads the .md file and follows its instructions
 - Location: `commands/[namespace/]name.md` (for slash commands)
+- **Context consumption**: Slash command metadata (name, args, description) is loaded into context via SlashCommand tool
+- **Opt-out**: Add `disable-model-invocation: true` to frontmatter to exclude from SlashCommand tool and save context
 
 ## Design Principles
 - **Discover, don't hardcode** - Find project structure dynamically
@@ -75,7 +77,7 @@ I maintain my Claude Code extensions (agents, slash commands, directives, output
 
 ### Component Creation
 - **Agents**: `agents/name.md` with YAML (name, description, tools - no Task)
-- **Slash Commands**: `commands/namespace/name.md` with YAML (allowed-tools including Task)
+- **Slash Commands**: `commands/namespace/name.md` with YAML (allowed-tools including Task, optional disable-model-invocation)
 - **Workers**: `workers/{command}-workers/purpose.md` (pure prompt, no YAML)
 - **Output Styles**: `output-styles/name.md` with YAML
 
