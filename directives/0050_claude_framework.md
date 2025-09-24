@@ -9,7 +9,7 @@
   - Location: `.claude/commands/` (project) or `~/.claude/commands/` (personal)
   - Can be organized in subdirectories for namespacing (shown in descriptions but don't affect slash command name)
   - Project slash commands take precedence over personal slash commands with same name
-  - IMPORTANT: You CANNOT run a slash command. NEVER try. Whenever it is necessary to run a slash command (to test it, or perform operations) you need to ask the user to run it. Provide the full command syntax, and the user will run it for you.
+  - You can run slash commands programmatically using the SlashCommand tool. This allows you to test commands, perform operations, and orchestrate complex workflows.
 - **Subagents**:
   - Specialized AI assistants with separate context windows
   - Contain system prompts defining identity AND behavioral guidelines
