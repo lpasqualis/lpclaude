@@ -110,15 +110,8 @@ Read the contents of the `.working` file and parse it for frontmatter and conten
 **Check for Slash Command References** (in the executable content):
 If the job content mentions executing a slash command (patterns like "run /learn", "execute /docs:readme-audit", "use the slash command /X", "invoke /X", or any reference to executing slash commands):
 1. Extract the slash command name (e.g., `/learn`)
-2. Convert to file path format:
-   - `/command` → `command.md`
-   - `/namespace:command` → `namespace/command.md`
-3. Use Glob to find the command definition file:
-   - First check `.claude/commands/[path]` (project-local)
-   - Then check `~/.claude/commands/[path]` (global)
-   - Finally check `commands/[path]` (this framework repository)
-4. If found: Immediately read that command definition file and execute all its instructions
-5. If not found: Report an error that the command doesn't exist
+2. Use SlashCommand tool to execute it directly: `SlashCommand(command: "/learn")`
+3. The SlashCommand tool will handle path resolution and report an error if the command doesn't exist
 
 **Execute the job content** (not including frontmatter):
 - Treat only the executable content (after frontmatter) as the user message

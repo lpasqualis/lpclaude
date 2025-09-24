@@ -104,7 +104,7 @@ Parallelization is ONLY appropriate when ALL criteria are met:
 Fix these issues if found:
 - Incomplete tool groupings
 - Monolithic commands doing unrelated things
-- Invalid slash command execution patterns (convert to file reading)
+- Invalid slash command execution patterns (convert to SlashCommand tool usage)
 - Absolute paths with usernames (breaks portability)
 
 ### 7. Verification Phase

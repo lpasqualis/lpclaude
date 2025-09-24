@@ -48,13 +48,14 @@ I maintain my Claude Code extensions (agents, slash commands, directives, output
 
 3. **Subagents/Workers** (invoked via Task tool by Main Claude or Slash Commands)
    - ❌ Cannot use Task tool
+   - ❌ Cannot invoke subagents
    - ✅ Can execute slash commands via SlashCommand tool
 
 ### Key Constraints
 - **Subagents CANNOT have Task tool** - Filtered at framework level
 - **Slash Commands CAN use Task** - Up to 10 concurrent Task invocations
 - **All Task invocations can be parallel** - From Main Claude or slash commands
-- **No recursive delegation** - Tasks and/or subagents can't spawn other Tasks or subagents
+- **No direct recursive delegation of tasks/agents** - Tasks and/or subagents can't spawn other Tasks or subagents
 - **Subagents only trigger on user input**, never on Claude's output
 - **No "proactive" field in YAML** - Use "MUST BE USED PROACTIVELY" in description
 - **Agent changes require Claude Code restart** - Agents load at startup only
