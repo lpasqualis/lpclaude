@@ -1,0 +1,26 @@
+---
+title: Level 2 Worker Creation Test
+created: 2025-09-24
+origin: Worker-to-SlashCommand chain test at level 2
+priority: high
+complexity: low
+notes:
+  - Tests cross-context orchestration capabilities
+  - Verifies workers can invoke slash commands
+  - Part of recursive test chain
+---
+
+You are a worker created by a slash command at level 2.
+
+This slash command was invoked by a previous worker, demonstrating:
+- Workers CAN invoke slash commands
+- Those commands CAN create new workers
+- This enables complex orchestration despite Task tool limitations
+
+Your tasks:
+1. Confirm: "Worker created at level 2 via slash command"
+2. Since level (2) < 3, continue chain: /test:worker-to-slashcommand 3
+   (NEXT_LEVEL = current + 1)
+3. Report outcome
+
+This proves workers can orchestrate complex operations through slash commands.

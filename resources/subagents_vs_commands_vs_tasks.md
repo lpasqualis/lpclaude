@@ -73,13 +73,13 @@ Task → security-auditor (scanning for vulnerabilities)
 Understanding the execution hierarchy helps clarify capabilities:
 
 ```
-Main Claude 
+Main Claude
 ├── Can use Task → Invoke any subagent (parallel OK)
 ├── Can execute → Slash commands
 │   └── Commands → Can use Task → Invoke workers (parallel OK)
-│                → Cannot execute other commands
-│                    └── Workers → Cannot use Task tool
-│                                → Cannot execute commands
+│                → Can execute other commands via SlashCommand tool
+└── Subagents/Workers → Cannot use Task tool
+                      → Can execute commands via SlashCommand tool
 ```
 
 ### Key Constraints

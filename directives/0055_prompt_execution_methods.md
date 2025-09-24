@@ -33,8 +33,8 @@ Choose your execution method based on these criteria:
 
 ```
 Main Claude → Can invoke: subagents, slash commands, Task tool
-Slash Commands → Can invoke: subagents, workers via Task tool
-Subagents/Workers → Cannot invoke: anything (no Task tool access)
+Slash Commands → Can invoke: subagents, workers via Task tool, other slash commands via SlashCommand tool
+Subagents/Workers → Cannot invoke: other subagents/workers (no Task tool), but CAN execute slash commands via SlashCommand tool (even if they invoke Tasks or subagents)
 ```
 
 ## Key Constraints

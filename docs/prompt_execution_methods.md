@@ -1,5 +1,27 @@
 # Choosing a Prompting Strategy
 
+## Key Discoveries (Updated with v1.0.123+ Testing)
+
+### The SlashCommand Tool Changes Everything
+Testing has revealed that the SlashCommand tool (introduced in v1.0.123) is universally available to ALL execution contexts:
+- **Main Claude** can invoke slash commands programmatically
+- **Slash Commands** can invoke other slash commands (including recursively)
+- **Subagents** can invoke slash commands from their fresh contexts
+- **Workers** can invoke slash commands, enabling them to orchestrate complex operations
+
+### Critical Findings from Testing
+1. **No Circular Dependency Protection**: SlashCommand invocations can create infinite loops
+2. **Cross-Context Bridge**: Subagents/Workers in fresh contexts can trigger main-context operations via slash commands
+3. **Complex Orchestration Possible**: Workers can invoke commands that create other workers
+4. **Manual Safeguards Required**: Implement recursion counters, execution flags, or timeouts
+
+### What This Means
+The universal availability of SlashCommand tool enables orchestration patterns previously thought impossible:
+- Workers can work around their Task tool limitation by invoking slash commands
+- Subagents can influence the main conversation despite being in fresh contexts
+- Recursive and self-modifying command structures are possible
+- Complex multi-level delegation chains can be constructed
+
 ## Core Concepts
 
 ### What is Claude Code?
@@ -53,10 +75,11 @@ Claude Code is an AI-powered development assistant that can understand and execu
 **What is it**: Main Claude prompting itself and deciding what to do next
 - **Invocation**: The LLM working on a problem
 - **Context**: Run in Main Claude's conversation context
-- **Superpowers**: 
+- **Superpowers**:
   - Main LLM functionality
-  - Has access to tools
-- **Limitations**: Cannot execute slash commands and will not automatically trigger workers (but could, in theory)
+  - Has access to all tools including SlashCommand tool (v1.0.123+)
+  - Can execute slash commands programmatically
+- **Limitations**: Will not automatically trigger workers (though could via slash commands)
 
 ### 3. TASK
 **What they are**: A tool that can execute a system prompt in a separate, fresh context
@@ -66,7 +89,7 @@ Claude Code is an AI-powered development assistant that can understand and execu
   - Native Claude Code tool
   - Can run in parallel with other tasks and has no memory overhead when not in use. 
   - It is the mechanism that invokes subagents and workers.
-- **Limitations**: Cannot invoke other tasks (including workers and subagents) or slash commands
+- **Limitations**: Cannot invoke other tasks (including workers and subagents) directly, but CAN execute slash commands via SlashCommand tool
 - **Location**: `workers/` directory (by convention)
 
 ### 4. SLASH COMMAND
@@ -80,7 +103,7 @@ Claude Code is an AI-powered development assistant that can understand and execu
   - Can be placed in a namespace for ease of organization
   - Can specify which model to use
   - Can restrict what tools are available to it
-- **Limitations**: Cannot invoke another slash command, and can only be invoked by a user as an interactive user prompt
+- **Limitations**: Can only be invoked by a user as an interactive user prompt (though can invoke other slash commands via SlashCommand tool)
 - **Location**: `commands/[namespace]` folder(s)
 
 ### 5. SUBAGENT
@@ -92,7 +115,7 @@ Claude Code is an AI-powered development assistant that can understand and execu
   - Proactive assistance without explicit commands, known by main Claude as a tool at its disposal
   - Can specify which model to use
   - Can restrict what tools are available to it
-- **Limitations**: Cannot invoke other tasks, workers, subagents or slash commands
+- **Limitations**: Cannot invoke other tasks, workers, or subagents (no Task tool), but CAN execute slash commands via SlashCommand tool
 - **Cost**: YAML frontmatter loaded into the context at ALL times
 - **Location**: `.claude/agents/` directory
 
@@ -103,7 +126,7 @@ Claude Code is an AI-powered development assistant that can understand and execu
 - **Superpower**: Can run in parallel with other tasks and has no memory overhead when not in use
 - **Limitations**: 
   - Not a native Claude Code concept.
-  - Cannot invoke other tasks, workers, subagents or slash commands. 
+  - Cannot invoke other tasks, workers, or subagents (no Task tool), but CAN execute slash commands via SlashCommand tool. 
   - Claude won't choose to run one as needed like it does for subagents.
 - **Location**: `workers/` directory (by convention)
 
@@ -122,24 +145,26 @@ Main Claude
 ├─> Can use: Task tool
 └─> Runs in: main conversation context
 
-Slash Commands  
-├─> Can invoke: subagents, workers
-├─> Cannot invoke: other slash commands
+Slash Commands
+├─> Can invoke: subagents, workers, other slash commands (via SlashCommand tool)
+├─> ⚠️ No circular dependency protection
 ├─> Can use: Task tool (up to 10 concurrent)
 └─> Runs in: main conversation context
 
 Subagents/Workers
 ├─> Invoked using the Task tool
 ├─> Cannot use: Task tool
-├─> Cannot invoke: subagents or workers (because no Task tool access)
-├─> Cannot execute: slash commands
+├─> Cannot invoke: subagents or workers (no Task tool)
+├─> Can execute: slash commands via SlashCommand tool
 └─> Runs in: fresh context window
 └─> Stateless: single invocation only
 ```
 
 ### Key Framework Rules
 - **Task tool limit**: Maximum 10 concurrent Task invocations system-wide
-- **No recursive delegation**: Components invoked via Task cannot use Task themselves
+- **No recursive Task delegation**: Components invoked via Task cannot use Task themselves
+- **SlashCommand tool is universal**: Available to ALL execution levels (Main Claude, Slash Commands, Subagents, Workers)
+- **No circular dependency protection**: SlashCommand invocations can create infinite loops - manual safeguards required
 - **Changes require restart**: Both agents and slash commands load at startup only
 
 ## Common Anti-Patterns
@@ -169,6 +194,175 @@ Subagents/Workers
 ### Inline → Worker
 **When**: Inline prompts within slash command could run in parallel with other operations AND it needs to be shared by multiple slash commands
 **Benefit**: Faster execution through parallelization, reusability and single source of truth
+
+## The SlashCommand Tool (v1.0.123+)
+
+### Overview
+The SlashCommand tool enables programmatic invocation of slash commands from any execution context. This powerful capability was introduced in Claude Code v1.0.123 and fundamentally expands orchestration possibilities.
+
+### Universal Availability
+**IMPORTANT**: The SlashCommand tool is available to ALL execution levels:
+- ✅ Main Claude can invoke slash commands programmatically
+- ✅ Slash Commands can invoke other slash commands
+- ✅ Subagents can invoke slash commands
+- ✅ Workers can invoke slash commands
+
+This universal access enables complex orchestration patterns previously impossible.
+
+### Circular Invocation Capabilities
+Testing has confirmed that circular invocation chains are fully supported:
+- Slash Command → Task → Worker → SlashCommand → Slash Command (and repeat)
+- Workers/Subagents can invoke slash commands that create new workers/subagents
+- No built-in loop protection exists - manual safeguards are required
+
+### Tested Execution Chains
+
+#### Chain 1: Simple Nested Invocation
+```
+Main Claude
+└─> /command1 (via SlashCommand tool)
+    └─> /command2 (via SlashCommand tool)
+        └─> /command3 (via SlashCommand tool)
+```
+**Result**: ✅ Works without limits
+
+#### Chain 2: Task-SlashCommand Interleaving
+```
+Slash Command
+└─> Task tool → Worker
+    └─> SlashCommand tool → Slash Command
+        └─> Task tool → Another Worker
+            └─> SlashCommand tool → Another Slash Command
+```
+**Result**: ✅ Works - workers can invoke commands that create workers
+
+#### Chain 3: Circular Dependencies
+```
+/test-slash-command-l2
+└─> /test-slash-command-tool
+    └─> /test-slash-command-l2 (circular)
+        └─> /test-slash-command-tool (continues infinitely)
+```
+**Result**: ⚠️ Works but creates infinite loop - no automatic protection
+
+### Orchestration Patterns
+
+#### Pattern 1: Delegation Chain
+Workers can delegate to slash commands for operations they cannot perform directly:
+```
+Worker (no Task tool access)
+└─> SlashCommand tool → /orchestrator-command
+    └─> Task tool → Multiple parallel workers
+```
+
+#### Pattern 2: Recursive Processing
+Slash commands can recursively process data structures:
+```
+/process-tree node1
+└─> Process node1
+└─> SlashCommand tool → /process-tree child1
+└─> SlashCommand tool → /process-tree child2
+```
+
+#### Pattern 3: Cross-Context Communication
+Subagents in fresh contexts can trigger main-context operations:
+```
+Subagent (fresh context)
+└─> SlashCommand tool → /update-main-context
+    └─> Executes in main conversation context
+```
+
+### Safety Considerations
+
+#### Circular Dependency Prevention
+Since there's no built-in protection, implement manual safeguards:
+
+1. **Recursion Counters**: Pass depth/level as arguments
+```markdown
+---
+argument-hint: [recursion-level]
+---
+If $ARGUMENTS >= 3, stop execution
+```
+
+2. **Execution Flags**: Use context markers
+```markdown
+Check if already processing: look for "PROCESSING_X" marker
+If found, stop to prevent re-entry
+```
+
+3. **Timeout Mechanisms**: Limit execution time
+```markdown
+Track start time
+If elapsed > threshold, halt execution
+```
+
+#### Best Practices
+- Always implement recursion limits for commands that invoke themselves
+- Document circular dependency risks in command descriptions
+- Use explicit termination conditions
+- Consider using execution state tracking
+- Test circular invocation paths with limits
+
+### Advanced Capabilities
+
+#### Multi-Level Orchestration
+Combine all tools for complex workflows:
+```
+Main Claude
+├─> Task → Subagent A (analyze)
+├─> SlashCommand → /process (orchestrate)
+│   ├─> Task → Worker 1 (parallel)
+│   ├─> Task → Worker 2 (parallel)
+│   └─> SlashCommand → /validate
+└─> Task → Subagent B (finalize)
+```
+
+#### Dynamic Command Composition
+Slash commands can dynamically invoke others based on conditions:
+```
+/adaptive-processor
+├─> Evaluate input type
+├─> If type A: SlashCommand → /processor-a
+├─> If type B: SlashCommand → /processor-b
+└─> If type C: SlashCommand → /processor-c
+```
+
+## Testing These Capabilities
+
+### Verification Commands
+The following test commands verify SlashCommand tool capabilities:
+
+#### `/test:slashcommand-recursion [level] [target]`
+Tests recursive slash command invocation via SlashCommand tool.
+- Location: `.claude/commands/test/slashcommand-recursion.md`
+- Tests self-invocation and cross-invocation patterns
+- Includes safety limit at recursion level 3
+
+#### `/test:worker-to-slashcommand [level]`
+Tests whether workers can invoke slash commands that create other workers.
+- Location: `.claude/commands/test/worker-to-slashcommand.md`
+- Creates workers that use SlashCommand tool
+- Demonstrates cross-context orchestration
+
+#### `/test:slashcommand-to-worker [level]`
+Companion command for worker orchestration testing.
+- Location: `.claude/commands/test/slashcommand-to-worker.md`
+- Creates workers when invoked by other workers
+- Validates Task tool availability in worker-invoked commands
+
+#### `/test:README`
+Overview of the test suite with usage instructions.
+- Location: `.claude/commands/test/README.md`
+- Explains all tests and their purposes
+- Documents key findings and safety considerations
+
+### Running the Tests
+1. Restart Claude Code (required for new commands)
+2. Run: `/test:README` for complete test documentation
+3. Run: `/test:worker-to-slashcommand 1` to test worker → slash command → worker chains
+4. Run: `/test:slashcommand-recursion 1` to test nested slash command invocations
+5. Observe recursion limiting at level 3
 
 ## File Locations
 | Component | Project | Global |

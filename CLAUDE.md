@@ -43,11 +43,12 @@ I maintain my Claude Code extensions (agents, slash commands, directives, output
 2. **Slash Commands** (when Main Claude runs a command like `/some-command`)
    - ✅ Can invoke subagents using Task tool with `subagent_type: <subagent-name>`
    - ✅ Can invoke workers using Task tool with `subagent_type: 'general-purpose'`
-   - ❌ Cannot execute other slash commands
+   - ✅ Can execute other slash commands via SlashCommand tool
+   - ⚠️ No automatic circular dependency protection - authors must avoid infinite loops
 
 3. **Subagents/Workers** (invoked via Task tool by Main Claude or Slash Commands)
    - ❌ Cannot use Task tool
-   - ❌ Cannot execute slash commands
+   - ✅ Can execute slash commands via SlashCommand tool
 
 ### Key Constraints
 - **Subagents CANNOT have Task tool** - Filtered at framework level

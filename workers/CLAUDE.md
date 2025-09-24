@@ -23,7 +23,7 @@ Worker templates are organized in subdirectories based on their parent slash com
 
 ### Key Constraints
 - Workers **cannot** use Task tool (framework limitation)
-- Workers **cannot** execute other slash commands
+- Workers **can** execute slash commands via SlashCommand tool
 - Workers are designed for parallel execution (up to 10 concurrent)
 
 ### Naming Convention

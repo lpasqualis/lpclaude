@@ -102,12 +102,12 @@ Subagent prompts are SYSTEM IDENTITY DEFINITIONS:
 
 **Subagent Limitations** (fix if found):
 - CANNOT parallelize (No Task tool)
-- CANNOT execute slash commands (convert to file reading)
-- CANNOT invoke other agents (no delegation)
-- Must be self-contained
+- CAN execute slash commands (has access to SlashCommand tool)
+- CANNOT invoke other agents (no delegation via Task tool)
+- Must be self-contained for agent invocation
 
 **Invalid Patterns to Fix**:
-- Slash command execution → Convert to reading definition files
+- Direct Task tool usage → Remove (subagents cannot use Task tool)
 - Agent invocation attempts → Remove and restructure
 - Absolute paths with usernames → Make portable
 
