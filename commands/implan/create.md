@@ -75,5 +75,10 @@ $ARGUMENTS
 - **Pre-written solutions**: Plans guide future work, they don't do the work
 - **Copy-paste ready content**: Describe what to build, don't build it
 - **Detailed algorithms**: High-level approach only, not step-by-step code logic
+- **Time estimates**: NO dates, deadlines, hours, days, or duration estimates of any kind
+- **Completion schedules**: NO timelines, target dates, or "when" predictions
+- **Velocity assumptions**: AI execution timing is unpredictable and unmeasurable
+
+**ALLOWED assessments**: Complexity (low/medium/high), Risk level (low/medium/high/critical), Dependencies
 
 Plans are STRATEGIC DOCUMENTS that guide implementation work. They should be immediately usable by any agent to resume work effectively.
