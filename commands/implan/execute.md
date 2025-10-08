@@ -105,9 +105,10 @@ When stopping condition is met:
 5. Document any blockers or issues for next session
 
 ### 6. Quality Assurance Integration
-- For significant progress or plan completion, invoke @implan-auditor to verify implementation completeness and identify any stubs or gaps
-- Apply audit recommendations before marking the session complete
+- For significant progress or plan completion, verify implementation completeness and identify any stubs or gaps
+- Run comprehensive tests to validate completed work
 - Ensure all tests pass before marking implementation items as complete
+- Review code for TODO comments, placeholder implementations, or incomplete functionality
 
 ## Quality Standards
 

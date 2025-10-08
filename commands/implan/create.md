@@ -10,12 +10,15 @@ allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash
 
 Generate a comprehensive, trackable implementation plan from the current conversation context. Plans are saved in `docs/implans/` and serve as living documents for project execution.
 
+**CRITICAL**: This command creates a PLAN, not an implementation. Use ultrathink mode to deeply analyze the problem space and create strategic guidance. DO NOT write actual implementation code in the plan document.
+
 ## Process
 
-1. **Analyze Conversation**: Extract project requirements, technical approaches, constraints, and success criteria from the current conversation
-2. **Generate Plan**: Create structured implementation plan using standardized template
-3. **Save Plan**: Store in `docs/implans/` with proper naming convention
-4. **Report**: Provide file path and brief summary of generated plan
+1. **Ultrathink Mode**: Engage deep thinking to analyze the problem space, consider alternatives, and identify risks
+2. **Analyze Conversation**: Extract project requirements, technical approaches, constraints, and success criteria from the current conversation
+3. **Generate Plan**: Create structured implementation plan using standardized template - this is STRATEGIC GUIDANCE, not code
+4. **Save Plan**: Store in `docs/implans/` with proper naming convention
+5. **Report**: Provide file path and brief summary of generated plan
 
 ## Plan Structure
 
@@ -50,18 +53,27 @@ Each generated plan must include:
 
 ## Implementation Guidelines
 
-1. **Directory Setup**: Ensure `docs/implans/` directory exists (create if needed)
-2. **Context Extraction**: Analyze conversation for requirements, technical approaches, constraints, and success criteria
-3. **Plan Generation**: Create comprehensive plan with:
-   - Clear, actionable objectives and tasks
+1. **Engage Ultrathink Mode**: Use deep thinking to thoroughly analyze the problem space before planning
+2. **Directory Setup**: Ensure `docs/implans/` directory exists (create if needed)
+3. **Context Extraction**: Analyze conversation for requirements, technical approaches, constraints, and success criteria
+4. **Plan Generation**: Create comprehensive plan with:
+   - Clear, actionable objectives and tasks (DESCRIBE what needs to be done, don't write the code)
    - Specific validation criteria with test requirements
    - Realistic complexity assessments
    - Comprehensive risk analysis
    - Well-defined dependencies and prerequisites
    - Proper phase structure (typically 2-4 phases)
-4. **File Creation**: Save with proper naming convention and confirm creation
-5. **Summary**: Report file path and brief overview of generated plan
+   - **NO IMPLEMENTATION CODE** - plans describe the strategy, not the solution
+5. **File Creation**: Save with proper naming convention and confirm creation
+6. **Summary**: Report file path and brief overview of generated plan
 
 $ARGUMENTS
 
-Plans should be immediately usable by any agent to resume work effectively.
+## What Plans Should NOT Contain
+
+- **Implementation code**: No actual code snippets, functions, or classes
+- **Pre-written solutions**: Plans guide future work, they don't do the work
+- **Copy-paste ready content**: Describe what to build, don't build it
+- **Detailed algorithms**: High-level approach only, not step-by-step code logic
+
+Plans are STRATEGIC DOCUMENTS that guide implementation work. They should be immediately usable by any agent to resume work effectively.
