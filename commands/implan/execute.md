@@ -10,12 +10,18 @@ Load and continue work on an implementation plan from the project's `docs/implan
 
 ## Core Principles
 
+### NO TIME PRESSURE - NEVER SHORTCUT
+
+**You have unlimited time unless explicitly told otherwise.** When executing without a time-based directive, there are ZERO time constraints. Take as long as needed to do the work properly. Do not rush, do not shortcut, do not skip steps, do not make assumptions to save time.
+
 **Quality is never compromised.** All work must meet full quality standards regardless of execution directive. Stopping directives (time limits, milestones, scope constraints) indicate when to pause work after completing the current task properly, not when to compromise quality or leave work half-done.
 
+**Mandatory standards:**
 - Complete each task fully before stopping
 - All implementations must be tested and verified
-- Resolve all warnings and errors
-- Never leave placeholder code or stubs
+- Resolve all warnings and errors - not acceptable to leave them
+- Never leave placeholder code, stubs, or TODOs
+- Never make assumptions or skip validation to save time
 - If approaching a stopping condition, finish the current atomic task with full quality first
 
 ## Execution Control
@@ -76,13 +82,20 @@ Read the entire implementation plan document and pay special attention to:
 
 ### 3. Execute Based on Directive
 
-#### Default Execution
-Without directive or with "until complete":
-- Continue working through all phases sequentially
-- IMPORTANT: Complete entire implementation plan without stopping and without asking any questions to the user. The user expects to get the entirety of the implementation plan done by the time you are finished, including optional parts.
-- Run full test suite and quality checks
-- Do not compromise on quality or cut corners, even if it takes a long time
-- You do not have time constraints, unless specified explicitly by the user. 
+#### Default Execution (No Directive Specified)
+
+**CRITICAL: When no stopping directive is provided, you have UNLIMITED TIME.**
+
+There are NO time constraints. ZERO. Take days if necessary. The user expects:
+- Complete implementation of the ENTIRE plan without stopping
+- ALL phases completed, including optional ones
+- NEVER ask questions to the user mid-execution
+- NEVER shortcut anything to save time
+- NEVER make assumptions to go faster
+- Full test suite run and passing
+- Production-quality code with no compromises
+
+Do not treat this like a timed task. Treat it like delivering a finished product with unlimited time budget. 
 
 #### Time-Based Execution
 If directive includes time limit (e.g., "for 30 minutes"):
@@ -200,5 +213,15 @@ Next Steps: [What to do next]
 
 
 $ARGUMENTS
+
+---
+
+## REMINDER BEFORE YOU BEGIN
+
+**If no time-based directive was specified above:**
+- You have UNLIMITED TIME
+- Do NOT rush or shortcut anything
+- Take as long as needed for quality work
+- There is NO deadline
 
 **Start by parsing the execution directive, loading the implementation plan, and showing a summary of the current status and planned execution scope.**
