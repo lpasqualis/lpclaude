@@ -2,11 +2,21 @@
 name: /implan:execute
 description: Resume work on an existing implementation plan with flexible execution control
 argument-hint: "[plan name] [execution directive] (e.g., 'auth-system for 30 minutes', 'until tests pass', 'phase 2 only')"
-allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash
+allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task
 ---
-<!-- OPTIMIZATION_TIMESTAMP: 2025-08-26 21:23:43 -->
+<!-- OPTIMIZATION_TIMESTAMP: 2025-10-09 08:24:54 -->
 
 Load and continue work on an implementation plan from the project's `docs/implans/` directory with natural language control over execution scope.
+
+## Core Principles
+
+**Quality is never compromised.** All work must meet full quality standards regardless of execution directive. Stopping directives (time limits, milestones, scope constraints) indicate when to pause work after completing the current task properly, not when to compromise quality or leave work half-done.
+
+- Complete each task fully before stopping
+- All implementations must be tested and verified
+- Resolve all warnings and errors
+- Never leave placeholder code or stubs
+- If approaching a stopping condition, finish the current atomic task with full quality first
 
 ## Execution Control
 
@@ -31,6 +41,24 @@ Examples of full arguments:
 
 ## Workflow
 
+### 0. Pre-Execution Checklist
+
+**Before starting implementation work, verify:**
+
+1. **Git State**
+   - Check git status for uncommitted changes
+   - Note any dirty working directory state in session notes
+   - If user wants branch isolation, they will tell you (don't assume)
+
+2. **Environment**
+   - Verify project builds/runs (if applicable)
+   - Check for obvious missing dependencies
+   - Confirm you can access necessary tools (test runners, build systems, etc.)
+
+3. **Plan State**
+   - Confirm the implan file exists and is readable
+   - Check for conflicting file modifications (if plan was recently edited externally)
+
 ### 1. Parse Arguments and Find the Plan
 - Parse `$ARGUMENTS` to identify plan name and execution directive
 - Find the implementation plan:
@@ -47,6 +75,14 @@ Read the entire implementation plan document and pay special attention to:
 - **Execution directive context** to understand stopping conditions
 
 ### 3. Execute Based on Directive
+
+#### Default Execution
+Without directive or with "until complete":
+- Continue working through all phases sequentially
+- IMPORTANT: Complete entire implementation plan without stopping and without asking any questions to the user. The user expects to get the entirety of the implementation plan done by the time you are finished, including optional parts.
+- Run full test suite and quality checks
+- Do not compromise on quality or cut corners, even if it takes a long time
+- You do not have time constraints, unless specified explicitly by the user. 
 
 #### Time-Based Execution
 If directive includes time limit (e.g., "for 30 minutes"):
@@ -73,61 +109,79 @@ If directive includes conditions:
 - **"until errors"**: Stop if encountering compilation/test errors that can't be resolved
 - **"until review needed"**: Stop when reaching a point requiring code review
 
-#### Default Execution
-Without directive or with "until complete":
-- Continue working through all phases sequentially
-- Complete entire implementation plan
-- Run full test suite and quality checks
-- Do not compromise on quality or cut corners, even if it takes a long time
-- You do not have time constraints, unless specified explicitally by the user. 
-
 ### 4. Update the Plan as You Work
 - Mark completed items with `[x]`
-- Update the "Current Status" section with today's date
+- Add/update any items/phases/tasks as you discover the need for it during the execution. The plan is DYNAMIC, not static
+- Update the "Current Status" section with today's date (fetch it using `date` bash command)
 - Add session notes to the "Session History"
 - Document any new learnings or decisions
 - Update progress percentages
 - Keep the "Next Steps" section current
+- Update this regularly after each task is complete, do not let the file go stale. If the execution is interrupted, this file is the source of truth on the status.
 
-### 5. Execution Monitoring and Stopping
+### 5. Stopping Conditions & Error Handling
 
-During execution, continuously monitor for stopping conditions:
-- **Time checks**: After each task completion, if explicitally time-based
-- **Milestone checks**: After each significant step, if explicitally step-constrained
-- **Error monitoring**: Stop gracefully on unrecoverable errors, if continuing without making assumptions is not possible
-- **User interruption**: Allow user to modify directive mid-execution
+**Monitor for these stopping conditions during execution:**
+- **Plan completed**: All phases and tasks are fully implemented and tested
+- **Time limit reached**: If time-based directive, check after each task completion
+- **Milestone achieved**: If milestone-based directive, check after significant steps
+- **Blocker encountered**: See error handling below
+- **User interruption**: User may modify directive mid-execution
 
-When stopping condition is met:
-1. Complete current atomic task (don't leave work half-done)
-2. Run any necessary cleanup or tests
-3. Update implementation plan with detailed session notes
-4. Provide clear summary of what was accomplished
-5. Document any blockers or issues for next session
+**Error Handling:**
 
-### 6. Quality Assurance Integration
-- For significant progress or plan completion, verify implementation completeness and identify any stubs or gaps
-- Run comprehensive tests to validate completed work
-- Ensure all tests pass before marking implementation items as complete
-- Review code for TODO comments, placeholder implementations, or incomplete functionality
+*Recoverable Errors* (continue working after resolution):
+- Missing dependencies (install them)
+- Test failures (fix the code)
+- Linting/formatting issues (resolve them)
+- Compilation errors (debug and fix)
 
-## Quality Standards
+*Unrecoverable Errors* (stop and document):
+- Corrupted project files that can't be restored
+- Missing critical files that define project structure
+- Fundamental architecture conflicts requiring user decisions
+- External service dependencies that are down
 
-- **Items can only be marked done if fully implemented AND tested**
-- Warnings and errors must be resolved - they are not acceptable
-- Run all specified tests before marking items complete
-- This is a living document - keep it updated throughout your work
-- Use `date` command to get the current date for updates
-- **Honor execution directives** - Stop when conditions are met
+When encountering errors: attempt resolution first, only stop if truly unrecoverable.
 
-## Before Finishing (Any Stopping Condition)
-- Ensure all completed work is reflected in the plan
-- Update the overall progress percentage
-- Add clear notes for the next session including:
-  - What was accomplished this session
-  - Why execution stopped (time limit, milestone reached, blocker, etc.)
-  - Immediate next steps for resumption
-- Save all changes to the implementation plan
-- Provide execution summary to user
+### 6. Quality Standards & Testing Requirements
+
+**Every task must meet these standards before being marked complete:**
+
+- Fully implemented with no placeholder code, TODOs, or stubs
+- All relevant tests written and passing
+- All warnings and errors resolved
+- Code reviewed for completeness and correctness
+- Documentation updated as needed
+
+**Plan Maintenance:**
+- Keep the implementation plan updated throughout your work (it's a living document)
+- Use `date` command to get current date for status updates
+- Mark items `[x]` only when fully complete and tested
+- Add/update phases and tasks as you discover needs during execution
+
+### 7. Stopping Protocol
+
+**When any stopping condition is met:**
+
+1. **Complete current task** - Finish the atomic task you're working on with full quality (don't leave work half-done)
+2. **Run cleanup/tests** - Execute any necessary cleanup or validation
+3. **Update the plan** - Ensure all completed work is reflected, update progress percentage
+4. **Document session** - Add clear session notes including:
+   - What was accomplished
+   - Why execution stopped (time limit, milestone reached, blocker, etc.)
+   - Immediate next steps for resumption
+5. **Provide summary** - Give user the execution summary (see format below)
+
+### 8. Plan Completion
+
+**When the entire implementation plan is complete:**
+
+1. **Rename the plan file**: `ACTIVE_filename.md` or `filename.md` → `COMPLETE_filename.md`
+2. **Cleanup**: Remove any temporary files or scripts created during implementation
+3. **Organize**: Ensure codebase is clean and well-organized
+4. **Update documentation**: Update project documentation (README.md, CLAUDE.md) to reflect the completed work
+5. **Final verification**: Confirm all tests pass and the project is in excellent state
 
 ## Execution Summary Format
 
@@ -144,16 +198,6 @@ Stopping Reason: [Why execution stopped]
 Next Steps: [What to do next]
 ```
 
-## Implementation Focus
-
-This command supports flexible execution modes while maintaining:
-- Full context awareness of the codebase and plan details
-- Proper sequential execution of interdependent tasks
-- Careful validation and testing at each step
-- Accurate progress tracking and documentation updates
-- Respect for user-specified execution boundaries
-
-**Note**: Implementation plans require focused, contextual work and cannot be effectively parallelized.
 
 $ARGUMENTS
 
