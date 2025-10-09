@@ -1,0 +1,38 @@
+{
+  "name": "lpclaude-config",
+  "description": "Lorenzo's comprehensive Claude Code configuration with agents, slash commands, workers, hooks, and utilities for Git automation, documentation, job queues, and code quality checks",
+  "version": "1.0.0",
+  "author": {
+    "name": "Lorenzo Pasqualis",
+    "email": "lorenzo@pasqualis.com"
+  },
+  "homepage": "https://github.com/lpasqualis/lpclaude",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lpasqualis/lpclaude.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "automation",
+    "git",
+    "documentation",
+    "agents",
+    "workflows",
+    "productivity",
+    "job-queue",
+    "security",
+    "code-quality"
+  ],
+  "commands": {
+    "path": "commands"
+  },
+  "agents": {
+    "path": "agents"
+  },
+  "hooks": {
+    "path": "hooks"
+  },
+  "outputStyles": {
+    "path": "output-styles"
+  }
+}

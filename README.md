@@ -21,22 +21,62 @@ Claude Code supports personal configurations via `~/.claude/`, but there aren't 
 - **Examples of agents, slash commands, and hooks** I've found useful
 - **Patterns for organizing** a growing collection of Claude customizations
 
-## How to Use This Repository
+## Installation Options
 
-### As a Reference
+### Option 1: Install as Plugin (Recommended)
+
+The easiest way to use this configuration is via Claude Code's plugin system:
+
+```bash
+# Install directly from GitHub
+/plugin install https://github.com/lpasqualis/lpclaude
+
+# Or add the marketplace first, then browse and install
+/plugin marketplace add lpasqualis/lpclaude
+/plugin install lpclaude-config
+```
+
+**Benefits:**
+- ✅ One-command installation
+- ✅ Automatic updates via plugin system
+- ✅ Easy to enable/disable without uninstalling
+- ✅ No manual symlink management
+- ✅ Works alongside your personal `~/.claude/` configs
+
+**After installation**, restart Claude Code to load all components.
+
+See [PLUGIN_INSTALL.md](PLUGIN_INSTALL.md) for detailed plugin documentation.
+
+### Option 2: Traditional Setup (Manual Control)
+
+For full control over files and symlinks:
+
+```bash
+git clone https://github.com/lpasqualis/lpclaude.git ~/.lpclaude
+cd ~/.lpclaude
+./setup.sh
+```
+
+See ["If You Want to Try My Components"](#if-you-want-to-try-my-components) section below for details.
+
+### Option 3: Browse and Learn
+
+**Not ready to install?** You can also:
+
+#### As a Reference
 Browse the repository to:
 - See how to structure your own Claude configuration
 - Get ideas for agents and slash commands you might want to create
 - Learn the syntax and patterns for different component types
 - Understand how various Claude Code features work together
 
-### Copy Individual Components
+#### Copy Individual Components
 If you find something useful:
 1. Copy the specific file to your own `~/.claude/` directory
 2. Customize it for your needs
 3. Make it yours - don't just use my configuration as-is
 
-### Fork as a Starting Point
+#### Fork as a Starting Point
 To create your own configuration repository:
 1. Fork this repo
 2. Delete my specific configurations

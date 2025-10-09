@@ -1,0 +1,37 @@
+{
+  "name": "lpclaude-marketplace",
+  "owner": {
+    "name": "Lorenzo Pasqualis",
+    "email": "lpasqualis@gmail.com"
+  },
+  "metadata": {
+    "description": "Production-ready Claude Code plugin featuring 30+ slash commands for Git automation, documentation generation, job queues, and code quality. Includes 6 specialized agents for security review, completion verification, and documentation auditing. Battle-tested workflows for software engineering teams.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "lpclaude-config",
+      "source": {
+        "type": "github",
+        "repo": "lpasqualis/lpclaude"
+      },
+      "description": "Comprehensive Claude Code configuration with agents, slash commands, workers, hooks, and utilities for Git automation, documentation, job queues, and code quality checks",
+      "version": "1.0.0",
+      "author": {
+        "name": "Lorenzo Pasqualis"
+      },
+      "category": "productivity",
+      "tags": [
+        "automation",
+        "git",
+        "documentation",
+        "agents",
+        "workflows",
+        "job-queue",
+        "security",
+        "code-quality"
+      ],
+      "homepage": "https://github.com/lpasqualis/lpclaude"
+    }
+  ]
+}
