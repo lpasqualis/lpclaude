@@ -11,22 +11,46 @@ This repository is now available as a Claude Code plugin! You can install it thr
 
 ## Installation Methods
 
-### Method 1: Install via Plugin Command (Recommended)
+### Method 1: Add Marketplace, Then Install (Recommended)
 
-```bash
-# Add the marketplace
-claude plugin marketplace add lpasqualis/lpclaude
+**Step 1: Add the marketplace**
 
-# Browse available plugins and install
-claude plugin install lpclaude-config
+In Claude Code, type `/plugin` and select "Add marketplace", then enter:
+```
+https://github.com/lpasqualis/lpclaude
 ```
 
-### Method 2: Install from GitHub URL
+Or use the command directly:
+```bash
+# Add the marketplace using HTTPS URL (recommended)
+/plugin marketplace add https://github.com/lpasqualis/lpclaude
+
+# Or use GitHub owner/repo format (requires SSH keys configured)
+/plugin marketplace add lpasqualis/lpclaude
+```
+
+**Step 2: Install the plugin**
+
+After adding the marketplace:
+1. Type `/plugin` and select "Install plugin"
+2. Choose `lpclaude-config` from the list
+3. Restart Claude Code to load all components
+
+Or install directly:
+```bash
+/plugin install lpclaude-config
+```
+
+### Method 2: Direct Install from GitHub (No Marketplace)
+
+Skip the marketplace and install directly from the repository:
 
 ```bash
-# Direct installation from GitHub
-claude plugin install https://github.com/lpasqualis/lpclaude
+# Direct installation from GitHub URL
+/plugin install https://github.com/lpasqualis/lpclaude
 ```
+
+**Note**: After installation, restart Claude Code to activate all agents and slash commands.
 
 ### Method 3: Traditional Setup (Still Supported)
 

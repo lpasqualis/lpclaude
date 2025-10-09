@@ -11,10 +11,7 @@
   "plugins": [
     {
       "name": "lpclaude-config",
-      "source": {
-        "type": "github",
-        "repo": "lpasqualis/lpclaude"
-      },
+      "source": ".",
       "description": "Comprehensive Claude Code configuration with agents, slash commands, workers, hooks, and utilities for Git automation, documentation, job queues, and code quality checks",
       "version": "1.0.0",
       "author": {

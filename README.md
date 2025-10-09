@@ -25,15 +25,28 @@ Claude Code supports personal configurations via `~/.claude/`, but there aren't 
 
 ### Option 1: Install as Plugin (Recommended)
 
-The easiest way to use this configuration is via Claude Code's plugin system:
+The easiest way to use this configuration is via Claude Code's plugin system.
 
+**Quick Install:**
+
+1. In Claude Code, type `/plugin` and select "Add marketplace"
+2. Enter: `https://github.com/lpasqualis/lpclaude`
+3. Type `/plugin` again and select "Install plugin"
+4. Choose `lpclaude-config` from the list
+5. Restart Claude Code
+
+**Or use commands directly:**
 ```bash
-# Install directly from GitHub
-/plugin install https://github.com/lpasqualis/lpclaude
+# Step 1: Add the marketplace (HTTPS format recommended)
+/plugin marketplace add https://github.com/lpasqualis/lpclaude
 
-# Or add the marketplace first, then browse and install
-/plugin marketplace add lpasqualis/lpclaude
+# Step 2: Install the plugin
 /plugin install lpclaude-config
+```
+
+**Or skip the marketplace and install directly:**
+```bash
+/plugin install https://github.com/lpasqualis/lpclaude
 ```
 
 **Benefits:**
@@ -42,8 +55,6 @@ The easiest way to use this configuration is via Claude Code's plugin system:
 - ✅ Easy to enable/disable without uninstalling
 - ✅ No manual symlink management
 - ✅ Works alongside your personal `~/.claude/` configs
-
-**After installation**, restart Claude Code to load all components.
 
 See [PLUGIN_INSTALL.md](PLUGIN_INSTALL.md) for detailed plugin documentation.
 
