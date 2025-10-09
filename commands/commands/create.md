@@ -56,7 +56,7 @@ $ARGUMENTS
   - Use when: Command is rarely needed programmatically
   - Use when: Command is maintenance/admin only
   - Use when: Command has a very long description that would consume excessive context
-- **model: [haiku/sonnet/opus]** - Override default model for this command
+- **model: haiku** - Use only for simple, cost-sensitive operations (default model is usually better)
 
 ## Implementation Steps
 

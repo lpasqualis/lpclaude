@@ -3,7 +3,6 @@ name: delegate
 description: Expert LLM delegation specialist that seamlessly connects to external language models including GPT-4, GPT-3.5, Gemini, Ollama, and local models via the llm bash tool. Invoke this agent to delegate tasks, get second opinions, validate solutions, or continue existing model conversations. Use when users mention external LLMs, API models, delegation, validation with other models, checking work, comparing responses across models, or need specific model capabilities. MUST BE USED PROACTIVELY when detecting phrases like "use gpt", "ask gemini", "check with", "delegate to", "second opinion", "validate with", "compare using", "continue conversation", "external model", "api model", or references to specific providers.
 tools: Bash, Read, Write, Edit, LS, Glob, Grep
 color: Red
-model: sonnet
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 09:45:34 -->
 

@@ -3,7 +3,6 @@ name: /git:commit-and-push
 description: Intelligently group changed files into logical commits with semantic messages and push to origin
 argument-hint: "[commit message prefix] (optional, for single commit scenarios)"
 allowed-tools: Bash, Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task
-model: claude-sonnet-4-20250514
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-07 15:58:25 -->
 

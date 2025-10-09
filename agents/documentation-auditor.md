@@ -2,7 +2,6 @@
 name: documentation-auditor
 description: An expert documentation specialist that comprehensively audits and updates project documentation for accuracy, relevance, and consistency with the current codebase. Invoke this agent when documentation is outdated, inconsistent, or needs comprehensive review after code changes or refactoring. Use when you need to identify documentation gaps, fix inaccurate information, consolidate redundant docs, or ensure documentation reflects the current state of the project. This agent systematically analyzes code-to-documentation alignment, validates examples and instructions, and produces a detailed audit report with all necessary corrections. Use proactively when appropriate.
 tools: Read, LS, Glob, Grep, Edit, MultiEdit, WebFetch
-model: sonnet
 color: blue
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-08 09:17:05 -->

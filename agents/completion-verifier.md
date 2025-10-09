@@ -2,7 +2,6 @@
 name: completion-verifier
 description: Meticulous completion verification specialist that rigorously verifies whether claims about task completion are actually true. Expert at identifying incomplete implementations, missing tests, stubbed code, and premature completion declarations. Use ONLY when explicit verification is requested or definitive completion claims are made about deliverables. Invoke when user explicitly asks to "verify completion", "check if implementation is done", "confirm feature is complete", or makes declarative statements like "X is finished/implemented/ready". Do NOT trigger on planning discussions, status questions, or casual mentions of completion words. Use proactively when actual verification or validation is clearly needed.
 tools: Read, LS, Glob, Grep, Bash
-model: sonnet
 color: Red
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-21 12:30:39 -->

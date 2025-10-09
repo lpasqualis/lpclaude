@@ -2,7 +2,6 @@
 name: /simplify
 description: "Safely simplifies a single tracked file in a git repo to its most essential form without losing functional information. One-pass, dry-run guarded, idempotent."
 argument-hint: "<file-path> [additional-constraints or focus-areas]"
-model: claude-opus-4-1-20250805
 allowed-tools: "Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash"
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 10:35:53 -->
