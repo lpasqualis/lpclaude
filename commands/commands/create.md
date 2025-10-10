@@ -1,5 +1,4 @@
 ---
-name: /commands:create
 description: Create new Claude Code commands with best practices and automatic validation
 argument-hint: "[description of what the command should do] (command name optional - can be embedded in description or will be generated)"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Task, WebFetch
@@ -151,12 +150,14 @@ If creating parallel execution workers for a command:
 - **Be autonomous**: Create immediately with reasonable assumptions
 - **Stay focused**: One clear purpose per command
 - **Use directive language**: "Analyze", "Generate", "Review"
-- **Include $ARGUMENTS**: Allow user customization
+- **Include argument placeholders**: Use `$ARGUMENTS` or `$1`, `$2`, etc. for user customization
 - **Validate early**: Check against best practices during creation
 - **Context awareness**: Consider adding `disable-model-invocation: true` for:
   - Test commands that are only run manually
   - Maintenance commands that don't need automation
   - Commands with very long descriptions
   - Project-specific commands unlikely to be called by Claude
+
+## User's Command Request
 
 $ARGUMENTS
