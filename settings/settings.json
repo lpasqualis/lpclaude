@@ -20,7 +20,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check"
+            "command": "~/.claude-code-docs/claude-docs-helper.sh hook-check",
+            "timeout": 10
           }
         ]
       }

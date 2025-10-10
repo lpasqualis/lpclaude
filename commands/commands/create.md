@@ -19,7 +19,8 @@ From the description, determine:
 - Core functionality and purpose
 - Required tools based on operations needed
 - Command type (Tool vs Workflow)
-- Whether arguments are needed
+- Whether arguments are needed (all-arguments via `$ARGUMENTS` or positional via `$1`, `$2`, etc.)
+- Whether dynamic context is needed (bash execution with `!`, file references with `@`)
 - Whether to exclude from SlashCommand tool (disable-model-invocation)
 
 ## Tool Permission Selection
@@ -38,25 +39,81 @@ Use complete logical groupings:
 ### Basic Structure:
 ```markdown
 ---
-name: /command-name
-description: Brief description of functionality
+description: Brief description of functionality (defaults to first line of prompt if omitted)
 argument-hint: [specific arguments expected]
 allowed-tools: [appropriate tool grouping]
 ---
 
 [Concise, directive instructions]
 
-$ARGUMENTS
+## Arguments
+Use $ARGUMENTS for all arguments, or $1, $2, $3 for individual positional parameters.
+
+## Dynamic Context (optional)
+- Bash execution: !`command here`
+- File references: @path/to/file
 
 [Any constraints or output format requirements]
 ```
+
+**Note**: Command name is derived from the filename (e.g., `optimize.md` creates `/optimize`), not from frontmatter.
 
 ### Optional Frontmatter Fields:
 - **disable-model-invocation: true** - Exclude from SlashCommand tool to save context
   - Use when: Command is rarely needed programmatically
   - Use when: Command is maintenance/admin only
   - Use when: Command has a very long description that would consume excessive context
-- **model: haiku** - Use only for simple, cost-sensitive operations (default model is usually better)
+- **model: [model-id]** - Use specific model (e.g., `claude-3-5-haiku-20241022` for simple operations)
+  - Default: Inherits from conversation
+  - Generally prefer the default unless cost optimization is critical
+
+### Argument Handling:
+
+**All Arguments Pattern (`$ARGUMENTS`)**:
+- Captures everything after the command name as a single string
+- Use when: Arguments are flexible natural language instructions
+- Example: `/fix-issue $ARGUMENTS` → `/fix-issue refactor auth module` → `$ARGUMENTS = "refactor auth module"`
+
+**Positional Arguments Pattern (`$1`, `$2`, `$3`)**:
+- Individual space-separated arguments
+- Use when: Specific structured parameters are needed
+- Example: `/review-pr $1 priority $2` → `/review-pr 456 high` → `$1 = "456"`, `$2 = "high"`
+- Better for commands requiring specific roles for each parameter
+
+### Dynamic Context Features:
+
+**Bash Command Execution (`!`)**:
+- Execute bash commands before Claude sees the prompt
+- Syntax: `!`command here``
+- Output is included as static text in the prompt
+- **Required**: Must include appropriate bash commands in `allowed-tools`
+- **Limitation**: Each `!` command runs in isolation (variables don't persist)
+- Example:
+  ```markdown
+  ---
+  allowed-tools: Bash(git status:*), Bash(git diff:*)
+  ---
+
+  Current status: !`git status`
+  Recent changes: !`git diff HEAD`
+  ```
+
+**File References (`@`)**:
+- Include file contents directly in the prompt
+- Syntax: `@path/to/file`
+- Paths can be relative or absolute
+- Directory references show listings, not contents
+- Files are read at execution time (always fresh)
+- Example:
+  ```markdown
+  Review the implementation in @src/auth.js
+  Compare @old/version.js with @new/version.js
+  ```
+
+**Extended Thinking**:
+- Commands can trigger extended thinking by including thinking-mode keywords
+- Claude will engage deeper reasoning for complex problems
+- No special syntax required - thinking keywords naturally trigger the mode
 
 ## Implementation Steps
 

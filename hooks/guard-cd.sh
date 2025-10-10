@@ -132,3 +132,6 @@ fi
 
 # Any other 'cd' usage is blocked
 block
+
+# Exit silently to suppress hook completion messages
+exit 0

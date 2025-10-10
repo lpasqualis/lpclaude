@@ -36,4 +36,7 @@ last="$(cat "$state" 2>/dev/null || true)"
 if [[ "$always" = "1" || "$line" != "$last" ]]; then
   echo "$line"
   printf '%s' "$line" > "$state"
+else
+  # Exit silently when nothing changed to suppress hook completion messages
+  exit 0
 fi
