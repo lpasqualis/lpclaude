@@ -7,6 +7,7 @@ allowed-tools:
   - Edit
   - LS
   - Glob
+disable-model-invocation: true
 ---
 
 # VS Code Workspace Tinter

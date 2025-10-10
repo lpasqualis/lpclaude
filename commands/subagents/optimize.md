@@ -3,6 +3,7 @@ name: /subagents:optimize
 description: Optimize subagent definitions for reliable automatic invocation and peak performance
 argument-hint: <agent-name> [--aggressive]
 allowed-tools: Read, Edit, LS, Glob, Grep, Bash, WebFetch, Task
+disable-model-invocation: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 -->
 

@@ -3,6 +3,7 @@ name: /vs:settings-help
 description: Answer VS Code settings questions using local documentation
 allowed-tools: Read, LS, Glob, Grep, Bash
 argument-hint: [VS code settings question]
+disable-model-invocation: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 10:56:08 -->
 

@@ -3,6 +3,7 @@ name: /commands:port-to-gemini
 description: Translate Claude Code commands to Gemini CLI format
 argument-hint: [optional: specific commands to translate, or special directives]
 allowed-tools: Read, Write, MultiEdit, LS, Glob, Grep, Bash, WebFetch
+disable-model-invocation: true
 ---
 
 # Port Claude Code Commands to Gemini CLI

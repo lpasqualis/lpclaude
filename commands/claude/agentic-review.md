@@ -2,6 +2,7 @@
 name: /claude:agentic-review
 description: Analyze project's commands, subagents, and workers to identify needed conversions and optimizations
 allowed-tools: Read, LS, Glob, Grep, Task
+disable-model-invocation: true
 ---
 
 Conduct a comprehensive review of this project's agentic components (commands, subagents, and workers) to identify opportunities for optimization based on Claude Code best practices.

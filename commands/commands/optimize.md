@@ -3,6 +3,7 @@ name: /commands:optimize
 description: Optimize slash command definitions for best practices and performance
 argument-hint: <command-name> [--aggressive]
 allowed-tools: Read, Edit, MultiEdit, Write, LS, Glob, Grep, Bash, WebFetch, Task
+disable-model-invocation: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-27 -->
 

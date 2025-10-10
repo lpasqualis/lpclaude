@@ -20,7 +20,9 @@ From the description, determine:
 - Command type (Tool vs Workflow)
 - Whether arguments are needed (all-arguments via `$ARGUMENTS` or positional via `$1`, `$2`, etc.)
 - Whether dynamic context is needed (bash execution with `!`, file references with `@`)
-- Whether to exclude from SlashCommand tool (disable-model-invocation)
+- **Whether to exclude from SlashCommand tool** - Evaluate based on:
+  - **Include (omit field)** if: Command might be useful for Claude to invoke automatically, general-purpose workflow, reusable across contexts
+  - **Exclude (add `disable-model-invocation: true`)** if: Maintenance/admin only, rarely needed programmatically, very long description consuming excessive context, highly specialized manual-only operation
 
 ## Tool Permission Selection
 
@@ -117,12 +119,17 @@ Use $ARGUMENTS for all arguments, or $1, $2, $3 for individual positional parame
 ## Implementation Steps
 
 1. **Analyze Requirements**: Determine command type and scope
-2. **Generate YAML Frontmatter**: Include all required fields with logical tool groupings
-3. **Write Command Body**: Use concise, directive language with clear steps
-4. **Add $ARGUMENTS Placeholder**: Allow natural language customization
-5. **Validate Draft**: Use existing validation task template
-6. **Create Command File**: Save in appropriate directory
-7. **Confirm Creation**: Provide brief summary
+2. **Evaluate SlashCommand Tool Inclusion**: Decide whether to add `disable-model-invocation: true` based on command purpose
+3. **Generate YAML Frontmatter**: Include all required fields with logical tool groupings and the disable-model-invocation decision
+4. **Write Command Body**: Use concise, directive language with clear steps
+5. **Add Argument Placeholder**: Use `$ARGUMENTS` or positional parameters for customization
+6. **Validate Draft**: Use existing validation task template if needed
+7. **Create Command File**: Save in appropriate directory
+8. **Report Creation**: Provide summary including:
+   - Command name and location
+   - Tools allowed
+   - **SlashCommand tool availability decision and reasoning**
+   - Key features of the command
 
 ## Validation Integration
 

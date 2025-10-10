@@ -3,6 +3,7 @@ name: /commands:migration:slashcommand-tool
 description: Audit agentic frameworks for outdated SlashCommand tool workarounds and identify migration opportunities
 argument-hint: [optional: specific directories or patterns to focus on]
 allowed-tools: Read, LS, Glob, Grep, Edit, MultiEdit, Task
+disable-model-invocation: true
 ---
 
 # Audit Framework for SlashCommand Tool Migration Opportunities

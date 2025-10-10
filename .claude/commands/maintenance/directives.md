@@ -3,6 +3,7 @@ name: /maintenance:directives
 description: Analyze, optimize, and reorganize directive files for consistency and clarity
 argument-hint: [--fix-all] [--scope all|numbered|named]
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task
+disable-model-invocation: true
 ---
 
 # Directive Files Maintenance

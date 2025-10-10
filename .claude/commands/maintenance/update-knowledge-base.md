@@ -3,6 +3,7 @@ name: /maintenance:update-knowledge-base
 description: Fetches latest Claude Code documentation and identifies components that need updating based on changes in best practices
 argument-hint: "[force] (optional, to force update even if recently checked)"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, WebFetch, WebSearch, Bash
+disable-model-invocation: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-19 -->
 

@@ -3,6 +3,7 @@ name: /claude:optimize-md
 description: Audits and optimizes CLAUDE.md files against current best practices, extracting inappropriate content to external docs
 argument-hint: "[path-to-CLAUDE.md] (optional - defaults to ./CLAUDE.md)"
 allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, WebFetch
+disable-model-invocation: true
 ---
 <!-- OPTIMIZATION_TIMESTAMP: 2025-08-21 11:38:38 -->
 
