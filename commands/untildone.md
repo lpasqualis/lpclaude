@@ -6,7 +6,7 @@ allowed-tools: Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash, Task, SlashCo
 
 # Complete Autonomous Task Execution
 
-Execute the following task instructions with complete autonomy until finished. Work without stopping, making informed decisions based on available context and research.
+Execute the following task instructions with complete autonomy until finished. Work without stopping, making informed decisions based on available context and research. IMPORTANT: DO NOT stop for any reason until 100% done.
 
 ## Task Instructions
 
@@ -38,6 +38,7 @@ $ARGUMENTS
 **Testing Requirements**:
 - Write comprehensive tests for all new functionality
 - Run all tests and ensure they pass
+- Run any "manual" tests necessary
 - Fix any test failures immediately
 - Run builds and ensure no warnings or errors
 - Validate the implementation works end-to-end
