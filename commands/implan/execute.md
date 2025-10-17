@@ -12,7 +12,7 @@ Load and continue work on an implementation plan from the project's `docs/implan
 
 ### NO TIME PRESSURE - NEVER SHORTCUT
 
-**You have unlimited time unless explicitly told otherwise.** When executing without a time-based directive, there are ZERO time constraints. Take as long as needed to do the work properly. Do not rush, do not shortcut, do not skip steps, do not make assumptions to save time.
+**You have unlimited time unless explicitly told otherwise.** When executing without a time-based directive, there are ZERO time constraints. There are also ZERO token constraints, the self-context compacting system will take care of freeing context space when we are running out. Take as long as needed to do the work properly. Do not rush, do not shortcut, do not skip steps, do not make assumptions to save time.
 
 **Quality is never compromised.** All work must meet full quality standards regardless of execution directive. Stopping directives (time limits, milestones, scope constraints) indicate when to pause work after completing the current task properly, not when to compromise quality or leave work half-done.
 
@@ -179,7 +179,7 @@ When encountering errors: attempt resolution first, only stop if truly unrecover
 
 1. **Complete current task** - Finish the atomic task you're working on with full quality (don't leave work half-done)
 2. **Run cleanup/tests** - Execute any necessary cleanup or validation
-3. **Update the plan** - Ensure all completed work is reflected, update progress percentage
+3. **Update the plan** - Ensure all completed work is reflected, update progress percentage, update done items. Make sure the plan is completely current and accurate at this stage.
 4. **Document session** - Add clear session notes including:
    - What was accomplished
    - Why execution stopped (time limit, milestone reached, blocker, etc.)
@@ -208,6 +208,8 @@ Duration: [Time spent]
 Tasks Completed: [X of Y]
 Current Phase: [Phase name and progress]
 Stopping Reason: [Why execution stopped]
+What is done: [What phases/items have been completed so far]
+What is left to do: [What phases/items are left to implemente, including optional ones]
 Next Steps: [What to do next]
 ```
 
@@ -220,6 +222,7 @@ $ARGUMENTS
 
 **If no time-based directive was specified above:**
 - You have UNLIMITED TIME
+- You can use UNLIMITED tokens
 - Do NOT rush or shortcut anything
 - Take as long as needed for quality work
 - There is NO deadline
