@@ -123,14 +123,59 @@ If directive includes conditions:
 - **"until review needed"**: Stop when reaching a point requiring code review
 
 ### 4. Update the Plan as You Work
-- Mark completed items with `[x]`
+
+**MANDATORY STATUS CHECKPOINT AFTER EACH TASK:**
+
+After completing ANY task (before moving to the next one), you MUST execute this checkpoint protocol:
+
+1. **Update the implan file immediately**:
+   - Mark the just-completed task with `[x]`
+   - Update "Current Status" section with current date (use `date` command)
+   - Add brief note to "Session History" about what was just completed
+   - Update progress percentage if needed
+
+2. **Verify your update succeeded**:
+   - Read back the relevant section of the implan file
+   - Confirm the checkbox is marked `[x]`
+   - Confirm the date is current
+   - Confirm the task description matches what you just completed
+
+3. **Only after verification, proceed** to the next task
+
+**This checkpoint is NON-NEGOTIABLE** - skipping it will result in inaccurate status tracking that compounds over time.
+
+**Dynamic Plan Updates:**
 - Add/update any items/phases/tasks as you discover the need for it during the execution. The plan is DYNAMIC, not static
-- Update the "Current Status" section with today's date (fetch it using `date` bash command)
-- Add session notes to the "Session History"
-- Document any new learnings or decisions
-- Update progress percentages
+- Document any new learnings or decisions in "Session History"
 - Keep the "Next Steps" section current
-- Update this regularly after each task is complete, do not let the file go stale. If the execution is interrupted, this file is the source of truth on the status.
+- If the execution is interrupted, this file is the source of truth on the status
+
+**Why This Matters:**
+Without regular updates after each task, the plan becomes stale. If execution stops unexpectedly (context limits, errors, user interruption), an outdated plan makes it impossible to resume work effectively. Update frequently, verify updates succeeded, then proceed.
+
+**PHASE BOUNDARY PROTOCOL (MANDATORY):**
+
+When you complete ANY phase (all tasks in a phase marked `[x]`), you MUST execute this verification protocol:
+
+1. **Stop implementation work** - Do not start the next phase yet
+
+2. **Run verification** - Execute `/implan:update [plan-name]` using the SlashCommand tool to verify the completed phase
+
+3. **Review verification results carefully**:
+   - Check if any tasks marked `[x]` were found to be incomplete
+   - Review any issues discovered (stubs, TODOs, failing tests)
+   - Note any discrepancies between claimed vs. actual completion
+
+4. **Fix discrepancies** - If verification found issues:
+   - Fix the incomplete work immediately
+   - Re-run tests to verify fixes
+   - Update the plan with the fixes
+
+5. **Re-verify if needed** - If you made fixes, run `/implan:update` again to confirm
+
+6. **Only after clean verification, proceed** to the next phase
+
+**Rationale**: Phase boundaries are natural checkpoints. Verifying at these points prevents accumulated drift and ensures each phase is truly complete before building on it. It's much easier to fix 5 tasks in one phase than to discover 20 incomplete tasks across 4 phases later.
 
 ### 5. Stopping Conditions & Error Handling
 
@@ -173,28 +218,93 @@ When encountering errors: attempt resolution first, only stop if truly unrecover
 - Mark items `[x]` only when fully complete and tested
 - Add/update phases and tasks as you discover needs during execution
 
-### 7. Stopping Protocol
+### 7. Stopping Protocol (ALWAYS EXECUTE)
 
-**When any stopping condition is met:**
+**CRITICAL**: If you stop execution for ANY reason (time limit, completion, blocker, error, user interruption), you MUST execute this protocol. No exceptions.
+
+**Before your final message to the user, complete ALL these steps:**
 
 1. **Complete current task** - Finish the atomic task you're working on with full quality (don't leave work half-done)
+
 2. **Run cleanup/tests** - Execute any necessary cleanup or validation
-3. **Update the plan** - Ensure all completed work is reflected, update progress percentage, update done items. Make sure the plan is completely current and accurate at this stage.
-4. **Document session** - Add clear session notes including:
-   - What was accomplished
-   - Why execution stopped (time limit, milestone reached, blocker, etc.)
-   - Immediate next steps for resumption
-5. **Provide summary** - Give user the execution summary (see format below)
 
-### 8. Plan Completion
+3. **Update the plan file** - This is MANDATORY:
+   - Mark ALL completed tasks with `[x]`
+   - Update "Current Status" section with current date (use `date` command)
+   - Update progress percentages to reflect actual completion
+   - Add session notes to "Session History" with:
+     - What was accomplished (list specific tasks completed)
+     - Why execution stopped (time limit, milestone reached, blocker, error, etc.)
+     - Current state of implementation
+     - Immediate next steps for resumption
 
-**When the entire implementation plan is complete:**
+4. **Verify your plan updates** - Read back the implan file to confirm:
+   - All completed tasks are marked `[x]`
+   - Current date is in "Current Status"
+   - Session notes were added
+   - Progress percentage is accurate
 
-1. **Rename the plan file**: `ACTIVE_filename.md` or `filename.md` → `COMPLETE_filename.md`
-2. **Cleanup**: Remove any temporary files or scripts created during implementation
-3. **Organize**: Ensure codebase is clean and well-organized
-4. **Update documentation**: Update project documentation (README.md, CLAUDE.md) to reflect the completed work
-5. **Final verification**: Confirm all tests pass and the project is in excellent state
+5. **Check for plan completion** - If ALL tasks are marked `[x]`:
+   - DO NOT rename the file yet
+   - DO NOT tell the user it's complete yet
+   - Proceed to step 6 for auto-verification
+
+6. **Provide summary** - Give user the execution summary (see format below)
+
+**Self-Verification Checklist** (ask yourself before sending final message):
+- [ ] Did I update the implan file with completed tasks?
+- [ ] Did I verify the implan updates by reading it back?
+- [ ] Did I update "Current Status" with current date?
+- [ ] Did I add session notes to "Session History"?
+- [ ] Did I update progress percentage?
+- [ ] If all tasks complete, did I run auto-verification (step 6)?
+
+**Why This Protocol is Critical:**
+Without proper stop handling, the plan becomes outdated. The next agent (or you in the next session) will have no idea what was done, what's left, or what issues were encountered. This protocol ensures continuity.
+
+### 8. Plan Completion (AUTO-VERIFICATION REQUIRED)
+
+**When you believe the entire implementation plan is complete:**
+
+**STOP - DO NOT rename the file yet. DO NOT tell the user it's complete yet.**
+
+**Mandatory Auto-Verification Protocol:**
+
+1. **Run comprehensive verification** - Execute `/implan:update [plan-name]` using the SlashCommand tool
+   - This will verify all tasks are truly complete (not just marked complete)
+   - It will check for stubs, TODOs, failing tests, missing implementations
+   - It will detect quality issues you may have missed
+
+2. **Review verification results carefully**:
+   - Read the full verification report
+   - Check if any tasks marked `[x]` were found to be incomplete
+   - Review all issues discovered
+   - Note any discrepancies between claimed vs. actual completion
+
+3. **If verification found issues**:
+   - Fix ALL discovered issues immediately
+   - Re-run tests to verify fixes
+   - Update the plan with the fixes made
+   - Run `/implan:update` again to re-verify
+   - Repeat until verification passes cleanly
+
+4. **Only after clean verification** (zero issues found):
+   - Rename the plan file: `ACTIVE_filename.md` → `COMPLETE_filename.md`
+   - Remove any temporary files or scripts created during implementation
+   - Ensure codebase is clean and well-organized
+   - Update project documentation (README.md, CLAUDE.md) to reflect completed work
+   - Confirm all tests pass and the project is in excellent state
+   - Add final completion note to plan's "Session History"
+
+5. **Report completion to user** with:
+   - Verification confirmation (all checks passed)
+   - Summary of what was implemented
+   - Test results
+   - File rename confirmation
+
+**This prevents premature completion claims and ensures quality.**
+
+**NEVER skip auto-verification** - it's the only way to be certain the plan is truly complete.
 
 ## Execution Summary Format
 
