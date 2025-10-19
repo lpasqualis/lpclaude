@@ -337,4 +337,4 @@ $ARGUMENTS
 - Take as long as needed for quality work
 - There is NO deadline
 
-**Start by parsing the execution directive, loading the implementation plan, and showing a summary of the current status and planned execution scope.**
+**Parse the execution directive, load the implementation plan, and begin execution immediately without asking for confirmation.**
