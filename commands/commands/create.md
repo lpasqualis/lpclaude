@@ -19,7 +19,7 @@ From the description, determine:
 - Required tools based on operations needed
 - Command type (Tool vs Workflow)
 - Whether arguments are needed (all-arguments via `$ARGUMENTS` or positional via `$1`, `$2`, etc.)
-- Whether dynamic context is needed (bash execution with `!`, file references with `@`)
+- Whether dynamic context is needed (bash execution with exclamation-backtick syntax, file references with @ prefix)
 - **Whether to exclude from SlashCommand tool** - Evaluate based on:
   - **Include (omit field)** if: Command might be useful for Claude to invoke automatically, general-purpose workflow, reusable across contexts
   - **Exclude (add `disable-model-invocation: true`)** if: Maintenance/admin only, rarely needed programmatically, very long description consuming excessive context, highly specialized manual-only operation
@@ -51,7 +51,7 @@ allowed-tools: [appropriate tool grouping]
 Use $ARGUMENTS for all arguments, or $1, $2, $3 for individual positional parameters.
 
 ## Dynamic Context (optional)
-- Bash execution: !`command here`
+- Bash execution: Exclamation mark followed by backtick-wrapped command
 - File references: @path/to/file
 
 [Any constraints or output format requirements]
@@ -83,20 +83,20 @@ Use $ARGUMENTS for all arguments, or $1, $2, $3 for individual positional parame
 
 ### Dynamic Context Features:
 
-**Bash Command Execution (`!`)**:
+**Bash Command Execution (exclamation mark):**
 - Execute bash commands before Claude sees the prompt
-- Syntax: `!`command here``
+- Syntax: Exclamation mark followed by backtick, then command, then closing backtick
 - Output is included as static text in the prompt
 - **Required**: Must include appropriate bash commands in `allowed-tools`
-- **Limitation**: Each `!` command runs in isolation (variables don't persist)
+- **Limitation**: Each command runs in isolation (variables don't persist)
 - Example:
   ```markdown
   ---
   allowed-tools: Bash(git status:*), Bash(git diff:*)
   ---
 
-  Current status: !`git status`
-  Recent changes: !`git diff HEAD`
+  Current status: [Use exclamation-backtick syntax with: git status]
+  Recent changes: [Use exclamation-backtick syntax with: git diff HEAD]
   ```
 
 **File References (`@`)**:
