@@ -66,51 +66,44 @@ cd ~/.lpclaude
 
 The plugin includes:
 
-### Agents (6 agents)
-- `addjob` - Creates job files for deferred task execution
+### Agents (4 agents)
 - `completion-verifier` - Verifies task completion claims
 - `delegate` - Delegates tasks to external LLMs
 - `documentation-auditor` - Audits documentation against code
-- `hack-spotter` - Security and code quality reviewer
 - `implan-auditor` - Reviews implementation plans
 
-### Slash Commands (30+ commands)
+### Slash Commands (20+ commands)
 
 **Git & Version Control**
 - `/git:commit-and-push` - Intelligent commits with semantic messages
 - `/git:rewrite-commit-descriptions` - Improve commit messages
 
 **Documentation**
-- `/docs:capture-session` - Document work for team handoff
-- `/docs:capture-strategy` - Capture strategic decisions
 - `/docs:readme-audit` - Audit and optimize README files
+- `/claude:optimize-md` - Optimize CLAUDE.md files
 - `/pdf2md` - Convert PDF to Markdown
 
 **Planning & Implementation**
 - `/implan:create` - Generate implementation plans
 - `/implan:execute` - Execute implementation plans
+- `/implan:update` - Verify and update plan status from project state
 - `/postmortem` - Analyze session issues
 
-**Job Queue Management**
-- `/jobs:do` - Execute queued jobs in parallel
-- `/jobs:auto-improve` - Natural language project improvement
-- `/jobs:queue-learnings` - Queue learnings for processing
-
-**Code Quality & Validation**
-- `/hackcheck` - Check for security issues and technical debt
+**Code Quality & Verification**
 - `/doublecheck` - Verify implementation completeness
-- `/simplify` - Simplify complex code
+- `/essentialize` - Reduce a single tracked file to its essential form
 
-**Context & Memory**
-- `/learn` - Extract insights to CLAUDE.md
-- `/claude:optimize-md` - Optimize CLAUDE.md files
-- `/question` - Answer questions without taking action
-
-**Framework Development**
+**Framework Authoring**
 - `/commands:create` - Create new slash commands
 - `/commands:validate` - Validate commands
+- `/commands:optimize` - Optimize slash command definitions
+- `/commands:add-parallelization` - Add parallel execution to a command
+- `/commands:port-to-gemini` - Translate commands to Gemini CLI format
+- `/skills:create` - Create new skills
 - `/subagents:optimize` - Optimize subagent definitions
 - `/subagents:review-ecosystem` - Analyze agent interactions
+- `/claude:agentic-review` - Review this repo's components
+- `/worker:run` - Run a worker template
 
 **VS Code Integration**
 - `/vs:settings-help` - VS Code settings assistance

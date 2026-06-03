@@ -98,15 +98,15 @@ To create your own configuration repository:
 
 Here's what I've built for my workflow (yours will be different):
 
-- **Slash Commands** (30+) - My shortcuts for git, documentation, job processing, learning capture, VS Code theming
-- **Agents** - Auto-triggering helpers I use for security reviews, documentation, task queueing
+- **Slash Commands** (20+) - My shortcuts for git, documentation, implementation planning, framework authoring, VS Code theming
+- **Agents** - Auto-triggering helpers I use for completion verification, documentation, plan auditing, external-LLM delegation
 - **Workers** - My custom pattern: reusable task templates that slash commands can run in parallel (not a Claude feature)
 - **Hooks** - Shell scripts that prevent me from making mistakes (like cd'ing to wrong directories)
 - **Output Styles** - How I prefer Claude to format responses for different contexts
 - **Status Line** - My terminal prompt integration showing session context
-- **Utility Scripts** - Helper tools like my `addjob` task queuing system
+- **Utility Scripts** - Helper scripts supporting some of my slash commands
 - **Directives** - General directives split into numbered files, compiled into CLAUDE.md (see [Directives Compilation](#directives-compilation) below)
-- **Resources** - Research and documentation I've collected about Claude Code patterns
+- **Resources** - Supporting reference files (e.g., my Python style guide)
 - **Organization** - How I structure everything to stay maintainable
 
 > **New to Claude Code?** Claude Code is Anthropic's official CLI that brings Claude's AI capabilities directly to your terminal. It natively supports personal configurations via `~/.claude/` - this repository is just one example of how to use that feature.
@@ -139,54 +139,42 @@ Claude Code is Anthropic's official CLI for AI-powered coding assistance.
 
 ### Agents
 - **completion-verifier** - Verifies task completion claims
-- **delegate** - Delegates tasks to external LLMs
+- **delegate** - Delegates tasks to external LLMs (GPT, Gemini, Ollama, local models)
 - **documentation-auditor** - Audits documentation against code
-- **hack-spotter** - Reviews code for security issues and technical debt
 - **implan-auditor** - Reviews implementation plans for completeness
 
 ### Slash Commands
 
 #### Git & Version Control
-- `/git:commit-and-push` - Intelligent commits with semantic versioning
-- `/git:rewrite-commit-descriptions` - Improve commit messages
-#### Documentation
+- `/git:commit-and-push` - Intelligent commits with semantic messages
+- `/git:rewrite-commit-descriptions` - Improve commit messages from actual changes
 
-- `/docs` - Documentation utilities
-- `/docs:capture-session` - Document work for team handoff
-- `/docs:capture-strategy` - Capture strategic decisions
+#### Documentation
 - `/docs:readme-audit` - Audit and optimize README files
+- `/claude:optimize-md` - Optimize CLAUDE.md files
 - `/pdf2md` - Convert PDF to Markdown
 
 #### Planning & Implementation
 - `/implan:create` - Generate implementation plans
 - `/implan:execute` - Execute implementation plans
-- `/postmortem` - Analyze session to identify and document issues for systematic fixing
+- `/implan:update` - Verify and update plan status from project state
+- `/postmortem` - Analyze a session to document issues for systematic fixing
 
-#### Job Queue Management
-- **addjob** - Queue tasks (Python utility, also has supporting agent)
-- `/jobs:do` - Execute queued jobs in parallel
-- `/jobs:auto-improve` - Natural language project improvement that continuously finds and fixes issues
-- `/jobs:queue-learnings` - Queue learnings for processing
+#### Code Quality & Verification
+- `/doublecheck` - Verify implementation completeness (parallel completion-verifier agents)
+- `/essentialize` - Reduce a single tracked file to its essential form (lossless, dry-run guarded)
 
-#### Code Quality & Validation
-- `/hackcheck` - Check for code hacks and shortcuts
-- `/doublecheck` - Verify implementation completeness
-- `/commands:validate` - Validate code or configurations
-- `/simplify` - Simplify complex code or text
-
-#### Context & Memory Management  
-- `/learn` - Add insights to CLAUDE.md or extract from conversation
-- `/claude:optimize-md` - Optimize CLAUDE.md files
-- `/question` - Answer questions without taking action
-- `/docs:capture-session` - Document work for team handoff (preserves context)
-
-#### Framework Development
+#### Framework Authoring
 - `/commands:create` - Interactive slash command creator
-- `/add-parallelization` - Add parallel processing to slash commands
-- `/optimize` - General optimization command
+- `/commands:validate` - Validate commands against best practices
+- `/commands:optimize` - Optimize slash command definitions
+- `/commands:add-parallelization` - Add parallel execution to a command
+- `/commands:port-to-gemini` - Translate commands to Gemini CLI format
+- `/skills:create` - Create new skills with proper structure
 - `/subagents:optimize` - Optimize subagent definitions
-- `/subagents:review-ecosystem` - Analyze agent interactions
-- `/worker:run` - Run worker templates
+- `/subagents:review-ecosystem` - Audit subagents for overlap and compatibility
+- `/claude:agentic-review` - Review this repo's commands, agents, and workers
+- `/worker:run` - Run a worker template
 
 #### VS Code Integration
 - `/vs:settings-help` - VS Code settings assistance
@@ -207,7 +195,7 @@ Claude Code is Anthropic's official CLI for AI-powered coding assistance.
 
 - **Agents** activate automatically based on keywords in your conversation with Claude
 - **Slash commands** are typed directly in Claude Code (e.g., `/git:commit-and-push`)
-- **addjob** (shell utility) queues tasks from your terminal, then `/jobs:do` (slash command) executes them in parallel in Claude
+- **Workers** are reusable task templates that some slash commands run in parallel via the Task tool
 
 ## How It Works
 
@@ -276,7 +264,7 @@ If you choose to use the standard setup (you don't have to), this repository use
 
 How Components Work:
 • DIRECTIVES: Define behavior and standards for all interactions
-• AGENTS: Auto-trigger on keywords (e.g., "security" → hack-spotter)
+• AGENTS: Auto-trigger on keywords (e.g., "verify completion" → completion-verifier)
 • SLASH COMMANDS: User types /command (e.g., /git:commit-and-push)
 • HOOKS: Run at specific events (e.g., before shell commands)
 • WORKERS*: My custom pattern - reusable task templates for parallel execution
@@ -302,7 +290,7 @@ git clone https://github.com/lpasqualis/lpclaude.git ~/.lpclaude
 mkdir -p ~/.claude/agents ~/.claude/commands/git
 
 # Copy only the components you want
-cp ~/.lpclaude/agents/hack-spotter.md ~/.claude/agents/
+cp ~/.lpclaude/agents/delegate.md ~/.claude/agents/
 cp ~/.lpclaude/commands/git/commit-and-push.md ~/.claude/commands/git/
 cp ~/.lpclaude/hooks/guard-cd.sh ~/.claude/hooks/
 ```
@@ -342,8 +330,8 @@ cd ~/.lpclaude
      - `CLAUDE.md` - Shared memory file
    - **Supporting folders**:
      - `directives/` - Compiled preferences and standards
-     - `resources/` - Reference documents and guides
-     - `utils/` - Helper scripts (like addjob)
+     - `resources/` - Supporting reference files (e.g., Python style guide)
+     - `utils/` - Helper scripts supporting some slash commands
      - `workers/` - Parallel processing templates
      - `mcp/` - Model Context Protocol servers
    - **Configuration files**:
@@ -367,29 +355,6 @@ cd ~/.lpclaude
   2. Use selective installation (Option 1 above) to manually copy specific files
   3. Merge your content into this repo and fork it
 
-
-### Optional: Make addjob Available System-Wide
-
-To use the `addjob` utility from any directory, add an alias to your shell configuration:
-
-**For zsh (default on modern macOS):**
-```bash
-echo "alias addjob='python3 ~/.claude/utils/addjob'" >> ~/.zshrc
-source ~/.zshrc
-```
-
-**For bash:**
-```bash
-echo "alias addjob='python3 ~/.claude/utils/addjob'" >> ~/.bashrc
-source ~/.bashrc
-```
-
-**For fish:**
-```bash
-echo "alias addjob='python3 ~/.claude/utils/addjob'" >> ~/.config/fish/config.fish
-source ~/.config/fish/config.fish
-```
-
 ## Session Context & Memory Management
 
 Claude Code sessions have limited context windows, so I've developed patterns to manage both memory and context effectively:
@@ -398,13 +363,12 @@ Claude Code sessions have limited context windows, so I've developed patterns to
 - **CLAUDE.md** - Persistent directives loaded at session start (doesn't consume conversation context)
 - **Agents vs Workers** - Agents consume context even when idle; workers are loaded only when needed
 - **Selective Tool Usage** - Some slash commands delegate to the Task tool to avoid loading everything into main context
-- **Job Queuing** - The `addjob` system defers work to future sessions, preserving context for current tasks
+- **Deferred Work** - Claude Code's built-in `/schedule` and background tasks defer work to future runs, preserving context for current tasks
 
 ### Memory Persistence
 - **Global Memory** - `~/.claude/CLAUDE.md` persists across all projects and sessions
 - **Project Memory** - `.claude/CLAUDE.md` in projects adds project-specific context
-- **Session Capture** - Slash commands like `/docs:capture-session` preserve session knowledge for handoffs
-- **Learning Extraction** - `/learn` slash command extracts insights from conversations into permanent memory
+- **Learning Extraction** - Claude Code's built-in memory system (and `/memory`) captures insights into persistent files
 
 ### Why This Matters
 Context is precious in AI systems. By managing it carefully, I can:
@@ -496,5 +460,5 @@ I'm still investigating whether @-mentions fully replace the need for a compiled
 ### Additional Resources
 - **[Architecture Guide](docs/ARCHITECTURE.md)** - Technical design and structure  
 - **[Terminal Colors](docs/TERMINAL_COLORS.md)** - Workarounds for Claude Code color rendering
-- **[Research & Patterns](resources/)** - Collected learnings and experiments
+- **[Component Authoring](directives/authoring/)** - How I write commands, subagents, and workers
 

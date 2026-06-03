@@ -1,6 +1,6 @@
 ---
-name: /simplify
-description: "Safely simplifies a single tracked file in a git repo to its most essential form without losing functional information. One-pass, dry-run guarded, idempotent."
+name: /essentialize
+description: "Safely reduces a single tracked file in a git repo to its most essential form without losing functional information. One-pass, dry-run guarded, idempotent."
 argument-hint: "<file-path> [additional-constraints or focus-areas]"
 allowed-tools: "Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash"
 ---
@@ -145,7 +145,7 @@ allowed-tools: "Read, Write, Edit, MultiEdit, LS, Glob, Grep, Bash"
 
 ## Idempotence rule of thumb
 
-If you run `simplify-file` twice in a row, the second run should print “no changes” and exit. If not, your plan wasn’t minimal—tighten it or abort.
+If you run `/essentialize` twice in a row, the second run should print “no changes” and exit. If not, your plan wasn’t minimal—tighten it or abort.
 
 ---
 

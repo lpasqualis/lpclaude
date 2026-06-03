@@ -2,15 +2,11 @@ archive/
 **/.DS_Store
 .DS_Store
 **/*.local.*
-knowledge-base-reports/
-jobs/*
 
 # Any command sin the lpct group of agent that starts with lpct- is reserved for local testing
 # and shold not go in the repository
 commands/lpct
 agents/lpct-*
-commands/docs.md
 statusline/*.backup
-.simplify/
 .html/
 .llm/

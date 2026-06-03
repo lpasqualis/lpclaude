@@ -26,7 +26,6 @@ I maintain my Claude Code extensions (agents, slash commands, directives, output
 ```bash
 ./setup.sh                        # Create symlinks from ~/.claude/ to this repo
 ./rebuild_claude_md.sh            # Compile directives into CLAUDE_global_directives.md
-/maintenance:update-knowledge-base # Update embedded Claude Code knowledge (quarterly)
 ```
 
 ## Framework Execution Rules

@@ -25,8 +25,7 @@
 # 3. Performs non-destructive operations - skips existing files/symlinks (default)
 # 4. With --force option: updates symlinks that point to different locations
 # 5. Reports which symlinks were created successfully and which were skipped
-# 6. Provides tip for setting up the addjob alias if not already configured
-# 
+#
 # Usage: 
 #   ./setup.sh           - Normal mode (non-destructive)
 #   ./setup.sh --force   - Force mode (updates mismatched symlinks)
@@ -178,16 +177,6 @@ else
 fi
 
 echo
-
-# Check if addjob alias exists
-if ! command -v addjob &> /dev/null && ! alias addjob &> /dev/null 2>&1; then
-    echo "💡 TIP: To use the addjob utility from anywhere, add this alias to your shell profile:"
-    echo
-    echo "  alias addjob='python3 ~/.claude/utils/addjob'"
-    echo
-    echo "Add it to ~/.bashrc, ~/.zshrc, or ~/.bash_profile, then reload your shell."
-    echo "This will allow you to create job files easily: addjob my-task"
-fi
 
 brew update -q
 
