@@ -93,6 +93,7 @@ I maintain my Claude Code extensions (agents, slash commands, directives, output
 
 ### Key References  
 - **Architecture** (`docs/ARCHITECTURE.md`): Technical design patterns
+- **Component authoring** (`directives/authoring/`): Detailed reference for writing slash commands, subagents, and workers (execution hierarchy, Task constraints, slash-command gotchas), prompt-engineering best practices, and the AI+code synergy pattern. These docs are deliberately excluded from the always-on global directives — consult them when authoring components or building AI tooling.
 
 ## Important Notes
 - Changes here affect ALL projects using Claude Code
