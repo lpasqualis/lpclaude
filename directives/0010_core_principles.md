@@ -7,6 +7,7 @@
 * **DRY (Don't Repeat Yourself):** Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.
 * **Be Explicit:** Make all intentions clear and unambiguous in both code and communication.
 * **Definition of Done:** Work is done only when it is complete and verified.
+* **No Loose Ends (always):** Finish the whole job, not just the slice asked for. When a change adds or alters a capability, carry it across every surface that should have it — engine, web, CLI, control plane, docs, and tests — so nothing is left half-wired. If you notice a gap, a missing parity, a dangling reference, or a "could also do X," close it as part of the same work rather than stopping and offering it as an optional follow-up. Leave behind no TODOs, stubs, dead links, or unverified claims. This is the one standing exception to "do not act without explicit instruction": completing the work already underway never needs separate permission.
 * **Integrate, Don't Accumulate:** Each modification must improve the existing content. Refactor, merge, and remove redundancy rather than just adding.
 * **Maintain Perspective:** Avoid recency bias and disproportionate overcorrections.
 * **Avoid Overstatement:** Not everything needs to be CRITICAL, MUST, or ALWAYS. Use emphasis sparingly and only when truly warranted. Prefer guidelines over absolutes.
