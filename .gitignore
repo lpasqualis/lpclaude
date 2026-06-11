@@ -7,6 +7,12 @@ archive/
 # and shold not go in the repository
 commands/lpct
 agents/lpct-*
+
+# Third-party / installed skills are vendored locally under skills/ but not tracked.
+# Hand-authored skills (e.g. wrap-up) ARE tracked. Add a line per installed skill.
+skills/notebooklm/
+skills/obsidian-cli/
+
 statusline/*.backup
 .html/
 .llm/

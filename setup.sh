@@ -17,6 +17,7 @@
 #    - output-styles/ -> Repository's output-styles folder
 #    - hooks/         -> Repository's hooks folder
 #    - workers/       -> Repository's workers folder
+#    - skills/        -> Repository's skills folder
 #    - mcp/           -> Repository's MCP folder
 #    - CLAUDE.md      -> directives/CLAUDE_global_directives.md (compiled global directives)
 #    - settings.json  -> Repository's settings file
@@ -156,6 +157,7 @@ create_symlink "$REPO_PATH/utils/" "utils" "utils"
 create_symlink "$REPO_PATH/output-styles/" "output-styles" "output-styles"
 create_symlink "$REPO_PATH/hooks/" "hooks" "hooks"
 create_symlink "$REPO_PATH/workers/" "workers" "workers"
+create_symlink "$REPO_PATH/skills/" "skills" "skills"
 create_symlink "$REPO_PATH/directives/CLAUDE_global_directives.md" "CLAUDE.md" "CLAUDE.md"
 create_symlink "$REPO_PATH/settings/settings.json" "settings.json" "settings.json"
 create_symlink "$REPO_PATH/statusline/statusline.sh" "statusline.sh" "statusline.sh"
